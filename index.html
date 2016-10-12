@@ -26,6 +26,7 @@
     //Create a Pixi stage and renderer and add the renderer.view to the DOM
     var stage = new Container(),
       renderer = autoDetectRenderer(768, 768);
+    renderer.backgroundColor = 0x333333;
     document.body.appendChild(renderer.view);
 
     loader
@@ -33,35 +34,43 @@
       .load(setup);
 
     var state, message;
-    var func1_box, func1_input, func1_output, func1_set;
-    var func2_box, func2_input, func2_output, func2_set;
+    var func1_box, func1_input1, func1_output1, func1_grip, func1_set;
+    var func2_box, func2_input1, func2_output1, func2_grip, func2_set;
 
     function setup() {
       func2_box = new Graphics();
-      func2_box.beginFill(0xff33ff);
+      func2_box.beginFill(0xe3ac9a);
       func2_box.drawRect(0, 0, 140, 260);
       func2_box.endFill();
       func2_box.x = 0;
       func2_box.y = 0;
 
-      func2_input = new Graphics();
-      func2_input.beginFill(0x0000FF);
-      func2_input.drawRect(0, 0, 100, 100);
-      func2_input.endFill();
-      func2_input.position.x = 20;
-      func2_input.position.y = 20;
+      func2_input1 = new Graphics();
+      func2_input1.beginFill(0xace39a);
+      func2_input1.drawRect(0, 0, 100, 100);
+      func2_input1.endFill();
+      func2_input1.position.x = 20;
+      func2_input1.position.y = 20;
 
-      func2_output = new Graphics();
-      func2_output.beginFill(0xffff00);
-      func2_output.drawRect(0, 0, 100, 100);
-      func2_output.endFill();
-      func2_output.position.x = 20;
-      func2_output.position.y = 140;
+      func2_output1 = new Graphics();
+      func2_output1.beginFill(0x9ad1e3);
+      func2_output1.drawRect(0, 0, 100, 100);
+      func2_output1.endFill();
+      func2_output1.position.x = 20;
+      func2_output1.position.y = 140;
+
+      func2_grip = new Graphics();
+      func2_grip.beginFill(0x000000);
+      func2_grip.drawRect(0, 0, 20, 20);
+      func2_grip.endFill();
+      func2_grip.position.x = 0;
+      func2_grip.position.y = 0;
 
       func2_set = new Container();
       func2_set.addChild(func2_box);
-      func2_set.addChild(func2_input);
-      func2_set.addChild(func2_output);
+      func2_set.addChild(func2_input1);
+      func2_set.addChild(func2_output1);
+      func2_set.addChild(func2_grip);
 
       func2_set.interactive = true;
       func2_set.buttonMode = true;
@@ -83,30 +92,38 @@
       stage.addChild(func2_set);
 
       func1_box = new Graphics();
-      func1_box.beginFill(0xff0000);
+      func1_box.beginFill(0xc29de0);
       func1_box.drawRect(0, 0, 140, 260);
       func1_box.endFill();
       func1_box.x = 0;
       func1_box.y = 0;
 
-      func1_input = new Graphics();
-      func1_input.beginFill(0x0000FF);
-      func1_input.drawRect(0, 0, 100, 100);
-      func1_input.endFill();
-      func1_input.position.x = 20;
-      func1_input.position.y = 20;
+      func1_input1 = new Graphics();
+      func1_input1.beginFill(0xbbe09d);
+      func1_input1.drawRect(0, 0, 100, 100);
+      func1_input1.endFill();
+      func1_input1.position.x = 20;
+      func1_input1.position.y = 20;
 
-      func1_output = new Graphics();
-      func1_output.beginFill(0xffff00);
-      func1_output.drawRect(0, 0, 100, 100);
-      func1_output.endFill();
-      func1_output.position.x = 20;
-      func1_output.position.y = 140;
+      func1_output1 = new Graphics();
+      func1_output1.beginFill(0x9ddde0);
+      func1_output1.drawRect(0, 0, 100, 100);
+      func1_output1.endFill();
+      func1_output1.position.x = 20;
+      func1_output1.position.y = 140;
+
+      func1_grip = new Graphics();
+      func1_grip.beginFill(0x000000);
+      func1_grip.drawRect(0, 0, 20, 20);
+      func1_grip.endFill();
+      func1_grip.position.x = 0;
+      func1_grip.position.y = 0;
 
       func1_set = new Container();
       func1_set.addChild(func1_box);
-      func1_set.addChild(func1_input);
-      func1_set.addChild(func1_output);
+      func1_set.addChild(func1_input1);
+      func1_set.addChild(func1_output1);
+      func1_set.addChild(func1_grip);
 
       func1_set.interactive = true;
       func1_set.buttonMode = true;
@@ -163,28 +180,28 @@
         func2_box.height = 460;
         func1_set.position.x = func2_set.getChildAt(1).worldTransform.tx;
         func1_set.position.y = func2_set.getChildAt(1).worldTransform.ty;
-        func2_output.width = 140;
-        func2_output.height = 140;
-        func2_output.position.y = func2_set.getChildAt(1).y + 280;
+        func2_output1.width = 140;
+        func2_output1.height = 140;
+        func2_output1.position.y = func2_set.getChildAt(1).y + 280;
       } else if (hitTestInput(func2_set.getChildAt(2), func1_set)) {
         func2_box.width = 180;
         func2_box.height = 460;
         func1_set.position.x = func2_set.getChildAt(2).worldTransform.tx;
         func1_set.position.y = func2_set.getChildAt(2).worldTransform.ty;
-        func2_input.width = 140;
-        func2_input.height = 140;
-        func2_output.position.y = func2_set.getChildAt(1).y + 160;
+        func2_input1.width = 140;
+        func2_input1.height = 140;
+        func2_output1.position.y = func2_set.getChildAt(1).y + 160;
         message.text = "output hit!";
       } else {
         //if there's no collision, reset the message
         //text and the box's color
         func2_box.width = 140;
         func2_box.height = 260;
-        func2_output.width = 100;
-        func2_output.height = 100;
-        func2_input.width = 100;
-        func2_input.height = 100;
-        func2_output.position.y = func2_set.getChildAt(1).y + 120;
+        func2_output1.width = 100;
+        func2_output1.height = 100;
+        func2_input1.width = 100;
+        func2_input1.height = 100;
+        func2_output1.position.y = func2_set.getChildAt(1).y + 120;
         message.text = "No collision...";
         // bigbox.width = 300;
       }
