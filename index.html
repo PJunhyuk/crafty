@@ -162,7 +162,7 @@
       //Loop this function 60 times per second
       requestAnimationFrame(gameLoop);
 
-      //Update the current game state
+      //Update the current state
       state();
 
       //Render the stage
@@ -170,27 +170,58 @@
     }
 
     function play() {
-      //check for a collision between the cat and the box
     };
 
+    function onDragStart(event)
+    {
+      // store a reference to the data
+      // the reason for this is because of multitouch
+      // we want to track the movement of this particular touch
+      this.data = event.data;
+      this.alpha = 0.5;
+      this.dragging = true;
+    }
 
-    //The `hitTestRectangle` function
+    function onDragEnd()
+    {
+      this.alpha = 1;
+      this.dragging = false;
+      // set the interaction data to null
+      this.data = null;
+
+      if(this != func1_set) {
+        checkHit(func1_set, this);
+      } else if (this != func2_set) {
+        checkHit(func2_set, this);
+      }
+    }
+
+    function onDragMove()
+    {
+      if (this.dragging)
+      {
+        var newPosition = this.data.getLocalPosition(this.parent);
+        this.position.x = newPosition.x;
+        this.position.y = newPosition.y;
+      }
+    }
+
     function hitTestInput(r1, r2) {
       //Define the variables we'll need to calculate
       var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
       //hit will determine whether there's a collision
       hit = false;
-      //Find the center points of each sprite
+      //Find the center points of each graphics
       r1.centerX = r1.worldTransform.tx + r1.width / 2;
       r1.centerY = r1.worldTransform.ty + r1.height / 2;
       r2.centerX = r2.worldTransform.tx + r2.width / 2;
       r2.centerY = r2.worldTransform.ty + r2.height / 2;
-      //Find the half-widths and half-heights of each sprite
+      //Find the half-widths and half-heights of each graphics
       r1.halfWidth = r1.width / 2;
       r1.halfHeight = r1.height / 2;
       r2.halfWidth = r2.width / 2;
       r2.halfHeight = r2.height / 2;
-      //Calculate the distance vector between the sprites
+      //Calculate the distance vector between the graphics
       vx = r1.centerX - r2.centerX;
       vy = r1.centerY - r2.centerY;
       //Figure out the combined half-widths and half-heights
@@ -214,44 +245,6 @@
       return hit;
     };
 
-
-
-    function onDragStart(event)
-    {
-      // store a reference to the data
-      // the reason for this is because of multitouch
-      // we want to track the movement of this particular touch
-      this.data = event.data;
-      this.alpha = 0.5;
-      this.dragging = true;
-    }
-
-    function onDragEnd()
-    {
-      this.alpha = 1;
-
-      this.dragging = false;
-
-      // set the interaction data to null
-      this.data = null;
-
-      if(this != func1_set) {
-        checkHit(func1_set, this);
-      } else if (this != func2_set) {
-        checkHit(func2_set, this);
-      }
-    }
-
-    function onDragMove()
-    {
-      if (this.dragging)
-      {
-        var newPosition = this.data.getLocalPosition(this.parent);
-        this.position.x = newPosition.x;
-        this.position.y = newPosition.y;
-      }
-    }
-    
     function checkHit(target_set, moving_set) {
       if (hitTestInput(target_set.getChildAt(1), moving_set.getChildAt(3))) {
         message.text = "input hit!";
