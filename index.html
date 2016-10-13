@@ -60,7 +60,7 @@
       func2_output1.position.y = 140;
 
       func2_grip = new Graphics();
-      func2_grip.beginFill(0x000000);
+      func2_grip.beginFill(0xc85b37);
       func2_grip.drawRect(0, 0, 20, 20);
       func2_grip.endFill();
       func2_grip.position.x = 0;
@@ -113,7 +113,7 @@
       func1_output1.position.y = 140;
 
       func1_grip = new Graphics();
-      func1_grip.beginFill(0x000000);
+      func1_grip.beginFill(0x863dc2);
       func1_grip.drawRect(0, 0, 20, 20);
       func1_grip.endFill();
       func1_grip.position.x = 0;
@@ -190,9 +190,9 @@
       this.data = null;
 
       if(this != func1_set) {
-        checkHit(func1_set, this);
+        checkHitLocation(func1_set, this);
       } else if (this != func2_set) {
-        checkHit(func2_set, this);
+        checkHitLocation(func2_set, this);
       }
     }
 
@@ -203,6 +203,12 @@
         var newPosition = this.data.getLocalPosition(this.parent);
         this.position.x = newPosition.x;
         this.position.y = newPosition.y;
+
+        if(this != func1_set) {
+          checkHitColor(func1_set, this);
+        } else if (this != func2_set) {
+          checkHitColor(func2_set, this);
+        }
       }
     }
 
@@ -245,7 +251,7 @@
       return hit;
     };
 
-    function checkHit(target_set, moving_set) {
+    function checkHitLocation(target_set, moving_set) {
       if (hitTestInput(target_set.getChildAt(1), moving_set.getChildAt(3))) {
         message.text = "input hit!";
         target_set.getChildAt(0).width = 180;
@@ -275,6 +281,19 @@
         target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 120;
         target_set.getChildAt(2).width = 100;
         target_set.getChildAt(2).height = 100;
+      }
+    }
+
+    function checkHitColor(target_set, moving_set) {
+      if (hitTestInput(target_set.getChildAt(1), moving_set.getChildAt(3))) {
+        message.text = "dragging input hit!";
+        moving_set.getChildAt(3).tint = 0xff0000;
+      } else if (hitTestInput(target_set.getChildAt(2), moving_set.getChildAt(3))) {
+        message.text = "dragging output hit!";
+        moving_set.getChildAt(3).tint = 0xff0000;
+      } else {
+        message.text = "dragging No collision...";
+        moving_set.getChildAt(3).tint = 0xffffff;
       }
     }
     </script>
