@@ -180,6 +180,8 @@
       this.data = event.data;
       this.alpha = 0.5;
       this.dragging = true;
+      this.scale.x *= 1.1;
+      this.scale.y *= 1.1;
       this.dragPoint = event.data.getLocalPosition(this.parent);
       this.dragPoint.x -= this.position.x;
       this.dragPoint.y -= this.position.y;
@@ -191,6 +193,8 @@
       this.dragging = false;
       // set the interaction data to null
       this.data = null;
+      this.scale.x /= 1.1;
+      this.scale.y /= 1.1;
 
       if(this != func1_set) {
         checkHitLocation(func1_set, this);
