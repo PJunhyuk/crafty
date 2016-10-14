@@ -216,6 +216,24 @@
         } else if (this != func2_set) {
           checkHitColor(func2_set, this);
         }
+
+        if(this != func2_set) {
+          if(hitTestInput(this.getChildAt(1), func2_set.getChildAt(3))) {
+            func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
+            func2_set.position.y = newPosition.y - this.dragPoint.y + 20;
+          } else if(hitTestInput(this.getChildAt(2), func2_set.getChildAt(3))) {
+            func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
+            func2_set.position.y = newPosition.y - this.dragPoint.y + 180;
+          }
+        } else if (this != func1_set) {
+          if(hitTestInput(this.getChildAt(1), func1_set.getChildAt(3))) {
+            func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
+            func1_set.position.y = newPosition.y - this.dragPoint.y + 20;
+          } else if(hitTestInput(this.getChildAt(2), func1_set.getChildAt(3))) {
+            func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
+            func1_set.position.y = newPosition.y - this.dragPoint.y + 180;
+          }
+        }
       }
     }
 
