@@ -30,15 +30,21 @@
     document.body.appendChild(renderer.view);
 
     loader
-      .add("images/cat.png")
+      .add("images/trash_can_closed.png")
       .load(setup);
 
-    var state, message;
+    var state, message, trash_can;
     var func1_box, func1_input1, func1_output1, func1_grip, func1_set;
     var func2_box, func2_input1, func2_output1, func2_grip, func2_set;
     var func3_box, func3_input1, func3_output1, func3_grip, func3_set;
 
     function setup() {
+      trash_can = new Sprite(resources["images/trash_can_closed.png"].texture);
+      trash_can.x = 680;
+      trash_can.y = 640;
+
+      stage.addChild(trash_can);
+
       func1_box = new Graphics();
       func1_box.beginFill(0xc29de0);
       func1_box.drawRect(0, 0, 140, 260);
