@@ -34,7 +34,13 @@
       .add("images/trash_can_closed.png")
       .load(setup);
 
-    var state, message, trashcan;
+    var state, message, trashcan, cat;
+    var activeBlocks, totalBlocks;
+    var blockIndex;
+    var target_set, moving_set;
+
+    activeBlocks = 0;
+    totalBlocks = 0;
 
     function setup() {
       trashcan = new Sprite(resources["images/trash_can_closed.png"].texture);
@@ -53,6 +59,9 @@
       cat
         .on('click', function() {
           addBlock();
+          totalBlocks++;
+          activeBlocks++;
+          console.log(activeBlocks);
         });
 
 
@@ -69,7 +78,6 @@
     }
 
     function gameLoop() {
-
       //Loop this function 60 times per second
       requestAnimationFrame(gameLoop);
 
@@ -123,7 +131,6 @@
       set.interactive = true;
       set.buttonMode = true;
       set.hitArea = new PIXI.Rectangle(0, 0, 20, 20);
-
       set
         .on('mousedown', onDragStart)
         .on('touchstart', onDragStart)
@@ -136,7 +143,6 @@
 
       set.position.x = 50;
       set.position.y = 500;
-
       stage.addChild(set);
     }
 
@@ -164,14 +170,44 @@
       this.scale.x /= 1.1;
       this.scale.y /= 1.1;
 
-      if(this != func1_set) {
-        checkHitLocation(func1_set, this);
-      }
-      if (this != func2_set) {
-        checkHitLocation(func2_set, this);
-      }
-      if (this != func3_set) {
-        checkHitLocation(func3_set, this);
+      for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
+        // run hitTest without itself
+        if(blockIndex != stage.getChildIndex(this)-2) {
+          target_set = stage.getChildAt(blockIndex+2);
+          moving_set = this;
+          if (hitTest(target_set.getChildAt(1), moving_set.getChildAt(3))) {
+            message.text = "input hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-2);
+            target_set.getChildAt(0).width = 180;
+            target_set.getChildAt(0).height = 460;
+            target_set.getChildAt(1).width = 100;
+            target_set.getChildAt(1).height = 100;
+            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
+            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty;
+            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
+            target_set.getChildAt(2).width = 140;
+            target_set.getChildAt(2).height = 140;
+            break;
+          } else if (hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
+            message.text = "output hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-2);
+            target_set.getChildAt(0).width = 180;
+            target_set.getChildAt(0).height = 460;
+            target_set.getChildAt(1).width = 140;
+            target_set.getChildAt(1).height = 140;
+            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
+            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
+            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
+            break;
+          } else {
+            message.text = "No collision...";
+            target_set.getChildAt(0).width = 140;
+            target_set.getChildAt(0).height = 260;
+            target_set.getChildAt(1).width = 100;
+            target_set.getChildAt(1).height = 100;
+            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 120;
+            target_set.getChildAt(2).width = 100;
+            target_set.getChildAt(2).height = 100;
+          }
+        }
       }
     }
 
@@ -183,47 +219,47 @@
         this.position.x = newPosition.x - this.dragPoint.x;
         this.position.y = newPosition.y - this.dragPoint.y;
 
-        if(this != func1_set) {
-          checkHitColor(func1_set, this);
-        }
-        if (this != func2_set) {
-          checkHitColor(func2_set, this);
-        }
-        if (this != func3_set) {
-          checkHitColor(func3_set, this);
-        }
-
-        if(this != func2_set) {
-          if(hitTestInput(this.getChildAt(1), func2_set.getChildAt(3))) {
-            func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func2_set.position.y = newPosition.y - this.dragPoint.y + 20;
-          } else if(hitTestInput(this.getChildAt(2), func2_set.getChildAt(3))) {
-            func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func2_set.position.y = newPosition.y - this.dragPoint.y + 180;
-          }
-        }
-        if (this != func1_set) {
-          if(hitTestInput(this.getChildAt(1), func1_set.getChildAt(3))) {
-            func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func1_set.position.y = newPosition.y - this.dragPoint.y + 20;
-          } else if(hitTestInput(this.getChildAt(2), func1_set.getChildAt(3))) {
-            func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func1_set.position.y = newPosition.y - this.dragPoint.y + 180;
-          }
-        }
-        if (this != func3_set) {
-          if(hitTestInput(this.getChildAt(1), func3_set.getChildAt(3))) {
-            func3_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func3_set.position.y = newPosition.y - this.dragPoint.y + 20;
-          } else if(hitTestInput(this.getChildAt(2), func3_set.getChildAt(3))) {
-            func3_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func3_set.position.y = newPosition.y - this.dragPoint.y + 180;
-          }
-        }
+        // if(this != func1_set) {
+        //   checkHitColor(func1_set, this);
+        // }
+        // if (this != func2_set) {
+        //   checkHitColor(func2_set, this);
+        // }
+        // if (this != func3_set) {
+        //   checkHitColor(func3_set, this);
+        // }
+        //
+        // if(this != func2_set) {
+        //   if(hitTest(this.getChildAt(1), func2_set.getChildAt(3))) {
+        //     func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
+        //     func2_set.position.y = newPosition.y - this.dragPoint.y + 20;
+        //   } else if(hitTest(this.getChildAt(2), func2_set.getChildAt(3))) {
+        //     func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
+        //     func2_set.position.y = newPosition.y - this.dragPoint.y + 180;
+        //   }
+        // }
+        // if (this != func1_set) {
+        //   if(hitTest(this.getChildAt(1), func1_set.getChildAt(3))) {
+        //     func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
+        //     func1_set.position.y = newPosition.y - this.dragPoint.y + 20;
+        //   } else if(hitTest(this.getChildAt(2), func1_set.getChildAt(3))) {
+        //     func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
+        //     func1_set.position.y = newPosition.y - this.dragPoint.y + 180;
+        //   }
+        // }
+        // if (this != func3_set) {
+        //   if(hitTest(this.getChildAt(1), func3_set.getChildAt(3))) {
+        //     func3_set.position.x = newPosition.x - this.dragPoint.x + 20;
+        //     func3_set.position.y = newPosition.y - this.dragPoint.y + 20;
+        //   } else if(hitTest(this.getChildAt(2), func3_set.getChildAt(3))) {
+        //     func3_set.position.x = newPosition.x - this.dragPoint.x + 20;
+        //     func3_set.position.y = newPosition.y - this.dragPoint.y + 180;
+        //   }
+        // }
       }
     }
 
-    function hitTestInput(r1, r2) {
+    function hitTest(r1, r2) {
       //Define the variables we'll need to calculate
       var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
       //hit will determine whether there's a collision
@@ -262,44 +298,11 @@
       return hit;
     };
 
-    function checkHitLocation(target_set, moving_set) {
-      if (hitTestInput(target_set.getChildAt(1), moving_set.getChildAt(3))) {
-        message.text = "input hit!";
-        target_set.getChildAt(0).width = 180;
-        target_set.getChildAt(0).height = 460;
-        target_set.getChildAt(1).width = 100;
-        target_set.getChildAt(1).height = 100;
-        moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
-        moving_set.position.y = target_set.getChildAt(1).worldTransform.ty;
-        target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
-        target_set.getChildAt(2).width = 140;
-        target_set.getChildAt(2).height = 140;
-      } else if (hitTestInput(target_set.getChildAt(2), moving_set.getChildAt(3))) {
-        message.text = "output hit!";
-        target_set.getChildAt(0).width = 180;
-        target_set.getChildAt(0).height = 460;
-        target_set.getChildAt(1).width = 140;
-        target_set.getChildAt(1).height = 140;
-        target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
-        moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
-        moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
-      } else {
-        message.text = "No collision...";
-        target_set.getChildAt(0).width = 140;
-        target_set.getChildAt(0).height = 260;
-        target_set.getChildAt(1).width = 100;
-        target_set.getChildAt(1).height = 100;
-        target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 120;
-        target_set.getChildAt(2).width = 100;
-        target_set.getChildAt(2).height = 100;
-      }
-    }
-
     function checkHitColor(target_set, moving_set) {
-      if (hitTestInput(target_set.getChildAt(1), moving_set.getChildAt(3))) {
+      if (hitTest(target_set.getChildAt(1), moving_set.getChildAt(3))) {
         message.text = "dragging input hit!";
         moving_set.getChildAt(3).tint = 0xff0000;
-      } else if (hitTestInput(target_set.getChildAt(2), moving_set.getChildAt(3))) {
+      } else if (hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
         message.text = "dragging output hit!";
         moving_set.getChildAt(3).tint = 0xff0000;
       } else {
