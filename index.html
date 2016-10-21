@@ -22,194 +22,30 @@
       Texture = PIXI.Texture,
       Sprite = PIXI.Sprite,
       Graphics = PIXI.Graphics;
-
     //Create a Pixi stage and renderer and add the renderer.view to the DOM
     var stage = new Container(),
       renderer = autoDetectRenderer(768, 768);
     renderer.backgroundColor = 0x333333;
     document.body.appendChild(renderer.view);
-
     loader
+      .add("images/cat.png")
       .add("images/trash_can_closed.png")
       .load(setup);
-
-<<<<<<< HEAD
     var state, message, trashcan, cat;
     var activeBlocks, totalBlocks;
     var blockIndex;
     var target_set, moving_set;
-
     activeBlocks = 0;
     totalBlocks = 0;
-=======
-    var state, message, trash_can;
-    var func1_box, func1_input1, func1_output1, func1_grip, func1_set;
-    var func2_box, func2_input1, func2_output1, func2_grip, func2_set;
-    var func3_box, func3_input1, func3_output1, func3_grip, func3_set;
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
-
     function setup() {
-      trash_can = new Sprite(resources["images/trash_can_closed.png"].texture);
-      trash_can.x = 680;
-      trash_can.y = 640;
-
-      stage.addChild(trash_can);
-
-      func1_box = new Graphics();
-      func1_box.beginFill(0xc29de0);
-      func1_box.drawRect(0, 0, 140, 260);
-      func1_box.endFill();
-      func1_box.x = 0;
-      func1_box.y = 0;
-
-      func1_input1 = new Graphics();
-      func1_input1.beginFill(0xbbe09d);
-      func1_input1.drawRect(0, 0, 100, 100);
-      func1_input1.endFill();
-      func1_input1.position.x = 20;
-      func1_input1.position.y = 20;
-
-      func1_output1 = new Graphics();
-      func1_output1.beginFill(0x9ddde0);
-      func1_output1.drawRect(0, 0, 100, 100);
-      func1_output1.endFill();
-      func1_output1.position.x = 20;
-      func1_output1.position.y = 140;
-
-      func1_grip = new Graphics();
-      func1_grip.beginFill(0x863dc2);
-      func1_grip.drawRect(0, 0, 20, 20);
-      func1_grip.endFill();
-      func1_grip.position.x = 0;
-      func1_grip.position.y = 0;
-
-      func1_set = new Container();
-      func1_set.addChild(func1_box);
-      func1_set.addChild(func1_input1);
-      func1_set.addChild(func1_output1);
-      func1_set.addChild(func1_grip);
-
-      func1_set.interactive = true;
-      func1_set.buttonMode = true;
-      func1_set.hitArea = new PIXI.Rectangle(0, 0, 20, 20);
-
-      func1_set
-        .on('mousedown', onDragStart)
-        .on('touchstart', onDragStart)
-        .on('mouseup', onDragEnd)
-        .on('mouseupoutside', onDragEnd)
-        .on('touchend', onDragEnd)
-        .on('touchendoutside', onDragEnd)
-        .on('mousemove', onDragMove)
-        .on('touchmove', onDragMove);
-
-      func1_set.position.x = 100;
-      func1_set.position.y = 200;
-
-      stage.addChild(func1_set);
-
-      func2_box = new Graphics();
-      func2_box.beginFill(0xe3ac9a);
-      func2_box.drawRect(0, 0, 140, 260);
-      func2_box.endFill();
-      func2_box.x = 0;
-      func2_box.y = 0;
-
-      func2_input1 = new Graphics();
-      func2_input1.beginFill(0xace39a);
-      func2_input1.drawRect(0, 0, 100, 100);
-      func2_input1.endFill();
-      func2_input1.position.x = 20;
-      func2_input1.position.y = 20;
-
-      func2_output1 = new Graphics();
-      func2_output1.beginFill(0x9ad1e3);
-      func2_output1.drawRect(0, 0, 100, 100);
-      func2_output1.endFill();
-      func2_output1.position.x = 20;
-      func2_output1.position.y = 140;
-
-      func2_grip = new Graphics();
-      func2_grip.beginFill(0xc85b37);
-      func2_grip.drawRect(0, 0, 20, 20);
-      func2_grip.endFill();
-      func2_grip.position.x = 0;
-      func2_grip.position.y = 0;
-
-      func2_set = new Container();
-      func2_set.addChild(func2_box);
-      func2_set.addChild(func2_input1);
-      func2_set.addChild(func2_output1);
-      func2_set.addChild(func2_grip);
-
-      func2_set.interactive = true;
-      func2_set.buttonMode = true;
-      func2_set.hitArea = new PIXI.Rectangle(0, 0, 20, 20);
-
-      func2_set
-        .on('mousedown', onDragStart)
-        .on('touchstart', onDragStart)
-        .on('mouseup', onDragEnd)
-        .on('mouseupoutside', onDragEnd)
-        .on('touchend', onDragEnd)
-        .on('touchendoutside', onDragEnd)
-        .on('mousemove', onDragMove)
-        .on('touchmove', onDragMove);
-
-      func2_set.position.x = 300;
-      func2_set.position.y = 200;
-
-      stage.addChild(func2_set);
-
-      func3_box = new Graphics();
-      func3_box.beginFill(0xff33cc);
-      func3_box.drawRect(0, 0, 140, 260);
-      func3_box.endFill();
-      func3_box.x = 0;
-      func3_box.y = 0;
-
-      func3_input1 = new Graphics();
-      func3_input1.beginFill(0xace39a);
-      func3_input1.drawRect(0, 0, 100, 100);
-      func3_input1.endFill();
-      func3_input1.position.x = 20;
-      func3_input1.position.y = 20;
-
-      func3_output1 = new Graphics();
-      func3_output1.beginFill(0x9ad1e3);
-      func3_output1.drawRect(0, 0, 100, 100);
-      func3_output1.endFill();
-      func3_output1.position.x = 20;
-      func3_output1.position.y = 140;
-
-      func3_grip = new Graphics();
-      func3_grip.beginFill(0x990073);
-      func3_grip.drawRect(0, 0, 20, 20);
-      func3_grip.endFill();
-      func3_grip.position.x = 0;
-      func3_grip.position.y = 0;
-
-      func3_set = new Container();
-      func3_set.addChild(func3_box);
-      func3_set.addChild(func3_input1);
-      func3_set.addChild(func3_output1);
-      func3_set.addChild(func3_grip);
-
-      func3_set.interactive = true;
-      func3_set.buttonMode = true;
-      func3_set.hitArea = new PIXI.Rectangle(0, 0, 20, 20);
-
-      func3_set
-        .on('mousedown', onDragStart)
-        .on('touchstart', onDragStart)
-        .on('mouseup', onDragEnd)
-        .on('mouseupoutside', onDragEnd)
-        .on('touchend', onDragEnd)
-        .on('touchendoutside', onDragEnd)
-        .on('mousemove', onDragMove)
-        .on('touchmove', onDragMove);
-
-<<<<<<< HEAD
+      trashcan = new Sprite(resources["images/trash_can_closed.png"].texture);
+      trashcan.x = 680;
+      trashcan.y = 640;
+      stage.addChild(trashcan);
+      cat = new Sprite(resources["images/cat.png"].texture);
+      cat.x = 560;
+      cat.y = 660;
+      stage.addChild(cat);
       cat.interactive = true;
       cat.buttonMode = true;
       cat
@@ -219,51 +55,26 @@
           activeBlocks++;
           console.log(activeBlocks);
         });
-=======
-      func3_set.position.x = 500;
-      func3_set.position.y = 200;
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
-
-      stage.addChild(func3_set);
-
       message = new PIXI.Text(
         "No collision...",
         {font: "18px", fill: "white"}
       );
       message.position.set(8, 8);
       stage.addChild(message);
-
       state = play;
-
       gameLoop();
     }
-
-<<<<<<< HEAD
     function gameLoop() {
-=======
-
-    function gameLoop(){
-
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
       //Loop this function 60 times per second
       requestAnimationFrame(gameLoop);
-
       //Update the current state
       state();
-
       //Render the stage
       renderer.render(stage);
     }
-
     function play() {
     };
-
-<<<<<<< HEAD
     function onDragStart(event) {
-=======
-    function onDragStart(event)
-    {
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
       // store a reference to the data
       // the reason for this is because of multitouch
       // we want to track the movement of this particular touch
@@ -276,21 +87,13 @@
       this.dragPoint.x -= this.position.x;
       this.dragPoint.y -= this.position.y;
     }
-
-<<<<<<< HEAD
     function onDragEnd() {
-=======
-    function onDragEnd()
-    {
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
       this.alpha = 1;
       this.dragging = false;
       // set the interaction data to null
       this.data = null;
       this.scale.x /= 1.1;
       this.scale.y /= 1.1;
-
-<<<<<<< HEAD
       for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
         // run hitTest without itself
         if(blockIndex != stage.getChildIndex(this)-2) {
@@ -330,37 +133,16 @@
           }
         }
       }
-
       if(hitTest(this, trashcan)) {
         stage.removeChild(this);
         activeBlocks--;
       }
     }
-
     function onDragMove() {
       if(this.dragging) {
-=======
-      if(this != func1_set) {
-        checkHitLocation(func1_set, this);
-      }
-      if (this != func2_set) {
-        checkHitLocation(func2_set, this);
-      }
-      if (this != func3_set) {
-        checkHitLocation(func3_set, this);
-      }
-    }
-
-    function onDragMove()
-    {
-      if (this.dragging)
-      {
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
         var newPosition = this.data.getLocalPosition(this.parent);
         this.position.x = newPosition.x - this.dragPoint.x;
         this.position.y = newPosition.y - this.dragPoint.y;
-
-<<<<<<< HEAD
         for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
           // run hitTest without itself
           if(blockIndex != stage.getChildIndex(this)-2) {
@@ -375,86 +157,41 @@
               target_set.position.y = newPosition.y - moving_set.dragPoint.y + 180;
               break;
             }
-=======
-        if(this != func1_set) {
-          checkHitColor(func1_set, this);
-        }
-        if (this != func2_set) {
-          checkHitColor(func2_set, this);
-        }
-        if (this != func3_set) {
-          checkHitColor(func3_set, this);
-        }
-
-        if(this != func2_set) {
-          if(hitTestInput(this.getChildAt(1), func2_set.getChildAt(3))) {
-            func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func2_set.position.y = newPosition.y - this.dragPoint.y + 20;
-          } else if(hitTestInput(this.getChildAt(2), func2_set.getChildAt(3))) {
-            func2_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func2_set.position.y = newPosition.y - this.dragPoint.y + 180;
-          }
-        }
-        if (this != func1_set) {
-          if(hitTestInput(this.getChildAt(1), func1_set.getChildAt(3))) {
-            func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func1_set.position.y = newPosition.y - this.dragPoint.y + 20;
-          } else if(hitTestInput(this.getChildAt(2), func1_set.getChildAt(3))) {
-            func1_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func1_set.position.y = newPosition.y - this.dragPoint.y + 180;
-          }
-        }
-        if (this != func3_set) {
-          if(hitTestInput(this.getChildAt(1), func3_set.getChildAt(3))) {
-            func3_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func3_set.position.y = newPosition.y - this.dragPoint.y + 20;
-          } else if(hitTestInput(this.getChildAt(2), func3_set.getChildAt(3))) {
-            func3_set.position.x = newPosition.x - this.dragPoint.x + 20;
-            func3_set.position.y = newPosition.y - this.dragPoint.y + 180;
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
           }
         }
       }
     }
-
-<<<<<<< HEAD
     function addBlock() {
       var block, input1, input2, grip, set;
-
       block = new Graphics();
       block.beginFill(0xec686d);
       block.drawRect(0, 0, 140, 260);
       block.endFill();
       block.x = 0;
       block.y = 0;
-
       input1 = new Graphics();
       input1.beginFill(0xffffff);
       input1.drawRect(0, 0, 100, 100);
       input1.endFill();
       input1.position.x = 20;
       input1.position.y = 20;
-
       input2 = new Graphics();
       input2.beginFill(0xffffff);
       input2.drawRect(0, 0, 100, 100);
       input2.endFill();
       input2.position.x = 20;
       input2.position.y = 140;
-
       grip = new Graphics();
       grip.beginFill(0xe63339);
       grip.drawRect(0, 0, 20, 20);
       grip.endFill();
       grip.position.x = 0;
       grip.position.y = 0;
-
       set = new Container();
       set.addChild(block);
       set.addChild(input1);
       set.addChild(input2);
       set.addChild(grip);
-
       set.interactive = true;
       set.buttonMode = true;
       set.hitArea = new PIXI.Rectangle(0, 0, 20, 20);
@@ -467,16 +204,11 @@
         .on('touchendoutside', onDragEnd)
         .on('mousemove', onDragMove)
         .on('touchmove', onDragMove);
-
       set.position.x = 50;
       set.position.y = 500;
       stage.addChild(set);
     }
-
     function hitTest(r1, r2) {
-=======
-    function hitTestInput(r1, r2) {
->>>>>>> 831306e3b63b5e668c52bb74b296edad1524b270
       //Define the variables we'll need to calculate
       var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
       //hit will determine whether there's a collision
