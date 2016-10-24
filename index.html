@@ -35,12 +35,14 @@
       .add("images/trash_can_closed.png")
       .load(setup);
 
-    var state, message, trashcan, cat;
+    var state, message, trashcan, cat, noticeBoard;
     var activeBlocks, totalBlocks;
     var blockIndex;
     var target_set, moving_set;
     activeBlocks = 0;
     totalBlocks = 0;
+    //revisionConst : How many Child before boxes
+    var revisionConst = 3;
 
     stage.displayList = new PIXI.DisplayList();
     var defaultLayer = new PIXI.DisplayGroup(0, true);
@@ -74,6 +76,13 @@
       );
       message.position.set(8, 8);
       stage.addChild(message);
+
+      noticeBoard = new PIXI.Text(
+        "Initial",
+        {font: "18px", fill: "white"}
+      );
+      noticeBoard.position.set(8, 38);
+      stage.addChild(noticeBoard);
 
       state = play;
       gameLoop();
@@ -114,61 +123,6 @@
       }
     }
 
-    function onDragEnd() {
-      this.alpha = 1;
-      this.dragging = false;
-      // set the interaction data to null
-      this.data = null;
-      this.scale.x /= 1.1;
-      this.scale.y /= 1.1;
-      this.displayGroup = defaultLayer;
-      for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
-        // run hitTest without itself
-        if(blockIndex != stage.getChildIndex(this)-2) {
-          target_set = stage.getChildAt(blockIndex+2);
-          moving_set = this;
-          if(hitTest(target_set.getChildAt(1), moving_set.getChildAt(3))) {
-            message.text = "input hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-2);
-            target_set.getChildAt(0).width = 180;
-            target_set.getChildAt(0).height = 460;
-            target_set.getChildAt(1).width = 100;
-            target_set.getChildAt(1).height = 100;
-            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
-            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty;
-            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
-            target_set.getChildAt(2).width = 140;
-            target_set.getChildAt(2).height = 140;
-            this.displayGroup = insideLayer1;
-            break;
-          } else if(hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
-            message.text = "output hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-2);
-            target_set.getChildAt(0).width = 180;
-            target_set.getChildAt(0).height = 460;
-            target_set.getChildAt(1).width = 140;
-            target_set.getChildAt(1).height = 140;
-            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
-            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
-            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
-            this.displayGroup = insideLayer1;
-            break;
-          } else {
-            message.text = "No collision...";
-            target_set.getChildAt(0).width = 140;
-            target_set.getChildAt(0).height = 260;
-            target_set.getChildAt(1).width = 100;
-            target_set.getChildAt(1).height = 100;
-            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 120;
-            target_set.getChildAt(2).width = 100;
-            target_set.getChildAt(2).height = 100;
-          }
-        }
-      }
-      if(hitTest(this, trashcan)) {
-        stage.removeChild(this);
-        activeBlocks--;
-      }
-    }
-
 
     function onDragMove() {
       if(this.dragging) {
@@ -177,8 +131,8 @@
         this.position.y = newPosition.y - this.dragPoint.y;
         for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
           // run hitTest without itself
-          if(blockIndex != stage.getChildIndex(this)-2) {
-            target_set = stage.getChildAt(blockIndex+2);
+          if(blockIndex != stage.getChildIndex(this)-revisionConst) {
+            target_set = stage.getChildAt(blockIndex+revisionConst);
             moving_set = this;
             if(hitTest(moving_set.getChildAt(1), target_set.getChildAt(3))) {
               target_set.position.x = newPosition.x - moving_set.dragPoint.x + 20;
@@ -192,6 +146,73 @@
           }
         }
       }
+    }
+
+
+    function onDragEnd() {
+      this.alpha = 1;
+      this.dragging = false;
+      // set the interaction data to null
+      this.data = null;
+      this.scale.x /= 1.1;
+      this.scale.y /= 1.1;
+      this.displayGroup = defaultLayer;
+      for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
+        // run hitTest without itself
+        if(blockIndex != stage.getChildIndex(this)-revisionConst) {
+          target_set = stage.getChildAt(blockIndex+revisionConst);
+          moving_set = this;
+          if(hitTest(target_set.getChildAt(1), moving_set.getChildAt(3))) {
+            message.text = "input hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-revisionConst);
+            target_set.getChildAt(0).width = 180;
+            target_set.getChildAt(0).height = 460;
+            target_set.getChildAt(1).width = 100;
+            target_set.getChildAt(1).height = 100;
+            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
+            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty;
+            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
+            target_set.getChildAt(2).width = 140;
+            target_set.getChildAt(2).height = 140;
+            moving_set.displayGroup = insideLayer1;
+            target_set.indexOfChild = stage.getChildIndex(moving_set)-revisionConst;
+            moving_set.indexOfParent = blockIndex;
+            break;
+          } else if(hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
+            message.text = "output hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-revisionConst);
+            target_set.getChildAt(0).width = 180;
+            target_set.getChildAt(0).height = 460;
+            target_set.getChildAt(1).width = 140;
+            target_set.getChildAt(1).height = 140;
+            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
+            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
+            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
+            moving_set.displayGroup = insideLayer1;
+            target_set.indexOfChild = stage.getChildIndex(moving_set)-revisionConst;
+            moving_set.indexOfParent = blockIndex;
+            break;
+          } else {
+            message.text = "No collision...";
+            target_set.getChildAt(0).width = 140;
+            target_set.getChildAt(0).height = 260;
+            target_set.getChildAt(1).width = 100;
+            target_set.getChildAt(1).height = 100;
+            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 120;
+            target_set.getChildAt(2).width = 100;
+            target_set.getChildAt(2).height = 100;
+            target_set.indexOfChild = 0;
+            moving_set.indexOfParent = 0;
+          }
+        }
+      }
+      if(hitTest(this, trashcan)) {
+        stage.removeChild(this);
+        activeBlocks--;
+      }
+    }
+
+
+    function checkBoard() {
+
     }
 
 
@@ -246,6 +267,8 @@
       set.position.x = 50;
       set.position.y = 500;
       set.displayGroup = defaultLayer;
+      set.indexOfChild = 0;
+      set.indexOfParent = 0;
       stage.addChild(set);
     }
 
