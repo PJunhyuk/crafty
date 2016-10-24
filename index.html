@@ -157,47 +157,68 @@
       this.displayGroup = defaultLayer;
       for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
         // run hitTest without itself
-        if(blockIndex != stage.getChildIndex(this)-revisionConst) {
-          target_set = stage.getChildAt(blockIndex+revisionConst);
-          moving_set = this;
-          if(hitTest(target_set.getChildAt(1), moving_set.getChildAt(3))) {
-            message.text = "input hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-revisionConst);
-            target_set.getChildAt(0).width = 180;
-            target_set.getChildAt(0).height = 460;
-            target_set.getChildAt(1).width = 100;
-            target_set.getChildAt(1).height = 100;
-            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
-            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty;
-            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
-            target_set.getChildAt(2).width = 140;
-            target_set.getChildAt(2).height = 140;
-            moving_set.displayGroup = insideLayer1;
-            target_set.indexOfChild = stage.getChildIndex(moving_set)-revisionConst;
-            moving_set.indexOfParent = blockIndex;
-            break;
-          } else if(hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
-            message.text = "output hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-revisionConst);
-            target_set.getChildAt(0).width = 180;
-            target_set.getChildAt(0).height = 460;
-            target_set.getChildAt(1).width = 140;
-            target_set.getChildAt(1).height = 140;
-            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
-            moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
-            moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
-            moving_set.displayGroup = insideLayer1;
-            target_set.indexOfChild = stage.getChildIndex(moving_set)-revisionConst;
-            moving_set.indexOfParent = blockIndex;
-            break;
-          } else {
-            message.text = "No collision...";
-            target_set.getChildAt(0).width = 140;
-            target_set.getChildAt(0).height = 260;
-            target_set.getChildAt(1).width = 100;
-            target_set.getChildAt(1).height = 100;
-            target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 120;
-            target_set.getChildAt(2).width = 100;
-            target_set.getChildAt(2).height = 100;
-            target_set.indexOfChild = 0;
+        target_set = stage.getChildAt(blockIndex+revisionConst);
+        moving_set = this;
+        if(hitTest(target_set.getChildAt(1), moving_set.getChildAt(3))) {
+          message.text = "input hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-revisionConst);
+          target_set.getChildAt(0).width = 180;
+          target_set.getChildAt(0).height = 460;
+          target_set.getChildAt(1).width = 100;
+          target_set.getChildAt(1).height = 100;
+          moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
+          moving_set.position.y = target_set.getChildAt(1).worldTransform.ty;
+          target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
+          target_set.getChildAt(2).width = 140;
+          target_set.getChildAt(2).height = 140;
+          if(moving_set.indexOfParent != 0 && moving_set.indexOfParent != blockIndex) {
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(0).width = 140;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(0).height = 260;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).width = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).height = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).position.y = stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).y + 120;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).width = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).height = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).indexOfChild = 0;
+          }
+          moving_set.displayGroup = insideLayer1;
+          target_set.indexOfChild = stage.getChildIndex(moving_set)-revisionConst;
+          moving_set.indexOfParent = blockIndex;
+          break;
+        } else if(hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
+          message.text = "output hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-revisionConst);
+          target_set.getChildAt(0).width = 180;
+          target_set.getChildAt(0).height = 460;
+          target_set.getChildAt(1).width = 140;
+          target_set.getChildAt(1).height = 140;
+          target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
+          moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
+          moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
+          if(moving_set.indexOfParent != 0  && moving_set.indexOfParent != blockIndex) {
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(0).width = 140;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(0).height = 260;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).width = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).height = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).position.y = stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).y + 120;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).width = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).height = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).indexOfChild = 0;
+          }
+          moving_set.displayGroup = insideLayer1;
+          target_set.indexOfChild = stage.getChildIndex(moving_set)-revisionConst;
+          moving_set.indexOfParent = blockIndex;
+          break;
+        }
+        if(blockIndex == activeBlocks) {
+          message.text = "No NEW collision...";
+          if(moving_set.indexOfParent != 0) {
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(0).width = 140;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(0).height = 260;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).width = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).height = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).position.y = stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(1).y + 120;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).width = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).getChildAt(2).height = 100;
+            stage.getChildAt(moving_set.indexOfParent + revisionConst).indexOfChild = 0;
             moving_set.indexOfParent = 0;
           }
         }
