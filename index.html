@@ -65,9 +65,6 @@
       cat
         .on('click', function() {
           addBlock();
-          totalBlocks++;
-          activeBlocks++;
-          console.log(activeBlocks);
         });
 
       message = new PIXI.Text(
@@ -78,7 +75,7 @@
       stage.addChild(message);
 
       noticeBoard = new PIXI.Text(
-        "Initial",
+        "noticeBoard",
         {font: "18px", fill: "white"}
       );
       noticeBoard.position.set(8, 38);
@@ -208,11 +205,25 @@
         stage.removeChild(this);
         activeBlocks--;
       }
+      checkBoard();
     }
 
 
     function checkBoard() {
-
+      if(activeBlocks == 0) {
+        noticeBoard.text = "No blocks";
+      } else {
+        noticeBoard.text = "";
+        for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
+          if(stage.getChildAt(blockIndex+revisionConst).indexOfParent == 0) {
+            noticeBoard.text += blockIndex;
+            if(stage.getChildAt(blockIndex+revisionConst).indexOfChild != 0) {
+              noticeBoard.text += ">" + stage.getChildAt(blockIndex+revisionConst).indexOfChild;
+            }
+            noticeBoard.text += "   ";
+          }
+        }
+      }
     }
 
 
@@ -269,7 +280,13 @@
       set.displayGroup = defaultLayer;
       set.indexOfChild = 0;
       set.indexOfParent = 0;
+
+      totalBlocks++;
+      activeBlocks++;
+
       stage.addChild(set);
+
+      checkBoard();
     }
 
 
