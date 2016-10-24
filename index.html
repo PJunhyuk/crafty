@@ -44,14 +44,16 @@
 
     stage.displayList = new PIXI.DisplayList();
     var defaultLayer = new PIXI.DisplayGroup(0, true);
-    var dragLayer = new PIXI.DisplayGroup(2, false);
-    var insideLayer1 = new PIXI.DisplayGroup(3, false);
+    var dragLayer = new PIXI.DisplayGroup(1, false);
+    var insideLayer1 = new PIXI.DisplayGroup(2, false);
+
 
     function setup() {
       trashcan = new Sprite(resources["images/trash_can_closed.png"].texture);
       trashcan.x = 680;
       trashcan.y = 640;
       stage.addChild(trashcan);
+
       cat = new Sprite(resources["images/cat.png"].texture);
       cat.x = 560;
       cat.y = 660;
@@ -65,15 +67,19 @@
           activeBlocks++;
           console.log(activeBlocks);
         });
+
       message = new PIXI.Text(
         "No collision...",
         {font: "18px", fill: "white"}
       );
       message.position.set(8, 8);
       stage.addChild(message);
+
       state = play;
       gameLoop();
     }
+
+
     function gameLoop() {
       //Loop this function 60 times per second
       requestAnimationFrame(gameLoop);
@@ -82,8 +88,12 @@
       //Render the stage
       renderer.render(stage);
     }
+
+
     function play() {
     };
+
+
     function onDragStart(event) {
       // store a reference to the data
       // the reason for this is because of multitouch
@@ -101,7 +111,6 @@
         this.dragPoint = event.data.getLocalPosition(this.parent);
         this.dragPoint.x -= this.position.x;
         this.dragPoint.y -= this.position.y;
-        console.log(this.displayGroup);
       }
     }
 
@@ -160,6 +169,7 @@
       }
     }
 
+
     function onDragMove() {
       if(this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
@@ -183,32 +193,39 @@
         }
       }
     }
+
+
     function addBlock() {
       var block, input1, input2, grip, set;
+
       block = new Graphics();
       block.beginFill(0xec686d);
       block.drawRect(0, 0, 140, 260);
       block.endFill();
       block.x = 0;
       block.y = 0;
+
       input1 = new Graphics();
       input1.beginFill(0xffffff);
       input1.drawRect(0, 0, 100, 100);
       input1.endFill();
       input1.position.x = 20;
       input1.position.y = 20;
+
       input2 = new Graphics();
       input2.beginFill(0xffffff);
       input2.drawRect(0, 0, 100, 100);
       input2.endFill();
       input2.position.x = 20;
       input2.position.y = 140;
+
       grip = new Graphics();
       grip.beginFill(0xe63339);
       grip.drawRect(0, 0, 20, 20);
       grip.endFill();
       grip.position.x = 0;
       grip.position.y = 0;
+
       set = new Container();
       set.addChild(block);
       set.addChild(input1);
@@ -230,8 +247,9 @@
       set.position.y = 500;
       set.displayGroup = defaultLayer;
       stage.addChild(set);
-      console.log(set.displayGroup);
     }
+
+
     function hitTest(r1, r2) {
       //Define the variables we'll need to calculate
       var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
