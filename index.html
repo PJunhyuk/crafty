@@ -12,6 +12,7 @@
   </head>
   <body>
     <script src="./libs/pixi.min.js"></script>
+    <script src="./libs/pixi-display.js"></script>
     <script>
     //Aliases
     var Container = PIXI.Container,
@@ -22,21 +23,30 @@
       Texture = PIXI.Texture,
       Sprite = PIXI.Sprite,
       Graphics = PIXI.Graphics;
+
     //Create a Pixi stage and renderer and add the renderer.view to the DOM
     var stage = new Container(),
       renderer = autoDetectRenderer(768, 768);
     renderer.backgroundColor = 0x333333;
     document.body.appendChild(renderer.view);
+
     loader
       .add("images/cat.png")
       .add("images/trash_can_closed.png")
       .load(setup);
+
     var state, message, trashcan, cat;
     var activeBlocks, totalBlocks;
     var blockIndex;
     var target_set, moving_set;
     activeBlocks = 0;
     totalBlocks = 0;
+
+    stage.displayList = new PIXI.DisplayList();
+    var defaultLayer = new PIXI.DisplayGroup(0, true);
+    var dragLayer = new PIXI.DisplayGroup(2, false);
+    var insideLayer1 = new PIXI.DisplayGroup(3, false);
+
     function setup() {
       trashcan = new Sprite(resources["images/trash_can_closed.png"].texture);
       trashcan.x = 680;
@@ -78,15 +88,23 @@
       // store a reference to the data
       // the reason for this is because of multitouch
       // we want to track the movement of this particular touch
-      this.data = event.data;
-      this.alpha = 0.5;
-      this.dragging = true;
-      this.scale.x *= 1.1;
-      this.scale.y *= 1.1;
-      this.dragPoint = event.data.getLocalPosition(this.parent);
-      this.dragPoint.x -= this.position.x;
-      this.dragPoint.y -= this.position.y;
+      if(!this.dragging) {
+        this.data = event.data;
+        this.oldGroup = this.displayGroup;
+        this.displayGroup = dragLayer;
+        this.dragging = true;
+
+        this.alpha = 0.5;
+        this.dragging = true;
+        this.scale.x *= 1.1;
+        this.scale.y *= 1.1;
+        this.dragPoint = event.data.getLocalPosition(this.parent);
+        this.dragPoint.x -= this.position.x;
+        this.dragPoint.y -= this.position.y;
+        console.log(this.displayGroup);
+      }
     }
+
     function onDragEnd() {
       this.alpha = 1;
       this.dragging = false;
@@ -94,6 +112,7 @@
       this.data = null;
       this.scale.x /= 1.1;
       this.scale.y /= 1.1;
+      this.displayGroup = defaultLayer;
       for(blockIndex = 1; blockIndex <= activeBlocks; blockIndex++) {
         // run hitTest without itself
         if(blockIndex != stage.getChildIndex(this)-2) {
@@ -110,6 +129,7 @@
             target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 280;
             target_set.getChildAt(2).width = 140;
             target_set.getChildAt(2).height = 140;
+            this.displayGroup = insideLayer1;
             break;
           } else if(hitTest(target_set.getChildAt(2), moving_set.getChildAt(3))) {
             message.text = "output hit! / targetBlockNumber : " + blockIndex + " & movingBlockNumber : " + (stage.getChildIndex(this)-2);
@@ -120,6 +140,7 @@
             target_set.getChildAt(2).position.y = target_set.getChildAt(1).y + 160;
             moving_set.position.x = target_set.getChildAt(1).worldTransform.tx;
             moving_set.position.y = target_set.getChildAt(1).worldTransform.ty + 160;
+            this.displayGroup = insideLayer1;
             break;
           } else {
             message.text = "No collision...";
@@ -138,6 +159,7 @@
         activeBlocks--;
       }
     }
+
     function onDragMove() {
       if(this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
@@ -206,7 +228,9 @@
         .on('touchmove', onDragMove);
       set.position.x = 50;
       set.position.y = 500;
+      set.displayGroup = defaultLayer;
       stage.addChild(set);
+      console.log(set.displayGroup);
     }
     function hitTest(r1, r2) {
       //Define the variables we'll need to calculate
