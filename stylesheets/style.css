@@ -2,3 +2,40 @@
     padding: 0;
     margin: 0;
 }
+
+html, body, .main-row {
+    height: 100%;
+    margin: 0px;
+}
+
+.canvas-container {
+    height: 100%;
+    background-color: #e5e5e5;
+}
+
+.code-container {
+    height: 100%;
+    background-color: #cccccc;
+}
+
+.add-blocks {
+    top: 30px;
+    left: 20px;
+}
+
+.button-convert {
+    position: absolute;
+    top: 40%;
+}
+
+.button-convert > div {
+    margin-top: 10px;
+}
+
+.test {
+    position: relative;
+}
+
+.test2 {
+    position: relative;
+}
