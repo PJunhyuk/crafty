@@ -32,10 +32,12 @@ html, body, .main-row {
     margin-top: 10px;
 }
 
-.test {
-    position: relative;
+.run-code {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
 }
 
-.test2 {
-    position: relative;
+.test {
+    height: 300px;
 }

@@ -29,13 +29,19 @@
         </blockquote>
         <!-- slide -->
         <ul id="slide-out" class="side-nav">
-          <li><div class="userView">
-          </div></li>
-          <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-          <li><a href="#!">Second Link</a></li>
-          <li><div class="divider"></div></li>
-          <li><a class="subheader">Subheader</a></li>
-          <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+          <ul class="collapsible" data-collapsible="accordion">
+            <li>
+              <div class="collapsible-header"><i class="material-icons">warning</i>IF function</div>
+              <div class="collapsible-body">
+                <p>Here is if function</p>
+                <img src="http://placehold.it/200x100"/>
+              </div>
+            </li>
+            <li>
+              <div class="collapsible-header"><i class="material-icons">favorite</i>Normal function</div>
+              <div class="collapsible-body"><p>Here is normal function</p></div>
+            </li>
+          </ul>
         </ul>
         <a href="#" data-activates="slide-out" class="btn-floating btn-large waves-effect waves-light red button-collapse add-blocks"><i class="material-icons">add</i></a>
       </div>
@@ -44,13 +50,35 @@
         <blockquote>
           <h4>Pastel Code</h4>
         </blockquote>
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s12">
+                <textarea id="textarea1" class="materialize-textarea"></textarea>
+                <label for="textarea1">Textarea</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Modal Trigger -->
+        <a class="waves-effect waves-light btn modal-trigger btn-floating btn-large red run-code" href="#modal1"><i class="material-icons">play_arrow</i></a>
+        <!-- Modal Structure -->
+        <div id="modal1" class="modal bottom-sheet">
+          <div class="modal-content">
+            <h4>Modal Header</h4>
+            <p>A bunch of text</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+          </div>
+        </div>
       </div>
       <div class="button-convert">
         <div>
-          <a class="waves-effect waves-light btn test"><i class="material-icons right">chevron_right</i>canvas to pastel</a>
+          <a class="waves-effect waves-light btn"><i class="material-icons right">chevron_right</i>canvas to pastel</a>
         </div>
         <div>
-          <a class="waves-effect waves-light btn test2"><i class="material-icons left">chevron_left</i>pastel to canvas</a>
+          <a class="waves-effect waves-light btn"><i class="material-icons left">chevron_left</i>pastel to canvas</a>
         </div>
       </div>
     </div>
@@ -73,6 +101,20 @@
     );
     // Initialize collapsible (uncomment the line below if you use the dropdown variation)
     //$('.collapsible').collapsible();
+    $('.modal-trigger').leanModal({
+        dismissible: true, // Modal can be dismissed by clicking outside of the modal
+        opacity: .5, // Opacity of modal background
+        in_duration: 300, // Transition in duration
+        out_duration: 200, // Transition out duration
+        starting_top: '4%', // Starting top style attribute
+        ending_top: '10%', // Ending top style attribute
+      }
+    );
+    $(document).ready(function(){
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
+    });
     </script>
   </body>
 </html>
