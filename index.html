@@ -68,8 +68,10 @@
           <form class="col s12">
             <div class="row">
               <div class="input-field col s12">
-                <textarea id="textarea1" class="materialize-textarea"></textarea>
-                <label for="textarea1">Textarea</label>
+                <pre class="pastel-code-area brush: cpp">
+<textarea class="pastel-code">
+TEST
+</textarea></pre>
               </div>
             </div>
           </form>
@@ -97,15 +99,20 @@
       </div>
     </div>
     <script>
-    window.onload = function() {
+    var temp = $(document).width();
+    var temp2 = $('.button-convert').width();
+    $('.button-convert').css('left', temp*0.667 - temp2*0.5);
+    var document_height = $(document).height();
+    $('.pastel-code').css('height', document_height*0.85);
+
+    $(window).resize(function() {
       var temp = $(document).width();
       var temp2 = $('.button-convert').width();
       $('.button-convert').css('left', temp*0.667 - temp2*0.5);
-    }
-    $(window).resize(function() {
-      var temp = $(document).width();
-      $('.button-convert').css('left', temp*0.667 - temp2*0.5);
+      var document_height = $(document).height();
+      $('.pastel-code').css('height', document_height*0.85);
     });
+
     // Initialize collapse button
     $('.button-collapse').sideNav({
         menuWidth: 300, // Default is 240
