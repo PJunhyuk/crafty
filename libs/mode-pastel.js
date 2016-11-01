@@ -1,4 +1,4 @@
-ace.define("ace/mode/crafty_highlight_rules", [
+ace.define("ace/mode/pastel_highlight_rules", [
     "require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"
 ], function(require, exports, module) {
     "use strict";
@@ -6,7 +6,7 @@ ace.define("ace/mode/crafty_highlight_rules", [
     var oop = require("../lib/oop");
     var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-    var craftyHighlightRules = function() {
+    var pastelHighlightRules = function() {
 
         var builtinFunctions = ('define memoize lambda if');
 
@@ -87,9 +87,9 @@ ace.define("ace/mode/crafty_highlight_rules", [
         };
     };
 
-    oop.inherits(craftyHighlightRules, TextHighlightRules);
+    oop.inherits(pastelHighlightRules, TextHighlightRules);
 
-    exports.craftyHighlightRules = craftyHighlightRules;
+    exports.pastelHighlightRules = pastelHighlightRules;
 });
 
 ace.define("ace/mode/matching_parens_outdent", [
@@ -141,24 +141,24 @@ ace.define("ace/mode/matching_parens_outdent", [
     exports.MatchingParensOutdent = MatchingParensOutdent;
 });
 
-ace.define("ace/mode/crafty", [
+ace.define("ace/mode/pastel", [
     "require",
     "exports",
     "module",
     "ace/lib/oop",
     "ace/mode/text",
-    "ace/mode/crafty_highlight_rules",
+    "ace/mode/pastel_highlight_rules",
     "ace/mode/matching_parens_outdent"
 ], function(require, exports, module) {
     "use strict";
 
     var oop = require("../lib/oop");
     var TextMode = require("./text").Mode;
-    var craftyHighlightRules = require("./crafty_highlight_rules").craftyHighlightRules;
+    var pastelHighlightRules = require("./pastel_highlight_rules").pastelHighlightRules;
     var MatchingParensOutdent = require("./matching_parens_outdent").MatchingParensOutdent;
 
     var Mode = function() {
-        this.HighlightRules = craftyHighlightRules;
+        this.HighlightRules = pastelHighlightRules;
         this.$outdent = new MatchingParensOutdent();
     };
     oop.inherits(Mode, TextMode);
@@ -245,11 +245,11 @@ ace.define("ace/mode/crafty", [
             this.$outdent.autoOutdent(doc, row);
         };
 
-        this.$id = "ace/mode/crafty";
+        this.$id = "ace/mode/pastel";
     }).call(Mode.prototype);
 
     var y = Mode.prototype;
-    y.HighlightRules = craftyHighlightRules;
+    y.HighlightRules = pastelHighlightRules;
     y.lineCommentStart = '#';
 
     exports.Mode = Mode;
