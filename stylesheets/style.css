@@ -39,11 +39,6 @@ html, body, .main-row {
 }
 
 .pastel-code-area {
-    margin: 0;
-    padding: 0;
-}
-
-.pastel-code {
     background-color: #999999;
     color: white;
     height: 10px;

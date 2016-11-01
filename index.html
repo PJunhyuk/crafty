@@ -20,6 +20,9 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <!-- Import materialize js -->
     <script src="./libs/materialize/js/materialize.min.js"></script>
+    <!-- Import for syntax highlighting -->
+    <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
+    <script type="text/javascript" src="./libs/mode-pastel.js"></script>
     <!-- main contents of crafty -->
     <div class="row main-row">
       <div class="col s8 canvas-container">
@@ -27,54 +30,42 @@
         <blockquote>
           <h4>Canvas</h4>
         </blockquote>
-        <!-- slide -->
-        <ul id="slide-out" class="side-nav">
-          <ul class="collapsible" data-collapsible="accordion">
-            <li>
-              <div class="collapsible-header"><i class="material-icons">warning</i>IF function</div>
-              <div class="collapsible-body">
-                <p>Here is if function</p>
-                <img src="http://placehold.it/200x100"/>
-              </div>
-            </li>
-            <li>
-              <div class="collapsible-header"><i class="material-icons">favorite</i>Normal function</div>
-              <div class="collapsible-body">
-                <div class="card">
-                  <div class="card-image waves-effect waves-block waves-light">
-                    <img class="activator" src="http://placehold.it/200x100">
-                  </div>
-                  <div class="card-content">
-                    <span class="card-title activator grey-text text-darken-4">Card Title<i class="material-icons right">more_vert</i></span>
-                    <p><a href="#">Add it</a></p>
-                  </div>
-                  <div class="card-reveal">
-                    <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-                    <p>Normal function</p>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </ul>
-        <a href="#" data-activates="slide-out" class="btn-floating btn-large waves-effect waves-light red button-collapse add-blocks"><i class="material-icons">add</i></a>
+        <a class="btn-floating btn-large waves-effect waves-light red add-blocks"><i class="material-icons">add</i></a>
       </div>
       <div class="col s4 code-container">
         <!-- title of code-container -->
         <blockquote>
           <h4>Pastel Code</h4>
         </blockquote>
-        <div class="row">
-          <form class="col s12">
-            <div class="row">
-              <div class="input-field col s12">
-                <pre class="pastel-code-area brush: cpp">
-<textarea class="pastel-code">
-TEST
-</textarea></pre>
-              </div>
-            </div>
-          </form>
+        <pre class="pastel-code-area" id="editor">
+# n!을 계산하는 프로그램
+(define factorial n (
+    (if (< n 2) (1)
+        (* n (factorial (- n 1))))
+))
+
+# 피보나치 수열의 n항을 계산하는 프로그램
+(define fibonacci n (
+    (if (= n 0) (0)
+    (if (= n 1) (1))
+    (+ (fibonacci (- n 1)) (memoize fibonacci (- n 2))))
+))
+
+# 자연수 n이 소수인지 판별하는 프로그램
+(define check (n c) (
+    (if (< (square n) (prime c)) (true)
+        ((if (zero (modular n (prime c))) (false)
+             (check n (+ c 1)))))
+))
+
+# n번째 소수를 계산하는 프로그램
+(define prime n (
+    (if (= n 1) (2) (
+    	(define search r (
+    		(if (check r 1) (r) (search (+ r 1)))))
+        (search (+ (prime (- n 1)) 1))))
+))
+</pre>
         </div>
         <!-- Modal Trigger -->
         <a class="waves-effect waves-light btn modal-trigger btn-floating btn-large red run-code" href="#modal1"><i class="material-icons">play_arrow</i></a>
@@ -89,28 +80,25 @@ TEST
           </div>
         </div>
       </div>
-      <div class="button-convert">
-        <div>
-          <a class="waves-effect waves-light btn"><i class="material-icons right">chevron_right</i>canvas to pastel</a>
-        </div>
-        <div>
-          <a class="waves-effect waves-light btn"><i class="material-icons left">chevron_left</i>pastel to canvas</a>
-        </div>
-      </div>
     </div>
     <script>
+    // initialize syntax highlighting
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/pastel");
+
     var temp = $(document).width();
     var temp2 = $('.button-convert').width();
     $('.button-convert').css('left', temp*0.667 - temp2*0.5);
     var document_height = $(document).height();
-    $('.pastel-code').css('height', document_height*0.85);
+    $('.pastel-code-area').css('height', document_height*0.85);
 
     $(window).resize(function() {
       var temp = $(document).width();
       var temp2 = $('.button-convert').width();
       $('.button-convert').css('left', temp*0.667 - temp2*0.5);
       var document_height = $(document).height();
-      $('.pastel-code').css('height', document_height*0.85);
+      $('.pastel-code-area').css('height', document_height*0.85);
     });
 
     // Initialize collapse button
