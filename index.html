@@ -15,7 +15,6 @@
   <body>
     <!-- Import pixi js -->
     <script src="./libs/pixi.min.js"></script>
-    <script src="./libs/pixi-display.js"></script>
     <!-- Import jQuery js -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <!-- Import materialize js -->
@@ -23,6 +22,9 @@
     <!-- Import for syntax highlighting -->
     <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
     <script type="text/javascript" src="./libs/mode-pastel.js"></script>
+    <!-- Import for block -->
+    <script type="text/javascript" src="./libs/block.js"></script>
+    <script type="text/javascript" src="./libs/blocklibrary.js"></script>
     <!-- main contents of crafty -->
     <div class="row main-row">
       <div class="col s8 canvas-container">
@@ -82,6 +84,85 @@
       </div>
     </div>
     <script>
+
+
+
+    var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0xCCCCCC, antialias: true });
+    renderer.view.style.position = "absolute";
+    renderer.view.style.top = "100px";
+    renderer.view.style.left ="125px";
+    renderer.view.style.display = "block";
+    renderer.autoResize = true;
+    renderer.resize(window.innerWidth * 0.7 - 250, window.innerHeight - 200);
+    document.body.appendChild(renderer.view);
+
+    var stage = new PIXI.Container();
+    stage.id = "stage";
+    renderer.render(stage); // remove black flash
+    stage.interactive = false;
+
+    let SIDEBAR_STYLE = {width:200, backgroundColor:0xEEEEEE, };
+
+    PIXI.loader
+    .add("images/background-tile.png")
+    .load(setup);
+
+    function setup() {
+        //  create and add background tile pattern
+        var backgroundTile = new PIXI.extras.TilingSprite(
+            PIXI.loader.resources["images/background-tile.png"].texture,
+            17,
+            17
+            );
+        backgroundTile.width = window.innerWidth;
+        backgroundTile.height = window.innerHeight;
+        stage.addChild(backgroundTile);
+
+
+        //  create and add sidebar
+        var sidebar = new PIXI.Graphics();
+        sidebar.id = "sidebar";
+        sidebar.beginFill(SIDEBAR_STYLE.backgroundColor,1);
+        sidebar.drawRect(0,0,SIDEBAR_STYLE.width, window.innerHeight);
+        sidebar.endFill();
+        stage.addChild(sidebar);
+
+        /*
+        var ifBlockInfo = new BlockInfo("if", blockType.function, parameters = ["condition", "true-body", "false-body"], library = "standard")
+            var addBlockInfo = new BlockInfo("+", blockType.function, parameters = ["a", "b"], library = "math")
+            var equalsBlockInfo = new BlockInfo("=", blockType.function, parameters = ["a", "b"], library = "math")
+
+            var addBlock = new Block(addBlockInfo);
+        var equalsBlock = new Block(equalsBlockInfo);
+        var ifBlock = new Block(ifBlockInfo, [null, addBlock, null]);
+
+        ifBlock.position.set(SIDEBAR_STYLE.width + 10,10);
+        stage.addChild(ifBlock);
+        equalsBlock.position.set(SIDEBAR_STYLE.width + 10,10);
+        stage.addChild(equalsBlock);
+        */
+        initializeBlockLibrary(sidebar);
+
+        //  resize renderer, sidebar, backgroundTile when window is resized
+        window.addEventListener('resize', function(event){
+            backgroundTile.width = window.innerWidth;
+            backgroundTile.height = window.innerHeight;
+            sidebar.height = window.innerHeight;
+            renderer.resize(window.innerWidth * 0.7 - 250, window.innerHeight - 200);
+        });
+
+        //  render animation
+        animate();
+
+        function animate() {
+            renderer.render(stage);
+            requestAnimationFrame( animate );
+        }
+    }
+
+
+
+
     // initialize syntax highlighting
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
