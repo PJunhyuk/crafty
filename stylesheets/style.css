@@ -13,36 +13,27 @@ html, body, .main-row {
     background-color: #e5e5e5;
 }
 
+.open-palette {
+    top: 30px;
+    left: 20px;
+}
+
 .code-container {
     height: 100%;
     background-color: #cccccc;
 }
 
-.add-blocks {
-    top: 30px;
-    left: 20px;
-}
-
-.button-convert {
-    position: absolute;
-    top: 40%;
-}
-
-.button-convert > div {
-    margin-top: 10px;
-}
-
-.run-code {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-}
-
-.pastel-code-area {
+.code-area {
     background-color: #999999;
     color: white;
     height: 10px;
     border: none;
     margin: 0;
     padding: 5px;
+}
+
+.live-preview {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
 }

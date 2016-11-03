@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>crafty</title>
-    <!--Import Google Icon Font-->
+    <!-- Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Import materialize css -->
     <link rel="stylesheet" type="text/css" href="./libs/materialize/css/materialize.min.css" media="screen,projection"/>
-    <!--Let browser know website is optimized for mobile-->
+    <!-- Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
@@ -19,27 +19,34 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <!-- Import materialize js -->
     <script src="./libs/materialize/js/materialize.min.js"></script>
-    <!-- Import for syntax highlighting -->
+    <!-- Import for pastel syntax highlighting -->
     <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
     <script type="text/javascript" src="./libs/mode-pastel.js"></script>
-    <!-- Import for block -->
+    <!-- Import crafty_v2 -->
     <script type="text/javascript" src="./libs/block.js"></script>
     <script type="text/javascript" src="./libs/blocklibrary.js"></script>
+
     <!-- main contents of crafty -->
     <div class="row main-row">
+
+      <!-- canvas-container parts -->
       <div class="col s8 canvas-container">
         <!-- title of main-canvas -->
         <blockquote>
           <h4>Canvas</h4>
         </blockquote>
-        <a class="btn-floating btn-large waves-effect waves-light red add-blocks"><i class="material-icons">add</i></a>
+        <!-- button: open-palette -->
+        <a class="btn-floating btn-large waves-effect waves-light red open-palette"><i class="material-icons">add</i></a>
       </div>
+
+      <!-- code-container parts -->
       <div class="col s4 code-container">
         <!-- title of code-container -->
         <blockquote>
           <h4>Pastel Code</h4>
         </blockquote>
-        <pre class="pastel-code-area" id="editor">
+        <!-- code-area parts using pastel syntax highlighting -->
+        <pre class="code-area" id="editor">
 # n!을 계산하는 프로그램
 (define factorial n (
     (if (< n 2) (1)
@@ -68,25 +75,34 @@
         (search (+ (prime (- n 1)) 1))))
 ))
 </pre>
-        </div>
-        <!-- Modal Trigger -->
-        <a class="waves-effect waves-light btn modal-trigger btn-floating btn-large red run-code" href="#modal1"><i class="material-icons">play_arrow</i></a>
-        <!-- Modal Structure -->
-        <div id="modal1" class="modal bottom-sheet">
+      </div>
+
+      <!-- live-preview parts -->
+      <div>
+        <!-- button: live-preview / Modal Trigger -->
+        <a class="waves-effect waves-light btn modal-trigger btn-floating btn-large red live-preview" href="#run-results"><i class="material-icons">play_arrow</i></a>
+        <!-- run-results parts = Modal Structure of live-preview button -->
+        <div id="run-results" class="modal bottom-sheet">
           <div class="modal-content">
-            <h4>Modal Header</h4>
-            <p>A bunch of text</p>
+            <blockquote>
+              live-preview
+            </blockquote>
+            <pre>
+results!
+results!
+</pre>
           </div>
           <div class="modal-footer">
-            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">OK</a>
           </div>
         </div>
       </div>
+
     </div>
+
+
     <script>
-
-
-
+    /* crafty_v2 parts */
     var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0xCCCCCC, antialias: true });
     renderer.view.style.position = "absolute";
     renderer.view.style.top = "100px";
@@ -108,89 +124,65 @@
     .load(setup);
 
     function setup() {
-        //  create and add background tile pattern
-        var backgroundTile = new PIXI.extras.TilingSprite(
-            PIXI.loader.resources["images/background-tile.png"].texture,
-            17,
-            17
-            );
+      //  create and add background tile pattern
+      var backgroundTile = new PIXI.extras.TilingSprite(
+        PIXI.loader.resources["images/background-tile.png"].texture,
+        17,
+        17
+      );
+      backgroundTile.width = window.innerWidth;
+      backgroundTile.height = window.innerHeight;
+      stage.addChild(backgroundTile);
+
+
+      //  create and add sidebar
+      var sidebar = new PIXI.Graphics();
+      sidebar.id = "sidebar";
+      sidebar.beginFill(SIDEBAR_STYLE.backgroundColor,1);
+      sidebar.drawRect(0,0,SIDEBAR_STYLE.width, window.innerHeight);
+      sidebar.endFill();
+      stage.addChild(sidebar);
+
+      /*
+      var ifBlockInfo = new BlockInfo("if", blockType.function, parameters = ["condition", "true-body", "false-body"], library = "standard")
+      var addBlockInfo = new BlockInfo("+", blockType.function, parameters = ["a", "b"], library = "math")
+      var equalsBlockInfo = new BlockInfo("=", blockType.function, parameters = ["a", "b"], library = "math")
+
+      var addBlock = new Block(addBlockInfo);
+      var equalsBlock = new Block(equalsBlockInfo);
+      var ifBlock = new Block(ifBlockInfo, [null, addBlock, null]);
+
+      ifBlock.position.set(SIDEBAR_STYLE.width + 10,10);
+      stage.addChild(ifBlock);
+      equalsBlock.position.set(SIDEBAR_STYLE.width + 10,10);
+      stage.addChild(equalsBlock);
+      */
+      initializeBlockLibrary(sidebar);
+
+      //  resize renderer, sidebar, backgroundTile when window is resized
+      window.addEventListener('resize', function(event){
         backgroundTile.width = window.innerWidth;
         backgroundTile.height = window.innerHeight;
-        stage.addChild(backgroundTile);
+        sidebar.height = window.innerHeight;
+        renderer.resize(window.innerWidth * 0.7 - 250, window.innerHeight - 200);
+      });
 
+      //  render animation
+      animate();
 
-        //  create and add sidebar
-        var sidebar = new PIXI.Graphics();
-        sidebar.id = "sidebar";
-        sidebar.beginFill(SIDEBAR_STYLE.backgroundColor,1);
-        sidebar.drawRect(0,0,SIDEBAR_STYLE.width, window.innerHeight);
-        sidebar.endFill();
-        stage.addChild(sidebar);
-
-        /*
-        var ifBlockInfo = new BlockInfo("if", blockType.function, parameters = ["condition", "true-body", "false-body"], library = "standard")
-            var addBlockInfo = new BlockInfo("+", blockType.function, parameters = ["a", "b"], library = "math")
-            var equalsBlockInfo = new BlockInfo("=", blockType.function, parameters = ["a", "b"], library = "math")
-
-            var addBlock = new Block(addBlockInfo);
-        var equalsBlock = new Block(equalsBlockInfo);
-        var ifBlock = new Block(ifBlockInfo, [null, addBlock, null]);
-
-        ifBlock.position.set(SIDEBAR_STYLE.width + 10,10);
-        stage.addChild(ifBlock);
-        equalsBlock.position.set(SIDEBAR_STYLE.width + 10,10);
-        stage.addChild(equalsBlock);
-        */
-        initializeBlockLibrary(sidebar);
-
-        //  resize renderer, sidebar, backgroundTile when window is resized
-        window.addEventListener('resize', function(event){
-            backgroundTile.width = window.innerWidth;
-            backgroundTile.height = window.innerHeight;
-            sidebar.height = window.innerHeight;
-            renderer.resize(window.innerWidth * 0.7 - 250, window.innerHeight - 200);
-        });
-
-        //  render animation
-        animate();
-
-        function animate() {
-            renderer.render(stage);
-            requestAnimationFrame( animate );
-        }
+      function animate() {
+        renderer.render(stage);
+        requestAnimationFrame( animate );
+      }
     }
 
 
-
-
-    // initialize syntax highlighting
+    /* pastel syntax highlighting parts */
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/pastel");
 
-    var temp = $(document).width();
-    var temp2 = $('.button-convert').width();
-    $('.button-convert').css('left', temp*0.667 - temp2*0.5);
-    var document_height = $(document).height();
-    $('.pastel-code-area').css('height', document_height*0.85);
-
-    $(window).resize(function() {
-      var temp = $(document).width();
-      var temp2 = $('.button-convert').width();
-      $('.button-convert').css('left', temp*0.667 - temp2*0.5);
-      var document_height = $(document).height();
-      $('.pastel-code-area').css('height', document_height*0.85);
-    });
-
-    // Initialize collapse button
-    $('.button-collapse').sideNav({
-        menuWidth: 300, // Default is 240
-        edge: 'left', // Choose the horizontal origin
-        closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      }
-    );
-    // Initialize collapsible (uncomment the line below if you use the dropdown variation)
-    //$('.collapsible').collapsible();
+    /* initiate modal-trigger for live-preview button */
     $('.modal-trigger').leanModal({
         dismissible: true, // Modal can be dismissed by clicking outside of the modal
         opacity: .5, // Opacity of modal background
@@ -200,10 +192,19 @@
         ending_top: '10%', // Ending top style attribute
       }
     );
+
     $(document).ready(function(){
-      $('.collapsible').collapsible({
-        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-      });
+      /* set code-area's height */
+      var temp = $(document).width();
+      var document_height = $(document).height();
+      $('.code-area').css('height', document_height*0.85);
+    });
+
+    $(window).resize(function() {
+      /* set code-area's height, when window resize occured */
+      var temp = $(document).width();
+      var document_height = $(document).height();
+      $('.code-area').css('height', document_height*0.85);
     });
     </script>
   </body>
