@@ -182,22 +182,33 @@ results!
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/pastel");
 
-    /* initiate modal-trigger for live-preview button */
-    $('.modal-trigger').leanModal({
-        dismissible: true, // Modal can be dismissed by clicking outside of the modal
-        opacity: .5, // Opacity of modal background
-        in_duration: 300, // Transition in duration
-        out_duration: 200, // Transition out duration
-        starting_top: '4%', // Starting top style attribute
-        ending_top: '10%', // Ending top style attribute
-      }
-    );
-
     $(document).ready(function(){
       /* set code-area's height */
       var temp = $(document).width();
       var document_height = $(document).height();
       $('.code-area').css('height', document_height*0.85);
+
+      /* initiate modal-trigger for live-preview button */
+      $('.modal-trigger').leanModal({
+          dismissible: true, // Modal can be dismissed by clicking outside of the modal
+          opacity: .5, // Opacity of modal background
+          in_duration: 300, // Transition in duration
+          out_duration: 200, // Transition out duration
+          starting_top: '4%', // Starting top style attribute
+          ending_top: '10%', // Ending top style attribute
+        }
+      );
+
+      /* print console.log message when click open-palette button */
+      $('.open-palette').click(function() {
+        console.log('open-palette clicked - plz open palette, minwhoo!');
+      });
+
+      /* print console.log message when change codes in code-area */
+      $('.code-area').keyup(function () {
+        console.log('code-area changed - plz change canvas components, minwhoo!');
+      });
+
     });
 
     $(window).resize(function() {
