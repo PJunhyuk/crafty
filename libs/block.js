@@ -82,6 +82,7 @@ Block.prototype.initialize = function() {
 //** render: positions child/parameter blocks and draws lines
 Block.prototype.renderFrom = function(childIndex) {
     console.log("DEBUG::: Render {" + this.blockInfo.name + "} from index " + childIndex);
+    console.log("canvas changed - update palette code!");
 
     var blockWidth = this.getChildAt(0).width;
     var blockHeight = this.getChildAt(0).height;
@@ -157,6 +158,7 @@ Block.prototype.renderFrom = function(childIndex) {
 //  replace parameterBlock location with block(this)
 Block.prototype.attachTo = function(parameterBlock) {
     console.log("DEBUG::: Attached to {" + parameterBlock.blockInfo.name + "}");
+    console.log("canvas changed - update palette code!");
     parameterBlock.visible = false;
     parameterBlock.parent.addChild(this);
     var index = parameterBlock.parent.parameterBlocks.indexOf(parameterBlock);
@@ -178,6 +180,7 @@ Block.prototype.update = function() {
 //  detach block(this) from parent block and restore parameter block
 Block.prototype.detachFromParentBlock = function() {
     console.log("DEBUG::: Detached from {" + this.parent.blockInfo.name + "}");
+    console.log("canvas changed - update palette code!");
 
     var index = this.parent.childBlocks.indexOf(this);
     this.parent.parameterBlocks[index].visible = true;
@@ -323,7 +326,7 @@ Block.prototype.setInteractivity = function() {
     }
 
     // "mousemove" event handler for parameter blocks
-    function onParameterMove(event) { 
+    function onParameterMove(event) {
         //console.log("DEBUG::: parameter moving by \"" + this.blockInfo.name + "\"");
 
         //  if mouse position is inside hit area, then set stage.target to this
@@ -377,4 +380,3 @@ Block.prototype.export = function() {
 
     return word;
 }
-
