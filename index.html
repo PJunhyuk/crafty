@@ -184,9 +184,8 @@ results!
 
     $(document).ready(function(){
       /* set code-area's height */
-      var temp = $(document).width();
       var document_height = $(document).height();
-      $('.code-area').css('height', document_height*0.85);
+      $('.code-area').css('height', document_height-170);
 
       /* initiate modal-trigger for live-preview button */
       $('.modal-trigger').leanModal({
@@ -213,9 +212,8 @@ results!
 
     $(window).resize(function() {
       /* set code-area's height, when window resize occured */
-      var temp = $(document).width();
       var document_height = $(document).height();
-      $('.code-area').css('height', document_height*0.85);
+      $('.code-area').css('height', document_height-170);
     });
     </script>
   </body>
