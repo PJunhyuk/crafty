@@ -46,7 +46,8 @@
           <h4>Pastel Code</h4>
         </blockquote>
         <!-- code-area parts using pastel syntax highlighting -->
-        <pre class="code-area" id="editor">
+        <div class="code-area-container">
+          <pre class="code-area" id="editor">
 # n!을 계산하는 프로그램
 (define factorial n (
     (if (< n 2) (1)
@@ -75,6 +76,7 @@
         (search (+ (prime (- n 1)) 1))))
 ))
 </pre>
+        </div>
       </div>
 
       <!-- live-preview parts -->
@@ -215,6 +217,16 @@ results!
       var document_height = $(document).height();
       $('.code-area').css('height', document_height-170);
     });
+
+    function canvasChanged() {
+      var temp = '<pre>hi<br />hi<br /></pre>';
+      temp.className += 'code-area';
+      temp.id = 'editor';
+      $('.code-area-container')[0].innerHTML = temp;
+      console.log("hi");
+      var document_height = $(document).height();
+      $('.code-area').css('height', document_height-170);
+    }
     </script>
   </body>
 </html>
