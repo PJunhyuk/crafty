@@ -178,7 +178,6 @@ results!
       }
     }
 
-
     /* pastel syntax highlighting parts */
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
@@ -218,14 +217,35 @@ results!
       $('.code-area').css('height', document_height-170);
     });
 
+    /* change code-area when canvas changed */
     function canvasChanged() {
-      var temp = '<pre>hi<br />hi<br /></pre>';
-      temp.className += 'code-area';
-      temp.id = 'editor';
-      $('.code-area-container')[0].innerHTML = temp;
-      console.log("hi");
+      /* print console.log message */
+      console.log('canvas changed - plz give me live pastel code, minwhoo!');
+
+      /* remove existing pre */
+      $('.code-area').remove();
+
+      /* make new pre, and attach it on code-area-container */
+      var newPre = document.createElement("PRE");
+      var newText = document.createTextNode("# n!을 계산하는 프로그램");
+      newPre.appendChild(newText);
+      newPre.className += 'code-area';
+      newPre.id = 'editor';
+      $('.code-area-container').append(newPre);
+
+      /* re-start pastel syntax highlighting parts */
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      editor.session.setMode("ace/mode/pastel");
+
+      /* re-set size of code-area */
       var document_height = $(document).height();
       $('.code-area').css('height', document_height-170);
+
+      /* re-start code-area keyup function : print console.log message when change codes in code-area */
+      $('.code-area').keyup(function () {
+        console.log('code-area changed - plz change canvas components, minwhoo!');
+      });
     }
     </script>
   </body>
