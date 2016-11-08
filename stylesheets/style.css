@@ -15,8 +15,6 @@ html, body, .main-row {
 
 .open-palette {
     position: absolute;
-    top: 10px;
-    left: 170px;
 }
 
 .code-container {

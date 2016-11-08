@@ -32,9 +32,7 @@
       <!-- canvas-container parts -->
       <div class="col s8 canvas-container">
         <!-- title of main-canvas -->
-        <blockquote>
-          <h4>Canvas</h4>
-        </blockquote>
+        <!-- <blockquote><h4>Canvas</h4></blockquote> -->
         <!-- button: open-palette -->
         <a class="btn-floating btn-large waves-effect waves-light red open-palette"><i class="material-icons">add</i></a>
       </div>
@@ -42,9 +40,7 @@
       <!-- code-container parts -->
       <div class="col s4 code-container">
         <!-- title of code-container -->
-        <blockquote>
-          <h4>Pastel Code</h4>
-        </blockquote>
+        <!-- <blockquote><h4>Pastel Code</h4></blockquote> -->
         <!-- code-area parts using pastel syntax highlighting -->
         <div class="code-area-container">
           <pre class="code-area" id="editor">
@@ -107,11 +103,11 @@ results!
     /* crafty_v2 parts */
     var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0xCCCCCC, antialias: true });
     renderer.view.style.position = "absolute";
-    renderer.view.style.top = "80px";
+    renderer.view.style.top = "0px";
     // renderer.view.style.left = "125px";
     renderer.view.style.display = "block";
     renderer.autoResize = true;
-    renderer.resize(window.innerWidth * 2 / 3, window.innerHeight - 80);
+    renderer.resize(window.innerWidth * 2 / 3, window.innerHeight);
     document.body.appendChild(renderer.view);
 
     var stage = new PIXI.Container();
@@ -165,7 +161,7 @@ results!
         backgroundTile.width = window.innerWidth;
         backgroundTile.height = window.innerHeight;
         sidebar.height = window.innerHeight;
-        renderer.resize(window.innerWidth * 2 / 3, window.innerHeight - 80);
+        renderer.resize(window.innerWidth * 2 / 3, window.innerHeight);
       });
 
       //  render animation
@@ -197,8 +193,13 @@ results!
 
     $(document).ready(function(){
       /* set code-area's height */
-      var document_height = $(document).height();
-      $('.code-area').css('height', document_height-170);
+      $('.code-area').css('height', window.innerHeight);
+
+      /* set open-palette button's position */
+      $('.open-palette').css('top', 10);
+      var openPaletteWidth = $('.open-palette').width();
+      console.log(openPaletteWidth);
+      $('.open-palette').css('left', window.innerWidth * 2 / 3 - openPaletteWidth - 10);
 
       /* initiate modal-trigger for live-preview button */
       $('.modal-trigger').leanModal({
@@ -220,8 +221,13 @@ results!
 
     $(window).resize(function() {
       /* set code-area's height, when window resize occured */
-      var document_height = $(document).height();
-      $('.code-area').css('height', document_height-170);
+      $('.code-area').css('height', window.innerHeight);
+
+      /* set open-palette button's position */
+      $('.open-palette').css('top', 10);
+      var openPaletteWidth = $('.open-palette').width();
+      console.log(openPaletteWidth);
+      $('.open-palette').css('left', window.innerWidth * 2 / 3 - openPaletteWidth - 10);
     });
 
     /* change code-area when canvas changed */
@@ -246,8 +252,7 @@ results!
       editor.session.setMode("ace/mode/pastel");
 
       /* re-set size of code-area */
-      var document_height = $(document).height();
-      $('.code-area').css('height', document_height-170);
+      $('.code-area').css('height', window.innerHeight);
 
       /* re-start code-area keyup function : print console.log message when change codes in code-area */
       $('.code-area').keyup(function () {
