@@ -107,11 +107,11 @@ results!
     /* crafty_v2 parts */
     var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0xCCCCCC, antialias: true });
     renderer.view.style.position = "absolute";
-    renderer.view.style.top = "100px";
-    renderer.view.style.left ="125px";
+    renderer.view.style.top = "80px";
+    // renderer.view.style.left = "125px";
     renderer.view.style.display = "block";
     renderer.autoResize = true;
-    renderer.resize(window.innerWidth * 0.7 - 250, window.innerHeight - 200);
+    renderer.resize(window.innerWidth * 2 / 3, window.innerHeight - 80);
     document.body.appendChild(renderer.view);
 
     var stage = new PIXI.Container();
@@ -143,7 +143,6 @@ results!
       sidebar.beginFill(SIDEBAR_STYLE.backgroundColor,1);
       sidebar.drawRect(0,0,SIDEBAR_STYLE.width, window.innerHeight);
       sidebar.endFill();
-      stage.addChild(sidebar);
 
       /*
       var ifBlockInfo = new BlockInfo("if", blockType.function, parameters = ["condition", "true-body", "false-body"], library = "standard")
@@ -166,7 +165,7 @@ results!
         backgroundTile.width = window.innerWidth;
         backgroundTile.height = window.innerHeight;
         sidebar.height = window.innerHeight;
-        renderer.resize(window.innerWidth * 0.7 - 250, window.innerHeight - 200);
+        renderer.resize(window.innerWidth * 2 / 3, window.innerHeight - 80);
       });
 
       //  render animation
@@ -176,6 +175,19 @@ results!
         renderer.render(stage);
         requestAnimationFrame( animate );
       }
+
+      /* print console.log message when click open-palette button */
+      $('.open-palette').click(function() {
+        if(stage.children.length == 1) {
+          stage.addChild(sidebar);
+        } else {
+          if(stage.getChildAt(1).id == "sidebar") {
+            stage.removeChild(sidebar);
+          } else {
+            stage.addChildAt(sidebar, 1);
+          }
+        }
+      });
     }
 
     /* pastel syntax highlighting parts */
@@ -198,11 +210,6 @@ results!
           ending_top: '10%', // Ending top style attribute
         }
       );
-
-      /* print console.log message when click open-palette button */
-      $('.open-palette').click(function() {
-        console.log('open-palette clicked - plz open palette, minwhoo!');
-      });
 
       /* print console.log message when change codes in code-area */
       $('.code-area').keyup(function () {

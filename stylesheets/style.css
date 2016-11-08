@@ -14,8 +14,9 @@ html, body, .main-row {
 }
 
 .open-palette {
-    top: 30px;
-    left: 20px;
+    position: absolute;
+    top: 10px;
+    left: 170px;
 }
 
 .code-container {
