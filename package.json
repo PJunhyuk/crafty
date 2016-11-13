@@ -1,8 +1,8 @@
 {
-  "name": "crafty-canvas",
+  "name": "crafty",
   "version": "0.1.0",
-  "repository": "https://github.com/minwhoo/crafty_v2",
-  "description": "Visual Programming Interface for Crafty Web App",
+  "repository": "https://github.com/PJunhyuk/crafty",
+  "description": "Visual Programming GUI for pastel language",
   "config": {
     "buildDir": "./build",
     "stageWidth": 1920,
