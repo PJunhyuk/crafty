@@ -27,7 +27,7 @@ export default class App extends PIXI.Container {
     open_palette_btn.css('height', 50);
     open_palette_btn.css('position', 'absolute');
     open_palette_btn.css('top', 50);
-    open_palette_btn.css('left', 80);
+    open_palette_btn.css('left', 100);
     open_palette_btn.css('border', 'none');
     open_palette_btn.css('background-color', '#92A8D1');
     open_palette_btn.css('border-radius', 25);
@@ -40,11 +40,14 @@ export default class App extends PIXI.Container {
     $('.open-palette').click(function() {
       if(stage.children.length == 1) {
         stage.addChild(sidebar);
+        open_palette_btn.val('-');
       } else {
         if(stage.getChildAt(1).id == "sidebar") {
           stage.removeChild(sidebar);
+          open_palette_btn.val('+');
         } else {
           stage.addChildAt(sidebar, 1);
+          open_palette_btn.val('-');
         }
       }
     });
