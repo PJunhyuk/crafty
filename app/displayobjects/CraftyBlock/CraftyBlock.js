@@ -290,11 +290,16 @@ export default class CraftyBlock extends PIXI.Container {
                     if (this.originalBlock) {
                         this.originalBlock.update();
                     }
+
+                    //  call canvasChanged function
+                    canvasChanged();
                 }
                 // case: clicked
                 else {
                     //  export block
-                    console.log(this.stringify());
+                    // console.log(this.stringify());
+                    //  call canvasClicked function
+                    canvasClicked(this.stringify());
                 }
 
                 this.alpha = 1;
