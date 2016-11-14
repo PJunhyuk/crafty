@@ -28,12 +28,38 @@
       padding: 5px;
       height: 100%;
     }
+    .open-palette {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      background-color: #92A8D1;
+    }
+    .live-preview {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #F7CAC9;
+    }
+    .buttons {
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333333;
+    }
+    .buttons:active {
+      border: none;
+    }
   </style>
 </head>
 <body>
   <!-- Import for pastel syntax highlighting -->
   <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
-  <script type="text/javascript" src="http://parkjunhyuk.com/crafty/libs/mode-pastel.js"></script>
+  <script type="text/javascript" src="http://parkjunhyuk.com/cloud/mode-pastel.js"></script>
+  <!-- Add jQuery -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <!-- code-area parts using pastel syntax highlighting -->
   <div class="code-area-container">
     <pre class="code-area" id="editor">
@@ -66,11 +92,21 @@
 ))
 </pre>
   </div>
+  <input class="open-palette buttons" type="button" value="+" />
+  <input class="live-preview buttons" type="button" value=">" />
   <script>
     /* pastel syntax highlighting parts */
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/pastel");
+
+
+    $(document).ready(function(){
+      /* print console.log message when change codes in code-area */
+      $('.code-area').keyup(function () {
+        console.log('code-area changed - plz change canvas components, minwhoo!');
+      });
+    });
   </script>
   <script src="bundle.js"></script>
 </body>
