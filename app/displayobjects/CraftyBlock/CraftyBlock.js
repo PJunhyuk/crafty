@@ -5,7 +5,7 @@ import { BLOCK_TEXT_STYLE, BLOCK_TEXT_MARGIN, BLOCK_STYLE, PARAMETER_BLOCK_STYLE
 let IS_DRAGGING = false;
 let MOUSEOVER_BLOCK = null;
 
-let blockType = {"function": 0, constant: 1, parameter: 2};
+const blockType = {"function": 0, constant: 1, parameter: 2};
 
 export default class CraftyBlock extends PIXI.Container {
     constructor(blockInfo) {
@@ -43,25 +43,13 @@ export default class CraftyBlock extends PIXI.Container {
         this.addChild(blockGraphics);
         this.addChild(text);
 
-        //  If no children given, make children list of null blocks
-        if (this.childBlocks.length == 0) {
-            this.childBlocks = new Array(this.blockInfo.parameters.length);
-        }
-
-        //  Create and store parameter blocks with parameterName
-        for (let i=0;i<this.blockInfo.parameters.length;i++) {
-            let parameterBlockInfo = new CraftyBlockSpec(this.blockInfo.parameters[i],blockType.parameter);
-            let newBlock = new CraftyBlock(parameterBlockInfo);
+        //  Add parameter block to this(block) and make it invisible
+        this.blockInfo.parameters.forEach((name) => {
+            const parameterBlockInfo = new CraftyBlockSpec(name,blockType.parameter);
+            const newBlock = new CraftyBlock(parameterBlockInfo);
             this.parameterBlocks.push(newBlock);
-
-            //  Add parameter block to this(block) and make it invisible
-            this.addChild(this.parameterBlocks[i]).visible = false;
-
-            //  Add child block to this(block) if it isn't null and make it invisible
-            if (this.childBlocks[i] != null) {
-                this.addChild(this.childBlocks[i]).visible = false;
-            }
-        }
+            this.addChild(newBlock).visible = false;
+        });
 
         //  set interactivity of blocks
         this.setInteractivity();
@@ -71,9 +59,9 @@ export default class CraftyBlock extends PIXI.Container {
     renderFrom(childIndex) {
         //console.log(`DEBUG::: Render {${this.blockInfo.name}} from index ${childIndex}`);
 
-        let blockWidth = this.getChildAt(0).width;
-        let blockHeight = this.getChildAt(0).height;
-        let lineStartPosition = new PIXI.Point(blockWidth, blockHeight/2 - (LINE_STYLE.width + LINE_STYLE.spacing)*this.childBlocks.length/2 + childIndex*(LINE_STYLE.width + LINE_STYLE.spacing));
+        const blockWidth = this.getChildAt(0).width;
+        const blockHeight = this.getChildAt(0).height;
+        let lineStartPosition = new PIXI.Point(blockWidth, blockHeight/2 - (LINE_STYLE.width + LINE_STYLE.spacing)*this.parameterBlocks.length/2 + childIndex*(LINE_STYLE.width + LINE_STYLE.spacing));
         let childBlockPosition = new PIXI.Point(blockWidth + BLOCK_MARGIN.width, 0);
 
         if (childIndex != 0) {
@@ -81,11 +69,8 @@ export default class CraftyBlock extends PIXI.Container {
             childBlockPosition.y = previousHeight;
         }
 
-        if (childIndex < this.lines.length) {
-            for (let i=childIndex;i<this.lines.length;i++) {
-                this.removeChild(this.lines[i]);
-            }
-        }
+        //  remove existing lines from block
+        this.lines.slice(childIndex).forEach(line => this.removeChild(line));
 
         //  for each parameter/branch, draw line and place block
         for (let i=childIndex;i < this.parameterBlocks.length; i++) {
@@ -104,7 +89,7 @@ export default class CraftyBlock extends PIXI.Container {
             let lastChildHeight = this.parameterBlocks[i].height;
 
             //  child block: set position, make corresponding parameterBlock invisible
-            if (this.childBlocks[i] != null) {
+            if (this.childBlocks[i]) {
                 this.childBlocks[i].visible = true;
                 this.childBlocks[i].position = childBlockPosition.clone();
                 lastChildHeight = this.childBlocks[i].height;
