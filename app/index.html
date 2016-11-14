@@ -5,15 +5,73 @@
   <meta name="viewport" content="width=device-width" />
   <title>Crafty Canvas</title>
   <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
     html, body, canvas {
       width: 100%;
       height: 100%;
-      margin: 0;
       overflow: hidden;
+    }
+    .code-area-container {
+      position: absolute;
+      right: 0px;
+      width: 35%;
+      height: 100%;
+      background-color: #cccccc;
+    }
+    .code-area {
+      background-color: #999999;
+      color: white;
+      border: none;
+      padding: 5px;
+      height: 100%;
     }
   </style>
 </head>
 <body>
+  <!-- Import for pastel syntax highlighting -->
+  <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
+  <script type="text/javascript" src="http://parkjunhyuk.com/crafty/libs/mode-pastel.js"></script>
+  <!-- code-area parts using pastel syntax highlighting -->
+  <div class="code-area-container">
+    <pre class="code-area" id="editor">
+# n!을 계산하는 프로그램
+(define factorial n (
+(if (< n 2) (1)
+    (* n (factorial (- n 1))))
+))
+
+# 피보나치 수열의 n항을 계산하는 프로그램
+(define fibonacci n (
+(if (= n 0) (0)
+(if (= n 1) (1))
+(+ (fibonacci (- n 1)) (memoize fibonacci (- n 2))))
+))
+
+# 자연수 n이 소수인지 판별하는 프로그램
+(define check (n c) (
+(if (< (square n) (prime c)) (true)
+    ((if (zero (modular n (prime c))) (false)
+         (check n (+ c 1)))))
+))
+
+# n번째 소수를 계산하는 프로그램
+(define prime n (
+(if (= n 1) (2) (
+  (define search r (
+    (if (check r 1) (r) (search (+ r 1)))))
+    (search (+ (prime (- n 1)) 1))))
+))
+</pre>
+  </div>
+  <script>
+    /* pastel syntax highlighting parts */
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/pastel");
+  </script>
   <script src="bundle.js"></script>
 </body>
 </html>
