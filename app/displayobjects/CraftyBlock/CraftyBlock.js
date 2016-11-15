@@ -1,6 +1,6 @@
 import PIXI from 'pixi.js';
 import CraftyBlockSpec from './CraftyBlockSpec.js';
-import { BLOCK_TEXT_STYLE, BLOCK_TEXT_MARGIN, BLOCK_STYLE, PARAMETER_BLOCK_STYLE, LINE_STYLE, BLOCK_MARGIN } from '../../constants/BlockConstants.js';
+import { BLOCK_TEXT_STYLE, BLOCK_TEXT_MARGIN, BLOCK_STYLE, CONSTANT_BLOCK_STYLE, PARAMETER_BLOCK_STYLE, LINE_STYLE, BLOCK_MARGIN } from '../../constants/BlockConstants.js';
 import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 
 const blockType = {"function": 0, constant: 1, parameter: 2};
@@ -31,6 +31,8 @@ export default class CraftyBlock extends PIXI.Container {
         let blockGraphics = new PIXI.Graphics();
         if (this.blockInfo.type == blockType.parameter) { // if block is parameter, apply different style
             blockGraphics.beginFill(PARAMETER_BLOCK_STYLE.color, PARAMETER_BLOCK_STYLE.opacity);
+        } else if (this.blockInfo.type == blockType.constant) {
+            blockGraphics.beginFill(CONSTANT_BLOCK_STYLE.color, CONSTANT_BLOCK_STYLE.opacity);
         } else {
             blockGraphics.beginFill(BLOCK_STYLE.color, BLOCK_STYLE.opacity);
         }
