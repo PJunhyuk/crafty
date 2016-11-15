@@ -103,15 +103,14 @@ class CraftyBlockAnimator {
                     this.originalBlock.update();
                 }
 
-                //  call canvasChanged function
-                canvasChanged();
+                checkBlockInfoList(this);
             }
             // case: clicked
             else {
                 this.emit('clickonce');
                 //  export block
                 //  call canvasClicked function
-                canvasClicked(this.stringify());
+                // canvasClicked(this.stringify());
             }
 
             this.alpha = 1;
@@ -176,6 +175,24 @@ class CraftyBlockAnimator {
             this.clicked = false;
         }
     }
+}
+
+function checkBlockInfoList(block) {
+  var numberOfBlocks = block._getStage().children.length - 2;
+
+  var i;
+  var BlockInfoList = new Array("");
+
+  for (i = 1; i <= numberOfBlocks; i++) {
+    BlockInfoList[i-1] = block._getStage().getChildAt(i+1).stringify();
+  }
+
+  for (i = 1; i <= numberOfBlocks; i++) {
+    console.log(BlockInfoList[i-1]);
+  }
+
+  //  call canvasChanged function
+  canvasChanged(BlockInfoList);
 }
 
 export default new CraftyBlockAnimator();

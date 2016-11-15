@@ -115,22 +115,19 @@
         });
 
         /* change code-area when canvas changed */
-        function canvasChanged() {
-            /* print console.log message */
-            console.log('canvas changed - plz give me live pastel code, minwhoo!');
-        }
-
-        function canvasClicked(message) {
-            /* print console.log message */
-            console.log('canvas clicked - plz give me live pastel code, minwhoo!');
-
+        function canvasChanged(BlockInfoList) {
             /* remove existing pre */
             $('.code-area').remove();
 
             /* make new pre, and attach it on code-area-container */
             var newPre = document.createElement("PRE");
-            var newText = document.createTextNode(message);
-            newPre.appendChild(newText);
+            var i;
+            for (i = 1; i <= BlockInfoList.length; i++) {
+                var newText = document.createTextNode(BlockInfoList[i-1]);
+                newPre.appendChild(newText);
+                newText = document.createTextNode("\n\n");
+                newPre.appendChild(newText);
+            }
             newPre.className += 'code-area';
             newPre.id = 'editor';
             $('.code-area-container').append(newPre);
