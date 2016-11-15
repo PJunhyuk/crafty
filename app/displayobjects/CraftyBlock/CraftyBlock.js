@@ -1,9 +1,7 @@
 import PIXI from 'pixi.js';
 import CraftyBlockSpec from './CraftyBlockSpec.js';
 import { BLOCK_TEXT_STYLE, BLOCK_TEXT_MARGIN, BLOCK_STYLE, PARAMETER_BLOCK_STYLE, LINE_STYLE, BLOCK_MARGIN } from '../../constants/BlockConstants.js';
-
-let IS_DRAGGING = false;
-let MOUSEOVER_BLOCK = null;
+import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 
 const blockType = {"function": 0, constant: 1, parameter: 2};
 
@@ -52,7 +50,8 @@ export default class CraftyBlock extends PIXI.Container {
         });
 
         //  set interactivity of blocks
-        this.setInteractivity();
+        //this.setInteractivity();
+        CraftyBlockAnimator.makeInteractive(this)
     }
 
     //** render: positions child/parameter blocks and draws lines
@@ -188,166 +187,6 @@ export default class CraftyBlock extends PIXI.Container {
             parent = parent.parent;
         }
         return parent;
-    }
-
-    //  set interactivity for blocks
-    setInteractivity() {
-        this.interactive = true;
-        this.hitArea = this.getChildAt(0).getBounds().clone();
-        //console.log(`DEBUG:::interactivity enabled for {${this.blockInfo.name}}`);
-
-        //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
-        if (this.blockInfo.type != blockType.parameter) {
-            this
-            .on('mousedown', onDragStart)
-            .on('touchstart', onDragStart)
-            .on('mouseup', onDragEnd)
-            .on('mouseupoutside', onDragEnd)
-            .on('touchend', onDragEnd)
-            .on('touchendoutside', onDragEnd)
-            .on('mousemove', onDragMove)
-            .on('touchmove', onDragMove);
-        } else {
-            this
-            .on('mousedown', onParameterStart)
-            .on('touchstart', onParameterStart)
-            .on('mouseup', onParameterEnd)
-            .on('mouseupoutside', onParameterEnd)
-            .on('touchend', onParameterEnd)
-            .on('touchendoutside', onParameterEnd)
-            .on('mousemove', onParameterMove)
-            .on('touchmove', onParameterMove);
-        }
-
-        function onDragStart(event) {
-            let relativeMousePosition = event.data.getLocalPosition(this);
-            if (this.hitArea.contains(relativeMousePosition.x, relativeMousePosition.y)) {
-                //console.log("DEBUG::: drag started by \"" + this.blockInfo.name + "\"");
-
-                //  set toggle that becomes true the moment when drag starts
-                this.startedDragging = false;
-
-                //  if parent is sidebar, create copy
-                if (this.parent.id == "sidebar") {
-                    let blockCopy = new CraftyBlock(this.blockInfo);
-                    this.sidebarRect = this.parent.getChildAt(0).getBounds().clone();
-                    blockCopy.position = this.position.clone();
-                    this.parent.addChildAt(blockCopy,1);
-                    this.renderFrom(0);
-                }
-
-                //  save original position and distance from original to mouse position
-                let mouseStartPosition = event.data.getLocalPosition(this.parent);
-                this.diff = new PIXI.Point(mouseStartPosition.x - this.position.x, mouseStartPosition.y - this.position.y);
-                this.originalPosition = new PIXI.Point(this.position.x,this.position.y);
-
-                this.alpha = 0.6;
-                this.dragging = true;
-                IS_DRAGGING = true;
-            }
-        }
-
-        function onDragEnd(event) {
-            //  if block had been clicked, check drag or click, and execute by case
-            if (this.dragging) {
-                // case: dragged
-
-                //  if parent is sidebar, either add new Block to stage or remove depending on mouse location
-                if (this.parent.id == "sidebar") {
-                    let relativeMousePosition = event.data.getLocalPosition(this.parent);
-                    if (this.sidebarRect.contains(relativeMousePosition.x, relativeMousePosition.y)) {
-                        this.parent.removeChild(this);
-                    } else {
-                        this.addToStage();
-                    }
-                }
-
-                if (this.startedDragging) {
-                    //console.log("DEBUG::: drag ended by \"" + this.blockInfo.name + "\"");
-
-                    //  if there is parameter block below, attach
-                    if (MOUSEOVER_BLOCK) {
-                        this.attachTo(MOUSEOVER_BLOCK);
-                        MOUSEOVER_BLOCK = null;
-                    }
-
-                    //  render update the taken out block
-                    if (this.originalBlock) {
-                        this.originalBlock.update();
-                    }
-
-                    //  call canvasChanged function
-                    canvasChanged();
-                }
-                // case: clicked
-                else {
-                    //  export block
-                    // console.log(this.stringify());
-                    //  call canvasClicked function
-                    canvasClicked(this.stringify());
-                }
-
-                this.alpha = 1;
-                this.dragging = false;
-                IS_DRAGGING = false;
-            }
-        }
-
-        function onDragMove(event) {
-            //console.log("DEBUG::: drag moving by \"" + this.blockInfo.name + "\"");
-
-            if (this.dragging)
-            {
-                //  re-position block to relative mouse position
-                let newPosition = event.data.getLocalPosition(this.parent);
-                this.position.x = newPosition.x - this.diff.x;
-                this.position.y = newPosition.y - this.diff.y;
-
-                //  trigger when first drag after select
-                if (!this.startedDragging) {
-                    this.startedDragging = true;
-
-                    //  if block has parent block, detach from parent block and set originalBlock for later update()
-                    if (this.parent.hasOwnProperty('blockInfo')) {
-                        this.originalBlock = this.detachFromParentBlock();
-                    } else {
-                        this.originalBlock = null;
-                    }
-                }
-            }
-        }
-
-        // "mousemove" event handler for parameter blocks
-        function onParameterMove(event) {
-            //  if mouse position is inside hit area, then set stage.target to this
-            if (IS_DRAGGING) {
-                let relativeMousePosition = event.data.getLocalPosition(this);
-                if (this.hitArea.contains(relativeMousePosition.x, relativeMousePosition.y)) {
-                    //console.log(`DEBUG::: parameter moving by {${this.blockInfo.name}}`);
-
-                    this.getChildAt(0).tint = 0xDDDDDD;
-                    MOUSEOVER_BLOCK = this;
-                } else {
-                    if (this == MOUSEOVER_BLOCK) {
-                        MOUSEOVER_BLOCK = null;
-                        this.getChildAt(0).tint = 0xFFFFFF;
-                    }
-                }
-            }
-        }
-
-        function onParameterStart(event) {
-            this.clicked = true;
-        }
-        function onParameterEnd(event) {
-            if (this.clicked) {
-                let letiableName = prompt("Type in your constant!");
-                let constantBlockInfo = new CraftyBlockSpec(letiableName, blockType.constant);
-                let constantBlock = new CraftyBlock(constantBlockInfo);
-                constantBlock.attachTo(this);
-                this.clicked = false;
-            }
-        }
     }
 
     //  returns a string version of the selected block
