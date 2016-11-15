@@ -21,7 +21,6 @@ class CraftyBlockAnimator {
             console.log(`helloo from ${block.blockInfo.name}`);
             block
                 .on('mousedown', this.onDragStart)
-                .on('click', this.onClick)
                 .on('touchstart', this.onDragStart)
                 .on('mouseup', this.onDragEnd)
                 .on('mouseupoutside', this.onDragEnd)
@@ -40,6 +39,8 @@ class CraftyBlockAnimator {
                 .on('mousemove', this.onParameterMove)
                 .on('touchmove', this.onParameterMove);
         }
+        block
+            .on('clickonce', this.onClick)
     }
     onClick() {
         console.log("Clicked!");
@@ -107,9 +108,8 @@ class CraftyBlockAnimator {
             }
             // case: clicked
             else {
-                this.emit('click');
+                this.emit('clickonce');
                 //  export block
-                // console.log(this.stringify());
                 //  call canvasClicked function
                 canvasClicked(this.stringify());
             }
