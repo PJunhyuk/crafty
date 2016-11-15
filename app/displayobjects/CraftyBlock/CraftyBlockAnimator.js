@@ -173,6 +173,7 @@ class CraftyBlockAnimator {
             let constantBlock = new CraftyBlock(constantBlockInfo);
             constantBlock.attachTo(this);
             this.clicked = false;
+            checkBlockInfoList(this);
         }
     }
 }
@@ -185,10 +186,6 @@ function checkBlockInfoList(block) {
 
   for (i = 1; i <= numberOfBlocks; i++) {
     BlockInfoList[i-1] = block._getStage().getChildAt(i+1).stringify();
-  }
-
-  for (i = 1; i <= numberOfBlocks; i++) {
-    console.log(BlockInfoList[i-1]);
   }
 
   //  call canvasChanged function
