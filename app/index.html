@@ -59,6 +59,63 @@
         input:focus {
             outline: none;
         }
+
+        /* The compile-message - position it at the bottom and in the middle of the screen */
+        #compile-message {
+          visibility: hidden; /* Hidden by default. Visible on click */
+          min-width: 250px; /* Set a default minimum width */
+          margin-left: -125px; /* Divide value of min-width by 2 */
+          background-color: #333; /* Black background color */
+          color: #fff; /* White text color */
+          text-align: center; /* Centered text */
+          border-radius: 2px; /* Rounded borders */
+          padding: 16px; /* Padding */
+          position: fixed; /* Sit on top of the screen */
+          z-index: 1; /* Add a z-index if needed */
+          left: 32.5%; /* Center the compile-message */
+          bottom: 30px; /* 30px from the bottom */
+        }
+
+        /* Show the compile-message when clicking on a button (class added with JavaScript) */
+        #compile-message.show {
+            visibility: visible; /* Show the compile-message */
+
+        /* Add animation: Take 0.5 seconds to fade in and out the compile-message.
+        However, delay the fade out process for 2.5 seconds */
+            /*-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
+            -webkit-animation: fadein 0.5s;
+            animation: fadein 0.5s;
+        }
+
+        #compile-message.hide {
+          visibility: visible; /* Show the compile-message */
+
+      /* Add animation: Take 0.5 seconds to fade in and out the compile-message.
+      However, delay the fade out process for 2.5 seconds */
+          -webkit-animation: fadeout 0.5s;
+          animation: fadeout 0.5s;
+        }
+
+        /* Animations to fade the compile-message in and out */
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
     </style>
 </head>
 
@@ -101,6 +158,7 @@
 </pre>
     </div>
     <input class="live-preview buttons" type="button" value=">" />
+    <div id="compile-message">Some text some message..</div>
     <script>
         /* pastel syntax highlighting parts */
         var editor = ace.edit("editor");
@@ -111,6 +169,7 @@
             /* print console.log message when change codes in code-area */
             $('.code-area').keyup(function() {
                 console.log('code-area changed - plz change canvas components, minwhoo!');
+                compileError();
             });
         });
 
@@ -123,7 +182,7 @@
             var newPre = document.createElement("PRE");
             var i;
             for (i = 1; i <= BlockInfoList.length; i++) {
-                var newText = document.createTextNode(BlockInfoList[i-1]);
+                var newText = document.createTextNode(BlockInfoList[i - 1]);
                 newPre.appendChild(newText);
                 newText = document.createTextNode("\n\n");
                 newPre.appendChild(newText);
@@ -137,10 +196,31 @@
             editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/pastel");
 
+            compileAble();
+
             /* re-start code-area keyup function : print console.log message when change codes in code-area */
             $('.code-area').keyup(function() {
                 console.log('code-area changed - plz change canvas components, minwhoo!');
+                compileError();
             });
+        }
+
+        function compileError() {
+          var message = document.getElementById("compile-message");
+
+          message.className = message.className.replace("hide", "");
+          message.className = "show";
+
+          // setTimeout(function(){
+          //   message.className = message.className.replace("show", "");
+          // }, 3000);
+        }
+
+        function compileAble() {
+          var message = document.getElementById("compile-message");
+
+          message.className = message.className.replace("show", "");
+          message.className = "hide";
         }
     </script>
     <script src="bundle.js"></script>
