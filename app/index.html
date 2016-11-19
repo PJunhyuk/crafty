@@ -1,133 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Crafty Canvas</title>
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Crafty Canvas</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, canvas {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .code-area-container {
+      position: absolute;
+      right: 0px;
+      width: 35%;
+      height: 100%;
+      background-color: #cccccc;
+    }
+    .code-area {
+      background-color: #999999;
+      color: white;
+      border: none;
+      padding: 5px;
+      height: 100%;
+    }
+    .live-preview {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #F7CAC9;
+    }
+    .buttons {
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333333;
+    }
+    .buttons:active {
+      border: none;
+    }
+    input:focus {
+      outline: none;
+    }
 
-        html,
-        body,
-        canvas {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+    #compile-message {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      left: 32.5%;
+      bottom: 30px;
+    }
+    #compile-message.show {
+      visibility: visible;
+      /*-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
+      -webkit-animation: fadein 0.5s;
+      animation: fadein 0.5s;
+    }
+    #compile-message.hide {
+      visibility: visible;
+      -webkit-animation: fadeout 0.5s;
+      animation: fadeout 0.5s;
+    }
+    @-webkit-keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 30px; opacity: 1; }
+    }
+    @keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 30px; opacity: 1; }
+    }
+    @-webkit-keyframes fadeout {
+      from { bottom: 30px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
+    }
 
-        .code-area-container {
-            position: absolute;
-            right: 0px;
-            width: 35%;
-            height: 100%;
-            background-color: #cccccc;
-        }
-
-        .code-area {
-            background-color: #999999;
-            color: white;
-            border: none;
-            padding: 5px;
-            height: 100%;
-        }
-
-        .live-preview {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background-color: #F7CAC9;
-        }
-
-        .buttons {
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            border: none;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333333;
-        }
-
-        .buttons:active {
-            border: none;
-        }
-
-        input:focus {
-            outline: none;
-        }
-
-        /* The compile-message - position it at the bottom and in the middle of the screen */
-        #compile-message {
-          visibility: hidden; /* Hidden by default. Visible on click */
-          min-width: 250px; /* Set a default minimum width */
-          margin-left: -125px; /* Divide value of min-width by 2 */
-          background-color: #333; /* Black background color */
-          color: #fff; /* White text color */
-          text-align: center; /* Centered text */
-          border-radius: 2px; /* Rounded borders */
-          padding: 16px; /* Padding */
-          position: fixed; /* Sit on top of the screen */
-          z-index: 1; /* Add a z-index if needed */
-          left: 32.5%; /* Center the compile-message */
-          bottom: 30px; /* 30px from the bottom */
-        }
-
-        /* Show the compile-message when clicking on a button (class added with JavaScript) */
-        #compile-message.show {
-            visibility: visible; /* Show the compile-message */
-
-        /* Add animation: Take 0.5 seconds to fade in and out the compile-message.
-        However, delay the fade out process for 2.5 seconds */
-            /*-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
-            -webkit-animation: fadein 0.5s;
-            animation: fadein 0.5s;
-        }
-
-        #compile-message.hide {
-          visibility: visible; /* Show the compile-message */
-
-      /* Add animation: Take 0.5 seconds to fade in and out the compile-message.
-      However, delay the fade out process for 2.5 seconds */
-          -webkit-animation: fadeout 0.5s;
-          animation: fadeout 0.5s;
-        }
-
-        /* Animations to fade the compile-message in and out */
-        @-webkit-keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
-        }
-
-        @keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
-        }
-
-        @-webkit-keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
-        }
-
-        @keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
-        }
-    </style>
+    @keyframes fadeout {
+      from { bottom: 30px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Import for pastel syntax highlighting -->
-    <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
-    <script type="text/javascript" src="http://parkjunhyuk.com/cloud/mode-pastel.js"></script>
-    <!-- Add jQuery -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <!-- code-area parts using pastel syntax highlighting -->
-    <div class="code-area-container">
-        <pre class="code-area" id="editor">
+  <!-- Import for pastel syntax highlighting -->
+  <script type="text/javascript" src="http://ajaxorg.github.io/ace-builds/src-noconflict/ace.js"></script>
+  <script type="text/javascript" src="http://parkjunhyuk.com/cloud/mode-pastel.js"></script>
+  <!-- Add jQuery -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- code-area parts using pastel syntax highlighting -->
+  <div class="code-area-container">
+    <pre class="code-area" id="editor">
 # n!을 계산하는 프로그램
 (define factorial n (
 (if (< n 2) (1)
@@ -156,74 +131,74 @@
     (search (+ (prime (- n 1)) 1))))
 ))
 </pre>
-    </div>
-    <input class="live-preview buttons" type="button" value=">" />
-    <div id="compile-message">Some text some message..</div>
-    <script>
-        /* pastel syntax highlighting parts */
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/pastel");
+  </div>
+  <input class="live-preview buttons" type="button" value=">" />
+  <div id="compile-message">Compile Error - plz check codes</div>
+  <script>
+    /* pastel syntax highlighting parts */
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/pastel");
 
-        $(document).ready(function() {
-            /* print console.log message when change codes in code-area */
-            $('.code-area').keyup(function() {
-                console.log('code-area changed - plz change canvas components, minwhoo!');
-                compileError();
-            });
-        });
+    $(document).ready(function() {
+      /* print console.log message when change codes in code-area */
+      $('.code-area').keyup(function() {
+        console.log('code-area changed - plz change canvas components, minwhoo!');
+        compileError();
+      });
+    });
 
-        /* change code-area when canvas changed */
-        function canvasChanged(BlockInfoList) {
-            /* remove existing pre */
-            $('.code-area').remove();
+    /* change code-area when canvas changed */
+    function canvasChanged(BlockInfoList) {
+      /* remove existing pre */
+      $('.code-area').remove();
 
-            /* make new pre, and attach it on code-area-container */
-            var newPre = document.createElement("PRE");
-            var i;
-            for (i = 1; i <= BlockInfoList.length; i++) {
-                var newText = document.createTextNode(BlockInfoList[i - 1]);
-                newPre.appendChild(newText);
-                newText = document.createTextNode("\n\n");
-                newPre.appendChild(newText);
-            }
-            newPre.className += 'code-area';
-            newPre.id = 'editor';
-            $('.code-area-container').append(newPre);
+      /* make new pre, and attach it on code-area-container */
+      var newPre = document.createElement("PRE");
+      var i;
+      for (i = 1; i <= BlockInfoList.length; i++) {
+        var newText = document.createTextNode(BlockInfoList[i - 1]);
+        newPre.appendChild(newText);
+        newText = document.createTextNode("\n\n");
+        newPre.appendChild(newText);
+      }
+      newPre.className += 'code-area';
+      newPre.id = 'editor';
+      $('.code-area-container').append(newPre);
 
-            /* re-start pastel syntax highlighting parts */
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/monokai");
-            editor.session.setMode("ace/mode/pastel");
+      /* re-start pastel syntax highlighting parts */
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      editor.session.setMode("ace/mode/pastel");
 
-            compileAble();
+      compileAble();
 
-            /* re-start code-area keyup function : print console.log message when change codes in code-area */
-            $('.code-area').keyup(function() {
-                console.log('code-area changed - plz change canvas components, minwhoo!');
-                compileError();
-            });
-        }
+      /* re-start code-area keyup function : print console.log message when change codes in code-area */
+      $('.code-area').keyup(function() {
+        console.log('code-area changed - plz change canvas components, minwhoo!');
+        compileError();
+      });
+    }
 
-        function compileError() {
-          var message = document.getElementById("compile-message");
+    function compileError() {
+      var message = document.getElementById("compile-message");
 
-          message.className = message.className.replace("hide", "");
-          message.className = "show";
+      message.className = message.className.replace("hide", "");
+      message.className = "show";
 
-          // setTimeout(function(){
-          //   message.className = message.className.replace("show", "");
-          // }, 3000);
-        }
+      // setTimeout(function(){
+      //   message.className = message.className.replace("show", "");
+      // }, 3000);
+    }
 
-        function compileAble() {
-          var message = document.getElementById("compile-message");
+    function compileAble() {
+      var message = document.getElementById("compile-message");
 
-          message.className = message.className.replace("show", "");
-          message.className = "hide";
-        }
-    </script>
-    <script src="bundle.js"></script>
+      message.className = message.className.replace("show", "");
+      message.className = "hide";
+    }
+  </script>
+  <script src="bundle.js"></script>
 </body>
 
 </html>
