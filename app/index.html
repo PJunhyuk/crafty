@@ -103,38 +103,17 @@
   <!-- code-area parts using pastel syntax highlighting -->
   <div class="code-area-container">
     <pre class="code-area" id="editor">
-# n!을 계산하는 프로그램
-(define factorial n (
-(if (< n 2) (1)
-    (* n (factorial (- n 1))))
-))
-
-# 피보나치 수열의 n항을 계산하는 프로그램
-(define fibonacci n (
-(if (= n 0) (0)
-(if (= n 1) (1))
-(+ (fibonacci (- n 1)) (memoize fibonacci (- n 2))))
-))
-
-# 자연수 n이 소수인지 판별하는 프로그램
-(define check (n c) (
-(if (< (square n) (prime c)) (true)
-    ((if (zero (modular n (prime c))) (false)
-         (check n (+ c 1)))))
-))
-
-# n번째 소수를 계산하는 프로그램
-(define prime n (
-(if (= n 1) (2) (
-  (define search r (
-    (if (check r 1) (r) (search (+ r 1)))))
-    (search (+ (prime (- n 1)) 1))))
-))
+(+ 1 1)
 </pre>
   </div>
   <input class="live-preview buttons" type="button" value=">" />
   <div id="compile-message">Compile Error - plz check codes</div>
+
   <script>
+
+    /* pastel compiler toolkit */
+    var compileToolkit = {};
+
     /* pastel syntax highlighting parts */
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
@@ -144,7 +123,6 @@
       /* print console.log message when change codes in code-area */
       $('.code-area').keyup(function() {
         console.log('code-area changed - plz change canvas components, minwhoo!');
-        compileError();
       });
     });
 
@@ -180,6 +158,10 @@
       });
     }
 
+    $('.live-preview').click(function() {
+      compile();
+    });
+
     function compileError() {
       var message = document.getElementById("compile-message");
 
@@ -197,6 +179,20 @@
       message.className = message.className.replace("show", "");
       message.className = "hide";
     }
+
+    function compile() {
+      var compilableText = editor.getValue();
+      console.log(compileToolkit);
+      var result = compileToolkit.evaluator.evaluateText(compilableText);
+      if (compileToolkit.isError(result)) {
+        $('.compile-message').text(result.message);
+        compileError();
+      } else {
+        compileAble();
+        alert(result);
+      }
+    }
+
   </script>
   <script src="bundle.js"></script>
 </body>
