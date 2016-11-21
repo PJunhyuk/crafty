@@ -184,6 +184,40 @@
       }
     }
 
+    var checkDeleteBtn;
+
+    function showSetting(clickedBlock) {
+      if(checkDeleteBtn == true) {
+
+        $('.delete_btn').remove();
+        checkDeleteBtn = false;
+
+      } else {
+
+        var delete_btn = $('<input class="delete_btn" type="button" value="-"/>');
+        delete_btn.css('width', 30);
+        delete_btn.css('height', 30);
+        delete_btn.css('position', 'absolute');
+        delete_btn.css('top', clickedBlock.y - 30);
+        delete_btn.css('left', clickedBlock.x - 30);
+        delete_btn.css('border', 'none');
+        delete_btn.css('background-color', '#F7CAC9');
+        delete_btn.css('border-radius', 25);
+        delete_btn.css('font-size', 24);
+        delete_btn.css('font-weight', 'bold');
+        delete_btn.css('color', '#333333');
+        delete_btn.css('border-radius', 25);
+        $("body").append(delete_btn);
+
+        checkDeleteBtn = true;
+
+        $('.delete_btn').click(function() {
+          clickedBlock.parent.removeChild(clickedBlock);
+          $('.delete_btn').remove();
+        });
+      }
+    }
+
     function compile() {
       var editor = ace.edit("editor");
       var compilableText = editor.getValue();
@@ -192,6 +226,7 @@
         $('#compile-message').text(result.message);
         var message = document.getElementById("compile-message");
         message.className = "show";
+        alert("ERROR - check error message!");
       } else {
         alert(result);
       }

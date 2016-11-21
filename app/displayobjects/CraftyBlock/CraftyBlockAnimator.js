@@ -44,6 +44,7 @@ class CraftyBlockAnimator {
     }
     onClick() {
         console.log("Clicked!");
+        showSetting(this);
     }
 
     onDragStart(event) {
@@ -71,6 +72,8 @@ class CraftyBlockAnimator {
             this.alpha = 0.6;
             this.dragging = true;
             IS_DRAGGING = true;
+
+            $('.delete_btn').remove();
         }
     }
 
