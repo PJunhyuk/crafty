@@ -190,6 +190,7 @@ function checkBlockInfoList(block) {
 
   //  call canvasChanged function
   canvasChanged(BlockInfoList);
+  // getBlockInfoList(BlockInfoList);
 }
 
 export default new CraftyBlockAnimator();

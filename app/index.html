@@ -120,7 +120,7 @@
     $(document).ready(function() {
       /* print console.log message when change codes in code-area */
       $('.code-area').keyup(function() {
-        console.log('code-area changed - plz change canvas components, minwhoo!');
+        compileTest();
       });
     });
 
@@ -147,12 +147,9 @@
       editor.setTheme("ace/theme/monokai");
       editor.session.setMode("ace/mode/pastel");
 
-      // compileAble();
-
       /* re-start code-area keyup function : print console.log message when change codes in code-area */
       $('.code-area').keyup(function() {
-        console.log('code-area changed - plz change canvas components, minwhoo!');
-        // compileError();
+        compileTest();
       });
     }
 
@@ -160,39 +157,59 @@
       compile();
     });
 
-    function compileError() {
-      var message = document.getElementById("compile-message");
+    // var liveBlockInfoList = new Array("");
+    //
+    // function getBlockInfoList(BlockInfoList) {
+    //   liveBlockInfoList = BlockInfoList;
+    // }
+    //
 
-      message.className = message.className.replace("hide", "");
-      message.className = "show";
-
-      // setTimeout(function(){
-      //   message.className = message.className.replace("show", "");
-      // }, 3000);
-    }
-
-    function compileAble() {
-      var message = document.getElementById("compile-message");
-      if(message.className == "show") {
-        message.className.replace("show", "");
-        message.className = "hide";
+    function compileTest() {
+      var editor = ace.edit("editor");
+      var compilableText = editor.getValue();
+      var result = compileToolkit.evaluator.evaluateText(compilableText);
+      if (compileToolkit.isError(result)) {
+        console.log("code-error");
+        $('#compile-message').text(result.message);
+        var message = document.getElementById("compile-message");
+        message.className = "show";
+      } else {
+        var message = document.getElementById("compile-message");
+        if(message.className == "show") {
+          message.className = "hide";
+          setTimeout(function() {
+            message.className = "";
+          }, 500);
+        }
       }
     }
 
     function compile() {
       var editor = ace.edit("editor");
       var compilableText = editor.getValue();
-      console.log(compilableText);
       var result = compileToolkit.evaluator.evaluateText(compilableText);
       if (compileToolkit.isError(result)) {
-        $('.compile-message').text(result.message);
-        compileError();
+        $('#compile-message').text(result.message);
+        var message = document.getElementById("compile-message");
+        message.className = "show";
       } else {
-        compileAble();
         alert(result);
       }
-    }
 
+      // var i;
+      // for (i = 1; i <= liveBlockInfoList.length; i++) {
+      //   var compilableText = liveBlockInfoList[i-1];
+      //   console.log(compilableText);
+      //   var result = compileToolkit.evaluator.evaluateText(compilableText);
+      //   if (compileToolkit.isError(result)) {
+      //     $('.compile-message').text(result.message);
+      //     compileError();
+      //   } else {
+      //     compileAble();
+      //     alert(result);
+      //   }
+      // }
+    }
   </script>
   <script src="bundle.js"></script>
 </body>
