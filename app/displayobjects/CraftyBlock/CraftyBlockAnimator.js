@@ -168,10 +168,12 @@ class CraftyBlockAnimator {
 
     onParameterEnd(event) {
         if (this.clicked) {
-            let letiableName = prompt("Type in your constant!");
-            let constantBlockInfo = new CraftyBlockSpec(letiableName, blockType.constant);
-            let constantBlock = new CraftyBlock(constantBlockInfo);
-            constantBlock.attachTo(this);
+            let constantName = prompt("Type in your constant!");
+            if (constantName) {
+                let constantBlockInfo = new CraftyBlockSpec(constantName, blockType.constant);
+                let constantBlock = new CraftyBlock(constantBlockInfo);
+                constantBlock.attachTo(this);
+            }
             this.clicked = false;
             checkBlockInfoList(this);
         }
