@@ -108,9 +108,7 @@
   </div>
   <input class="live-preview buttons" type="button" value=">" />
   <div id="compile-message">Compile Error - plz check codes</div>
-
   <script>
-
     /* pastel compiler toolkit */
     var compileToolkit = {};
 
@@ -149,12 +147,12 @@
       editor.setTheme("ace/theme/monokai");
       editor.session.setMode("ace/mode/pastel");
 
-      compileAble();
+      // compileAble();
 
       /* re-start code-area keyup function : print console.log message when change codes in code-area */
       $('.code-area').keyup(function() {
         console.log('code-area changed - plz change canvas components, minwhoo!');
-        compileError();
+        // compileError();
       });
     }
 
@@ -175,14 +173,16 @@
 
     function compileAble() {
       var message = document.getElementById("compile-message");
-
-      message.className = message.className.replace("show", "");
-      message.className = "hide";
+      if(message.className == "show") {
+        message.className.replace("show", "");
+        message.className = "hide";
+      }
     }
 
     function compile() {
+      var editor = ace.edit("editor");
       var compilableText = editor.getValue();
-      console.log(compileToolkit);
+      console.log(compilableText);
       var result = compileToolkit.evaluator.evaluateText(compilableText);
       if (compileToolkit.isError(result)) {
         $('.compile-message').text(result.message);
