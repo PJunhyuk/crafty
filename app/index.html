@@ -157,13 +157,6 @@
       compile();
     });
 
-    // var liveBlockInfoList = new Array("");
-    //
-    // function getBlockInfoList(BlockInfoList) {
-    //   liveBlockInfoList = BlockInfoList;
-    // }
-    //
-
     function compileTest() {
       var editor = ace.edit("editor");
       var compilableText = editor.getValue();
@@ -212,8 +205,22 @@
         checkDeleteBtn = true;
 
         $('.delete_btn').click(function() {
+          checkDeleteBtn = false;
+          var stage = clickedBlock.parent;
           clickedBlock.parent.removeChild(clickedBlock);
           $('.delete_btn').remove();
+
+          var numberOfBlocks = stage.children.length - 2;
+
+          var i;
+          var BlockInfoList = new Array("");
+
+          for (i = 1; i <= numberOfBlocks; i++) {
+            BlockInfoList[i-1] = stage.getChildAt(i+1).stringify();
+          }
+
+          //  call canvasChanged function
+          canvasChanged(BlockInfoList);
         });
       }
     }
@@ -230,20 +237,6 @@
       } else {
         alert(result);
       }
-
-      // var i;
-      // for (i = 1; i <= liveBlockInfoList.length; i++) {
-      //   var compilableText = liveBlockInfoList[i-1];
-      //   console.log(compilableText);
-      //   var result = compileToolkit.evaluator.evaluateText(compilableText);
-      //   if (compileToolkit.isError(result)) {
-      //     $('.compile-message').text(result.message);
-      //     compileError();
-      //   } else {
-      //     compileAble();
-      //     alert(result);
-      //   }
-      // }
     }
   </script>
   <script src="bundle.js"></script>

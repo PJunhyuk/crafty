@@ -7,6 +7,8 @@ let MOUSEOVER_BLOCK = null;
 
 const blockType = {"function": 0, constant: 1, parameter: 2};
 
+var stage;
+
 class CraftyBlockAnimator {
     constructor() {
     }
@@ -48,6 +50,7 @@ class CraftyBlockAnimator {
     }
 
     onDragStart(event) {
+        stage = this._getStage();
         let relativeMousePosition = event.data.getLocalPosition(this);
         if (this.hitArea.contains(relativeMousePosition.x, relativeMousePosition.y)) {
             //console.log("DEBUG::: drag started by \"" + this.blockInfo.name + "\"");
@@ -106,7 +109,7 @@ class CraftyBlockAnimator {
                     this.originalBlock.update();
                 }
 
-                checkBlockInfoList(this);
+                checkBlockInfoList();
             }
             // case: clicked
             else {
@@ -178,19 +181,19 @@ class CraftyBlockAnimator {
                 constantBlock.attachTo(this);
             }
             this.clicked = false;
-            checkBlockInfoList(this);
+            checkBlockInfoList();
         }
     }
 }
 
-function checkBlockInfoList(block) {
-  var numberOfBlocks = block._getStage().children.length - 2;
+function checkBlockInfoList() {
+  var numberOfBlocks = stage.children.length - 2;
 
   var i;
   var BlockInfoList = new Array("");
 
   for (i = 1; i <= numberOfBlocks; i++) {
-    BlockInfoList[i-1] = block._getStage().getChildAt(i+1).stringify();
+    BlockInfoList[i-1] = stage.getChildAt(i+1).stringify();
   }
 
   //  call canvasChanged function
