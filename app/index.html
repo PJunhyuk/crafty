@@ -91,6 +91,15 @@
       from { bottom: 30px; opacity: 1; }
       to { bottom: 0; opacity: 0; }
     }
+
+    .define-function {
+      position: absolute;
+      top: 20px;
+      left: 65%;
+      width: 100px;
+      margin-left: -120px;
+      background-color: #F7CAC9;
+    }
   </style>
 </head>
 
@@ -108,6 +117,7 @@
   </div>
   <input class="live-preview buttons" type="button" value=">" />
   <div id="compile-message">Compile Error - plz check codes</div>
+  <input class="define-function buttons" type="button" value="define" />
   <script>
     /* pastel compiler toolkit */
     var compileToolkit = {};
@@ -122,6 +132,13 @@
       $('.code-area').keyup(function() {
         compileTest();
       });
+    });
+
+    $('.define-function').click(function() {
+      let FuncName = prompt("Type in your new functions name!");
+      let FuncInputNumber = prompt("Number of input");
+      let FuncOutputNumber = prompt("Number of output");
+      // makeNewFunc(FuncName, FuncInputNumber, FuncOutputNumber);
     });
 
     /* change code-area when canvas changed */
