@@ -19,7 +19,7 @@ export default class CraftyBlock extends PIXI.Container {
     }
 
     initialize() {
-        //  Crate text and set style
+        //  Create text and set style
         let text = new PIXI.Text(
             this.blockInfo.name,
             BLOCK_TEXT_STYLE
