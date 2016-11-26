@@ -5,8 +5,6 @@ import CraftyBlockSpec from './CraftyBlockSpec.js';
 let IS_DRAGGING = false;
 let MOUSEOVER_BLOCK = null;
 
-const blockType = {"function": 0, constant: 1, parameter: 2};
-
 var stage;
 
 class CraftyBlockAnimator {
@@ -19,7 +17,7 @@ class CraftyBlockAnimator {
         //console.log(`DEBUG:::interactivity enabled for {${this.blockInfo.name}}`);
 
         //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
-        if (block.blockInfo.type != blockType.parameter) {
+        if (block.blockInfo.type != CraftyBlock.PARAMETER) {
             console.log(`helloo from ${block.blockInfo.name}`);
             block
                 .on('mousedown', this.onDragStart)
@@ -176,7 +174,7 @@ class CraftyBlockAnimator {
         if (this.clicked) {
             let constantName = prompt("Type in your constant!");
             if (constantName) {
-                let constantBlockInfo = new CraftyBlockSpec(constantName, blockType.constant);
+                let constantBlockInfo = new CraftyBlockSpec(constantName, CraftyBlock.CONSTANT);
                 let constantBlock = new CraftyBlock(constantBlockInfo);
                 constantBlock.attachTo(this);
             }

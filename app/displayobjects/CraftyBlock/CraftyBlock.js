@@ -3,7 +3,6 @@ import CraftyBlockSpec from './CraftyBlockSpec.js';
 import { BLOCK_TEXT_STYLE, BLOCK_TEXT_MARGIN, BLOCK_STYLE, CONSTANT_BLOCK_STYLE, PARAMETER_BLOCK_STYLE, LINE_STYLE, BLOCK_MARGIN } from '../../constants/BlockConstants.js';
 import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 
-const blockType = {"function": 0, constant: 1, parameter: 2};
 
 export default class CraftyBlock extends PIXI.Container {
     constructor(blockInfo) {
@@ -29,9 +28,9 @@ export default class CraftyBlock extends PIXI.Container {
 
         //  Create block graphics and set style
         let blockGraphics = new PIXI.Graphics();
-        if (this.blockInfo.type == blockType.parameter) { // if block is parameter, apply different style
+        if (this.blockInfo.type == CraftyBlock.PARAMETER) { // if block is parameter, apply different style
             blockGraphics.beginFill(PARAMETER_BLOCK_STYLE.color, PARAMETER_BLOCK_STYLE.opacity);
-        } else if (this.blockInfo.type == blockType.constant) {
+        } else if (this.blockInfo.type == CraftyBlock.CONSTANT) {
             blockGraphics.beginFill(CONSTANT_BLOCK_STYLE.color, CONSTANT_BLOCK_STYLE.opacity);
         } else {
             blockGraphics.beginFill(BLOCK_STYLE.color, BLOCK_STYLE.opacity);
@@ -45,7 +44,7 @@ export default class CraftyBlock extends PIXI.Container {
 
         //  Add parameter block to this(block) and make it invisible
         this.blockInfo.parameters.forEach((name) => {
-            const parameterBlockInfo = new CraftyBlockSpec(name,blockType.parameter);
+            const parameterBlockInfo = new CraftyBlockSpec(name,CraftyBlock.PARAMETER);
             const newBlock = new CraftyBlock(parameterBlockInfo);
             this.parameterBlocks.push(newBlock);
             this.addChild(newBlock).visible = false;
@@ -194,9 +193,9 @@ export default class CraftyBlock extends PIXI.Container {
     //  returns a string version of the selected block
     stringify() {
         //  quick return space + letiable name or space + {parameter name}
-        if (this.blockInfo.type == blockType.constant) {
+        if (this.blockInfo.type == CraftyBlock.CONSTANT) {
             return " " + this.blockInfo.name;
-        } else if (this.blockInfo.type == blockType.parameter) {
+        } else if (this.blockInfo.type == CraftyBlock.PARAMETER) {
             return " {" + this.blockInfo.name + "}";
         }
 
@@ -205,7 +204,7 @@ export default class CraftyBlock extends PIXI.Container {
         //  add starting parenthesis if the block is a function or in stage
         if (this._getStage() == this.parent) {
             word += "(";
-        } else if (this.blockInfo.type == blockType.function) {
+        } else if (this.blockInfo.type == CraftyBlock.FUNCTION) {
             word += " (";
         }
 
@@ -227,3 +226,9 @@ export default class CraftyBlock extends PIXI.Container {
         return word;
     }
 }
+
+//  Define CraftyBlock types
+let blockId = 0;
+CraftyBlock.FUNCTION    = blockId++;
+CraftyBlock.CONSTANT    = blockId++;
+CraftyBlock.PARAMETER   = blockId++;

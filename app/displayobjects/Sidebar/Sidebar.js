@@ -3,11 +3,10 @@ import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
 import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import SidebarBackground from './SidebarBackground.js';
 
-const blockType = {"function": 0, constant: 1, parameter: 2};
 //  built-in blockInfos
-const IF_BLOCKINFO = new CraftyBlockSpec("if", blockType.function, ["condition", "true-body", "false-body"], "standard")
-const ADD_BLOCKINFO = new CraftyBlockSpec("+", blockType.function, ["a", "b"], "math")
-const EQUALS_BLOCKINFO = new CraftyBlockSpec("=", blockType.function, ["a", "b"], "math")
+const IF_BLOCKINFO = new CraftyBlockSpec("if", CraftyBlock.FUNCTION, ["condition", "true-body", "false-body"], "standard")
+const ADD_BLOCKINFO = new CraftyBlockSpec("+", CraftyBlock.FUNCTION, ["a", "b"], "math")
+const EQUALS_BLOCKINFO = new CraftyBlockSpec("=", CraftyBlock.FUNCTION, ["a", "b"], "math")
 
 //  sidebar-style
 const BLOCK_LIBRARY_MARGIN = {left: 30, top: 20, height: 10};
