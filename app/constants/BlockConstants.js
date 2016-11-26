@@ -1,6 +1,6 @@
-/*  
- *  Constants for CraftyBlock
-*/
+/** 
+ *  Block styles for CraftyBlock
+ */
 
 //  Block styles
 export const OPACITY = 1;
