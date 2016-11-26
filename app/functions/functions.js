@@ -9,6 +9,11 @@ export const STANDARD = [
         "parameters":   ["condition", "true-body", "false-body"],
         "docstring":    ""
     },
+    {
+        "name":         "print",
+        "parameters":   ["message"],
+        "docstring":    ""
+    },
 ];
 
 //  Math library
