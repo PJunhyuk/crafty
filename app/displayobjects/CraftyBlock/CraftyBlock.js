@@ -4,13 +4,12 @@ import * as BLOCK_CONST from '../../constants/BlockConstants.js';
 import * as LINE_CONST from '../../constants/LineConstants.js';
 import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 
-
 export default class CraftyBlock extends PIXI.Container {
-    constructor(blockInfo) {
+    constructor(blockInfo, childBlocks = []) {
         super();
         this.id = "block";
         this.blockInfo = blockInfo;
-        this.childBlocks = [];
+        this.childBlocks = childBlocks;
         this.parameterBlocks = [];
         this.lines = [];
 
@@ -51,8 +50,12 @@ export default class CraftyBlock extends PIXI.Container {
             this.addChild(newBlock).visible = false;
         });
 
+        //  Add child blocks to this
+        this.childBlocks.forEach((block) => {
+            this.addChild(block);
+        });
+
         //  set interactivity of blocks
-        //this.setInteractivity();
         CraftyBlockAnimator.makeInteractive(this)
     }
 
@@ -91,6 +94,7 @@ export default class CraftyBlock extends PIXI.Container {
 
             //  child block: set position, make corresponding parameterBlock invisible
             if (this.childBlocks[i]) {
+                console.log(`DEBUG::: childBlock {${this.childBlocks[i].blockInfo.name}} is being added`);
                 this.childBlocks[i].visible = true;
                 this.childBlocks[i].position = childBlockPosition.clone();
                 lastChildHeight = this.childBlocks[i].height;
