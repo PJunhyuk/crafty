@@ -14,7 +14,7 @@ class CraftyBlockAnimator {
     makeInteractive(block) {
         block.interactive = true;
         block.hitArea = block.getChildAt(0).getBounds().clone();
-        //console.log(`DEBUG:::interactivity enabled for {${this.blockInfo.name}}`);
+        console.log(`DEBUG:::interactivity enabled for {${block.blockInfo.name}}`);
 
         //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
         if (block.blockInfo.type != CraftyBlock.PARAMETER) {
