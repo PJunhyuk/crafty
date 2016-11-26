@@ -1,6 +1,7 @@
 import PIXI from 'pixi.js';
 import CraftyBlockSpec from './CraftyBlockSpec.js';
-import { BLOCK_TEXT_STYLE, BLOCK_TEXT_MARGIN, BLOCK_STYLE, CONSTANT_BLOCK_STYLE, PARAMETER_BLOCK_STYLE, LINE_STYLE, BLOCK_MARGIN } from '../../constants/BlockConstants.js';
+import * as BLOCK_CONST from '../../constants/BlockConstants.js';
+import * as LINE_CONST from '../../constants/LineConstants.js';
 import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 
 
@@ -22,20 +23,20 @@ export default class CraftyBlock extends PIXI.Container {
         //  Create text and set style
         let text = new PIXI.Text(
             this.blockInfo.name,
-            BLOCK_TEXT_STYLE
+            BLOCK_CONST.TEXT_STYLE
         );
-        text.position.set(BLOCK_TEXT_MARGIN.top,BLOCK_TEXT_MARGIN.left);
+        text.position.set(BLOCK_CONST.PADDING,BLOCK_CONST.PADDING);
 
         //  Create block graphics and set style
         let blockGraphics = new PIXI.Graphics();
         if (this.blockInfo.type == CraftyBlock.PARAMETER) { // if block is parameter, apply different style
-            blockGraphics.beginFill(PARAMETER_BLOCK_STYLE.color, PARAMETER_BLOCK_STYLE.opacity);
+            blockGraphics.beginFill(BLOCK_CONST.TYPE_PARAMETER_COLOR, BLOCK_CONST.OPACITY);
         } else if (this.blockInfo.type == CraftyBlock.CONSTANT) {
-            blockGraphics.beginFill(CONSTANT_BLOCK_STYLE.color, CONSTANT_BLOCK_STYLE.opacity);
+            blockGraphics.beginFill(BLOCK_CONST.TYPE_CONSTANT_COLOR, BLOCK_CONST.OPACITY);
         } else {
-            blockGraphics.beginFill(BLOCK_STYLE.color, BLOCK_STYLE.opacity);
+            blockGraphics.beginFill(BLOCK_CONST.TYPE_FUNCTION_COLOR, BLOCK_CONST.OPACITY);
         }
-        blockGraphics.drawRoundedRect(0,0,text.width + BLOCK_TEXT_MARGIN.left + BLOCK_TEXT_MARGIN.right, text.height + BLOCK_TEXT_MARGIN.top + BLOCK_TEXT_MARGIN.bottom, BLOCK_STYLE.cornerRadius);
+        blockGraphics.drawRoundedRect(0,0,text.width + 2 * BLOCK_CONST.PADDING, text.height + 2 * BLOCK_CONST.PADDING, BLOCK_CONST.CORNER_RADIUS);
         blockGraphics.endFill();
 
         //  Add PIXI Objects to parent container
@@ -61,11 +62,11 @@ export default class CraftyBlock extends PIXI.Container {
 
         const blockWidth = this.getChildAt(0).width;
         const blockHeight = this.getChildAt(0).height;
-        let lineStartPosition = new PIXI.Point(blockWidth, blockHeight/2 - (LINE_STYLE.width + LINE_STYLE.spacing)*this.parameterBlocks.length/2 + childIndex*(LINE_STYLE.width + LINE_STYLE.spacing));
-        let childBlockPosition = new PIXI.Point(blockWidth + BLOCK_MARGIN.width, 0);
+        let lineStartPosition = new PIXI.Point(blockWidth, blockHeight/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*this.parameterBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
+        let childBlockPosition = new PIXI.Point(blockWidth + BLOCK_CONST.SPACING_H, 0);
 
         if (childIndex != 0) {
-            let previousHeight = this.childBlocks[childIndex-1].y + this.childBlocks[childIndex-1].height + BLOCK_MARGIN.height;
+            let previousHeight = this.childBlocks[childIndex-1].y + this.childBlocks[childIndex-1].height + BLOCK_CONST.SPACING_V;
             childBlockPosition.y = previousHeight;
         }
 
@@ -97,12 +98,12 @@ export default class CraftyBlock extends PIXI.Container {
             }
 
             //  increment height of lineStartPositon and childBlockPosition
-            lineStartPosition.y += LINE_STYLE.width + LINE_STYLE.spacing;
-            childBlockPosition.y += BLOCK_MARGIN.height + lastChildHeight;
+            lineStartPosition.y += LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING;
+            childBlockPosition.y += BLOCK_CONST.SPACING_V + lastChildHeight;
         }
 
         function drawBezierCurve(startPosition,endPosition) {
-            let curve = new PIXI.Graphics().lineStyle(LINE_STYLE.width,LINE_STYLE.color);
+            let curve = new PIXI.Graphics().lineStyle(LINE_CONST.STROKE_WIDTH,LINE_CONST.COLOR);
 
             let lineWidth = endPosition.x - startPosition.x;
             let lineHeight = endPosition.y - startPosition.y;
@@ -110,16 +111,16 @@ export default class CraftyBlock extends PIXI.Container {
 
             curve.moveTo(startPosition.x, startPosition.y);
             curve.bezierCurveTo(
-                startPosition.x + LINE_STYLE.bezierHScale*lineWidth,
+                startPosition.x + LINE_CONST.BEZIER_SCALE_H*lineWidth,
                 startPosition.y,
                 midPosition.x,
-                midPosition.y - LINE_STYLE.bezierVScale*lineHeight,
+                midPosition.y - LINE_CONST.BEZIER_SCALE_V*lineHeight,
                 midPosition.x,
                 midPosition.y);
             curve.bezierCurveTo(
                 midPosition.x,
-                midPosition.y + LINE_STYLE.bezierVScale*lineHeight,
-                endPosition.x - LINE_STYLE.bezierHScale*lineWidth,
+                midPosition.y + LINE_CONST.BEZIER_SCALE_V*lineHeight,
+                endPosition.x - LINE_CONST.BEZIER_SCALE_H*lineWidth,
                 endPosition.y,
                 endPosition.x,
                 endPosition.y);

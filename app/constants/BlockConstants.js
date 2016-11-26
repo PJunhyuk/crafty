@@ -1,7 +1,24 @@
-export const BLOCK_TEXT_STYLE = {font: "16px Helvetica", fill: "white"};
-export const BLOCK_TEXT_MARGIN = {top: 10, left: 10, right: 10, bottom: 10};
-export const BLOCK_STYLE = {color: 0x2763c4, opacity: 1, cornerRadius: 10};
-export const PARAMETER_BLOCK_STYLE = {color: 0x6691d6, opacity: 1, cornerRadius: 10};
-export const CONSTANT_BLOCK_STYLE = {color: 0x35a553, opacity: 1, cornerRadius: 10};
-export const LINE_STYLE = {color: 0xFFFFFF, width: 3, spacing: 2, bezierHScale: 0.1, bezierVScale: 0.5};
-export const BLOCK_MARGIN = {height: 10, width: 100};
+/*  
+ *  Constants for CraftyBlock
+*/
+
+//  Block styles
+export const OPACITY = 1;
+export const CORNER_RADIUS = 10;
+
+//  Block text padding
+export const PADDING = 10;
+
+//  Block text styles
+export const TEXT_STYLE = {font: "16px Helvetica", fill: "white"};
+//export const TEXT_FONT = "16px Helvetica";
+//export const TEXT_FILL = "white";
+
+//  Block colors by Type
+export const TYPE_FUNCTION_COLOR = 0x2763C4;
+export const TYPE_CONSTANT_COLOR = 0x35A553;
+export const TYPE_PARAMETER_COLOR = 0x6691D6;
+
+//  Block spacing
+export const SPACING_V = 10;
+export const SPACING_H = 100;
