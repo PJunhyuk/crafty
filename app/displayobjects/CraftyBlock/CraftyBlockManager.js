@@ -20,12 +20,17 @@ export default class CraftyBlockManager {
         this.blocks = [];
 
         this.loadTree();
+
+        CraftyStore.addChangeListener(this.loadTree.bind(this));
     }
 
     /**
      * Loads saved tree from CraftyStore, blockifies trees, and positions the blocks
      */
     loadTree() {
+        //  empty stage first
+        this.emptyStage();
+
         let savedTree = CraftyStore.get('tree');
         let savedBlocks = this.blockify(savedTree, -1);
         const MARGIN_LEFT = 70;

@@ -13,6 +13,8 @@ import App from './displayobjects/App/App';
 
 import PastelEvaluator from "./pastel/evaluator.js";
 import PastelError from "./pastel/error.js";
+import Parser from './pastel/parser.js';
+import CraftyStore from './stores/CraftyStore.js';
 
 //import AnimationStore from './stores/AnimationStore';
 //import TWEEN from 'tween.js';
@@ -21,6 +23,8 @@ const renderer = new Renderer(config.stageWidth, config.stageHeight,{backgroundC
 const app = new App(config.stageWidth, config.stageHeight);
 
 compileToolkit.evaluator = new PastelEvaluator();
+compileToolkit.parser = new Parser();
+compileToolkit.CraftyStore = CraftyStore;
 compileToolkit.isError = function(result) {
 	return result instanceof PastelError;
 }

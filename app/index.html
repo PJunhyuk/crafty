@@ -185,6 +185,9 @@
         message.className = "show";
       } else {
         var message = document.getElementById("compile-message");
+        var tree = compileToolkit.parser.analyze(compilableText);
+        compileToolkit.CraftyStore.set('tree', tree);
+        compileToolkit.CraftyStore.emitChange();
         if(message.className == "show") {
           message.className = "hide";
           setTimeout(function() {
