@@ -34,7 +34,7 @@ export default class CraftyBlock extends PIXI.Container {
             this.blockInfo.name,
             BLOCK_CONST.TEXT_STYLE
         );
-        text.position.set(BLOCK_CONST.PADDING,BLOCK_CONST.PADDING);
+        text.position.set(BLOCK_CONST.PADDING_H,BLOCK_CONST.PADDING_V);
 
         //  Create block graphics and set style
         let blockGraphics = new PIXI.Graphics();
@@ -45,7 +45,7 @@ export default class CraftyBlock extends PIXI.Container {
         } else {
             blockGraphics.beginFill(BLOCK_CONST.TYPE_FUNCTION_COLOR, BLOCK_CONST.OPACITY);
         }
-        blockGraphics.drawRoundedRect(0,0,text.width + 2 * BLOCK_CONST.PADDING, text.height + 2 * BLOCK_CONST.PADDING, BLOCK_CONST.CORNER_RADIUS);
+        blockGraphics.drawRoundedRect(0,0,text.width + 2 * BLOCK_CONST.PADDING_H, text.height + 2 * BLOCK_CONST.PADDING_V, BLOCK_CONST.CORNER_RADIUS);
         blockGraphics.endFill();
 
         //  Add PIXI Objects to parent container
