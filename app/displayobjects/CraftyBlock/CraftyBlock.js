@@ -15,7 +15,17 @@ export default class CraftyBlock extends PIXI.Container {
 
         this.initialize();
 
-        //console.log(`DEBUG:::Created {${this.blockInfo.name}} block`);
+        console.log(`DEBUG:::Created {${this.blockInfo.name}} block`);
+    }
+
+    static constantWithValue(value) {
+        let blockInfo = new CraftyBlockSpec(value, CraftyBlock.CONSTANT);
+        return new CraftyBlock(blockInfo);
+    }
+
+    static functionWithName(name) {
+        let blockInfo = new CraftyBlockSpec.functionWithName(name);
+        return new CraftyBlock(blockInfo);
     }
 
     initialize() {
