@@ -230,6 +230,17 @@ export default class CraftyBlock extends PIXI.Container {
 
         return word;
     }
+
+    print(indent = "*") {
+        console.log(indent, this.blockInfo.name);
+        this.parameterBlocks.forEach( (block,index) => {
+            if (this.childBlocks[index]) {
+                this.childBlocks[index].print(indent + "**");
+            } else {
+                block.print(indent + "**");
+            }
+        });
+    }
 }
 
 //  Define CraftyBlock types
