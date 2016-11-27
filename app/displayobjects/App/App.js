@@ -34,6 +34,7 @@ export default class App extends PIXI.Container {
 
         //  Add sidebar
         let sidebar = new Sidebar();
+        stage.addChild(sidebar);
 
         //  Initialize CraftyBlockManager
         let manager = new CraftyBlockManager(stage, sidebar);
@@ -56,17 +57,12 @@ export default class App extends PIXI.Container {
         $("body").append(open_palette_btn);
 
         $('.open-palette').click(function() {
-            if(stage.children.length == 1) {
-                stage.addChild(sidebar);
-                open_palette_btn.val('-');
+            if(sidebar.visible) {
+                sidebar.visible = false;
+                open_palette_btn.val('+');
             } else {
-                if(stage.getChildAt(1).id == "sidebar") {
-                    stage.removeChild(sidebar);
-                    open_palette_btn.val('+');
-                } else {
-                    stage.addChildAt(sidebar, 1);
-                    open_palette_btn.val('-');
-                }
+                sidebar.visible = true;
+                open_palette_btn.val('-');
             }
         });
     }
