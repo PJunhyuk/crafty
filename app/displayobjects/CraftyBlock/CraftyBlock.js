@@ -69,6 +69,15 @@ export default class CraftyBlock extends PIXI.Container {
         CraftyBlockAnimator.makeInteractive(this)
     }
 
+    setChildBlocks (arr) {
+        console.log("DEBUG::: childBlocks are set");
+        this.childBlocks = arr;
+        this.childBlocks.forEach((block) => {
+            this.addChild(block);
+        });
+        this.renderFrom(0);
+    }
+
     //** render: positions child/parameter blocks and draws lines
     renderFrom(childIndex) {
         //console.log(`DEBUG::: Render {${this.blockInfo.name}} from index ${childIndex}`);
