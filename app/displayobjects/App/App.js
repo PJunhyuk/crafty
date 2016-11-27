@@ -35,6 +35,7 @@ export default class App extends PIXI.Container {
         //  Add sidebar
         let sidebar = new Sidebar();
         stage.addChild(sidebar);
+        sidebar.visible = false;
 
         //  Initialize CraftyBlockManager
         let manager = new CraftyBlockManager(stage, sidebar);
