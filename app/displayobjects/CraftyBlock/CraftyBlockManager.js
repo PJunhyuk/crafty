@@ -44,6 +44,21 @@ export default class CraftyBlockManager {
         console.log("DEBUG::: block-loading saved tree is done!");
     }
 
+    /**
+     * Delete all crafty blocks on stage
+     */
+    emptyStage() {
+        //  iterate in reverse order
+        for (let i=this.stage.children.length-1; i>=0;i--) {
+            if (this.stage.getChildAt(i) instanceof CraftyBlock) {
+                this.stage.removeChildAt(i);
+            }
+        }
+    }
+
+    /**
+     * Add block to stage
+     */
     addToStage(block) {
         this.stage.addChild(block);
     }
