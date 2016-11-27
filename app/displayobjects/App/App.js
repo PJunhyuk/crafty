@@ -1,10 +1,15 @@
 import PIXI from 'pixi.js';
 import Background from '../Background/Background.js';
 import Sidebar from '../Sidebar/Sidebar.js';
+import CraftyBlockManager from '../CraftyBlock/CraftyBlockManager.js';
+
+import Parser from '../../pastel/parser.js';
+import CraftyStore from '../../stores/CraftyStore.js';
+
 /**
  * Main App Display Object
  *
- * Adds a background and some bunnies to it's self
+ * Adds background, sidebar, and CraftyBlockManager to it's self
  *
  * @exports App
  * @extends ScaledContainer
@@ -13,15 +18,28 @@ export default class App extends PIXI.Container {
     constructor(...args) {
         super();
 
+        //  Create a tree of simple pastel code, and store it in CraftyStore as placeholder
+        let parser = new Parser();
+        let tree = parser.analyze("(print (+ 1 1)) (if (= 3 4) (print 'correct!') (print 'incorrect!'))");
+        CraftyStore.set('tree', tree);
+
+        //  Sets the Crafty canvas stage
         var stage = this;
         stage.id = "stage";
         stage.interactive = false;
 
+        //  Add background to stage
         let bg = new Background();
-        let sidebar = new Sidebar();
-
         stage.addChild(bg);
 
+        //  Add sidebar
+        let sidebar = new Sidebar();
+
+        //  Initialize CraftyBlockManager
+        let manager = new CraftyBlockManager(stage, sidebar);
+
+
+        //  Add open/close sidebar button
         var open_palette_btn = $('<input class="open-palette" type="button" value="+"/>');
         open_palette_btn.css('width', 50);
         open_palette_btn.css('height', 50);
