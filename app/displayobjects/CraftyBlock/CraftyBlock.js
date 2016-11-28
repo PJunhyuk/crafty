@@ -164,6 +164,16 @@ export default class CraftyBlock extends PIXI.Container {
         }
     }
 
+    update() {
+        //console.log(`DEBUG::: Update called by {${this.name}}`);
+
+        if (this.parent instanceof CraftyBlock) {
+            this.parent.renderFrom(this.parent.childBlocks.indexOf(this)+1);
+            this.parent.update();
+        }
+    }
+
+    /*
     //  replace parameterBlock location with block(this)
     attachTo(parameterBlock) {
         //console.log(`DEBUG::: Attached to {${parameterBlock.name}}`);
@@ -174,15 +184,6 @@ export default class CraftyBlock extends PIXI.Container {
         this.position = parameterBlock.position;
 
         this.update();
-    }
-
-    update() {
-        //console.log(`DEBUG::: Update called by {${this.blockInfo.name}}`);
-
-        if (this.parent.id != "stage") {
-            this.parent.renderFrom(this.parent.childBlocks.indexOf(this)+1);
-            this.parent.update();
-        }
     }
 
     //  detach block(this) from parent block and restore parameter block
