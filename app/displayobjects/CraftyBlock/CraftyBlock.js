@@ -15,7 +15,20 @@ export default class CraftyBlock extends PIXI.Container {
 
         this.initialize();
 
-        console.log(`DEBUG:::Created {${this.blockInfo.name}} block`);
+        //console.log(`DEBUG:::Created {${this.name}} block`);
+    }
+
+    /** 
+     * Convenient getters for block properties
+     */
+    get name() {
+        return this.blockInfo.name;
+    }
+    get type() {
+        return this.blockInfo.type;
+    }
+    get parameters() {
+        return this.blockInfo.parameters;
     }
 
     static constantWithValue(value) {
@@ -31,16 +44,16 @@ export default class CraftyBlock extends PIXI.Container {
     initialize() {
         //  Create text and set style
         let text = new PIXI.Text(
-            this.blockInfo.name,
+            this.name,
             BLOCK_CONST.TEXT_STYLE
         );
         text.position.set(BLOCK_CONST.PADDING_H,BLOCK_CONST.PADDING_V);
 
         //  Create block graphics and set style
         let blockGraphics = new PIXI.Graphics();
-        if (this.blockInfo.type == CraftyBlock.PARAMETER) { // if block is parameter, apply different style
+        if (this.type == CraftyBlock.PARAMETER) { // if block is parameter, apply different style
             blockGraphics.beginFill(BLOCK_CONST.TYPE_PARAMETER_COLOR, BLOCK_CONST.OPACITY);
-        } else if (this.blockInfo.type == CraftyBlock.CONSTANT) {
+        } else if (this.type == CraftyBlock.CONSTANT) {
             blockGraphics.beginFill(BLOCK_CONST.TYPE_CONSTANT_COLOR, BLOCK_CONST.OPACITY);
         } else {
             blockGraphics.beginFill(BLOCK_CONST.TYPE_FUNCTION_COLOR, BLOCK_CONST.OPACITY);
@@ -53,7 +66,7 @@ export default class CraftyBlock extends PIXI.Container {
         this.addChild(text);
 
         //  Add parameter block to this(block) and make it invisible
-        this.blockInfo.parameters.forEach((name) => {
+        this.parameters.forEach((name) => {
             const parameterBlockInfo = new CraftyBlockSpec(name,CraftyBlock.PARAMETER);
             const newBlock = new CraftyBlock(parameterBlockInfo);
             this.parameterBlocks.push(newBlock);
@@ -80,7 +93,7 @@ export default class CraftyBlock extends PIXI.Container {
 
     //** render: positions child/parameter blocks and draws lines
     renderFrom(childIndex) {
-        //console.log(`DEBUG::: Render {${this.blockInfo.name}} from index ${childIndex}`);
+        //console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
 
         const blockWidth = this.getChildAt(0).width;
         const blockHeight = this.getChildAt(0).height;
@@ -113,7 +126,7 @@ export default class CraftyBlock extends PIXI.Container {
 
             //  child block: set position, make corresponding parameterBlock invisible
             if (this.childBlocks[i]) {
-                console.log(`DEBUG::: childBlock {${this.childBlocks[i].blockInfo.name}} is being added`);
+                //console.log(`DEBUG::: childBlock {${this.childBlocks[i].name}} is being added`);
                 this.childBlocks[i].visible = true;
                 this.childBlocks[i].position = childBlockPosition.clone();
                 lastChildHeight = this.childBlocks[i].height;
@@ -153,7 +166,7 @@ export default class CraftyBlock extends PIXI.Container {
 
     //  replace parameterBlock location with block(this)
     attachTo(parameterBlock) {
-        //console.log(`DEBUG::: Attached to {${parameterBlock.blockInfo.name}}`);
+        //console.log(`DEBUG::: Attached to {${parameterBlock.name}}`);
         parameterBlock.visible = false;
         parameterBlock.parent.addChild(this);
         let index = parameterBlock.parent.parameterBlocks.indexOf(parameterBlock);
@@ -174,7 +187,7 @@ export default class CraftyBlock extends PIXI.Container {
 
     //  detach block(this) from parent block and restore parameter block
     detachFromParentBlock() {
-        //console.log(`DEBUG::: Detached from {${this.parent.blockInfo.name}}`);
+        //console.log(`DEBUG::: Detached from {${this.parent.name}}`);
 
         let index = this.parent.childBlocks.indexOf(this);
         let parameterBlock = this.parent.parameterBlocks[index];
@@ -213,14 +226,15 @@ export default class CraftyBlock extends PIXI.Container {
         }
         return parent;
     }
+    */
 
     //  returns a string version of the selected block
     stringify() {
         //  quick return space + letiable name or space + {parameter name}
-        if (this.blockInfo.type == CraftyBlock.CONSTANT) {
-            return " " + this.blockInfo.name;
-        } else if (this.blockInfo.type == CraftyBlock.PARAMETER) {
-            return " {" + this.blockInfo.name + "}";
+        if (this.type == CraftyBlock.CONSTANT) {
+            return " " + this.name;
+        } else if (this.type == CraftyBlock.PARAMETER) {
+            return " {" + this.name + "}";
         }
 
         let word = "";
@@ -228,15 +242,15 @@ export default class CraftyBlock extends PIXI.Container {
         //  add starting parenthesis if the block is a function or in stage
         if (this._getStage() == this.parent) {
             word += "(";
-        } else if (this.blockInfo.type == CraftyBlock.FUNCTION) {
+        } else if (this.type == CraftyBlock.FUNCTION) {
             word += " (";
         }
 
         //  add block name
-        word += this.blockInfo.name;
+        word += this.name;
 
         //  add child blocks
-        for (let i=0;i<this.blockInfo.parameters.length;i++) {
+        for (let i=0;i<this.parameters.length;i++) {
             if (this.childBlocks[i]) {
                 word += this.childBlocks[i].stringify();
             } else {
@@ -251,7 +265,7 @@ export default class CraftyBlock extends PIXI.Container {
     }
 
     print(indent = "*") {
-        console.log(indent, this.blockInfo.name);
+        console.log(indent, this.name);
         this.parameterBlocks.forEach( (block,index) => {
             if (this.childBlocks[index]) {
                 this.childBlocks[index].print(indent + "**");
