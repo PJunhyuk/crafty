@@ -132,16 +132,18 @@ class CraftyBlockAnimator extends EventEmitter {
     }
 
     onParameterEnd(event) {
-        let parameterBlock = event.target;
+        let block = event.target;
 
-        if (parameterBlock.clicked) {
-            let value = prompt("Type in your constant!");
+        if (block.clicked) {
+            let relativeMousePosition = event.data.getLocalPosition(block);
+            if (block.isHit(relativeMousePosition)) {
+                let value = prompt("Type in your constant!");
 
-            if (value) {
-                let constantBlock = CraftyBlock.constantWithValue(value);
-                constantBlock.attachTo(parameterBlock);
+                if (value) {
+                    let constantBlock = CraftyBlock.constantWithValue(value);
+                    constantBlock.attachTo(block);
+                }
             }
-
             block.clicked = false;
         }
     }
