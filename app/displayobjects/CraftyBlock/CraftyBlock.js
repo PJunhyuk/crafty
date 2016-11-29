@@ -41,6 +41,11 @@ export default class CraftyBlock extends PIXI.Container {
         return new CraftyBlock(blockInfo);
     }
 
+    static parameterWithName(name) {
+        let blockInfo = new CraftyBlockSpec(name, CraftyBlock.PARAMETER);
+        return new CraftyBlock(blockInfo);
+    }
+
     initialize() {
         //  Create text and set style
         let text = new PIXI.Text(
