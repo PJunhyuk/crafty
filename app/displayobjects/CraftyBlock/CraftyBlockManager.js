@@ -135,7 +135,10 @@ export default class CraftyBlockManager {
                     }
                 });
 
-                functionBlock.setChildBlocks(childBlocks);
+                childBlocks.forEach( (block,index) => {
+                    functionBlock.addChildBlock(block,index);
+                });
+                //functionBlock.setChildBlocks(childBlocks);
 
                 return functionBlock;
             }

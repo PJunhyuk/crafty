@@ -5,11 +5,11 @@ import * as LINE_CONST from '../../constants/LineConstants.js';
 import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 
 export default class CraftyBlock extends PIXI.Container {
-    constructor(blockInfo, childBlocks = []) {
+    constructor(blockInfo) {
         super();
         this.id = "block";
         this.blockInfo = blockInfo;
-        this.childBlocks = childBlocks;
+        this.childBlocks = [];
         this.parameterBlocks = [];
         this.lines = [];
 
@@ -67,33 +67,66 @@ export default class CraftyBlock extends PIXI.Container {
 
         //  Add parameter block to this(block) and make it invisible
         this.parameters.forEach((name) => {
-            const parameterBlockInfo = new CraftyBlockSpec(name,CraftyBlock.PARAMETER);
-            const newBlock = new CraftyBlock(parameterBlockInfo);
+            const newBlock = CraftyBlock.parameterWithName(name);
+            this.addChild(newBlock);
             this.parameterBlocks.push(newBlock);
-            this.addChild(newBlock).visible = false;
-        });
-
-        //  Add child blocks to this
-        this.childBlocks.forEach((block) => {
-            this.addChild(block);
+            newBlock.visible = false;
         });
 
         //  set interactivity of blocks
         CraftyBlockAnimator.makeInteractive(this)
     }
 
-    setChildBlocks (arr) {
-        console.log("DEBUG::: childBlocks are set");
-        this.childBlocks = arr;
-        this.childBlocks.forEach((block) => {
-            this.addChild(block);
-        });
-        this.renderFrom(0);
+    // TODO
+    clone() {
+    }
+
+    /**
+     * Returns the index position of a child CraftyBlock instance
+     */
+    getChildBlockIndex(block) {
+        let index = this.childBlocks.indexOf(block);
+        if (index === -1) {
+            throw new Error('The supplied Block must be a child of the caller');
+        }
+
+        return index;
+    }
+
+    /**
+     * Removes block from original parent and adds to this instance
+     */
+    addChildBlock(block, index) {
+        console.log(`DEBUG::: Adding {${block.name}} to {${this.name}} at index ${index}`);
+        if (block.parent instanceof CraftyBlock) {
+            block.parent.removeChildBlock(block);
+        }
+
+        this.addChild(block);
+        this.childBlocks[index] = block;
+
+        block.update(true);
+    }
+
+    /**
+     * Removes a child block from this instance
+     */
+    removeChildBlock(block) {
+        const index = this.getChildBlockIndex(block);
+
+        this.removeChild(block);
+        this.childBlocks[index] = null;
+
+        let parameterBlock = this.parameterBlocks[index];
+        parameterBlock.visible = true;
+        this.parameterBlock.update();
+    }
+
     }
 
     //** render: positions child/parameter blocks and draws lines
-    renderFrom(childIndex) {
-        //console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
+    render(childIndex = 0) {
+        console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
 
         const blockWidth = this.getChildAt(0).width;
         const blockHeight = this.getChildAt(0).height;
@@ -164,11 +197,14 @@ export default class CraftyBlock extends PIXI.Container {
         }
     }
 
-    update() {
-        //console.log(`DEBUG::: Update called by {${this.name}}`);
+    /**
+     * Re-renders blocks starting from the index of current block, and repeating for its parent
+     */
+    update(includeSelf = false) {
+        console.log(`DEBUG::: Update called by {${this.name}}`);
 
         if (this.parent instanceof CraftyBlock) {
-            this.parent.renderFrom(this.parent.childBlocks.indexOf(this)+1);
+            this.parent.render(this.parent.getChildBlockIndex(this)+ (includeSelf ? 0 : 1));
             this.parent.update();
         }
     }
