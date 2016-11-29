@@ -20,7 +20,7 @@ class Crafty {
 
     $(document).ready(() => {
       /* print console.log message when change codes in code-area */
-      $('.code-area').keyup(function() {
+      $('.code-area').keyup(() => {
         this.compileTest();
       });
       $('.define-function').click(function() {
@@ -46,17 +46,17 @@ class Crafty {
   compileTest() {
     var editor = ace.edit("editor");
     var compilableText = editor.getValue();
-    var result = compileToolkit.evaluator.evaluateText(compilableText);
-    if (compileToolkit.isError(result)) {
+    var result = this.compileToolkit.evaluator.evaluateText(compilableText);
+    if (this.compileToolkit.isError(result)) {
       console.log("code-error");
       $('#compile-message').text(result.message);
       var message = document.getElementById("compile-message");
       message.className = "show";
     } else {
       var message = document.getElementById("compile-message");
-      var tree = compileToolkit.parser.analyze(compilableText);
-      compileToolkit.CraftyStore.set('tree', tree);
-      compileToolkit.CraftyStore.emitChange();
+      var tree = this.compileToolkit.parser.analyze(compilableText);
+      this.compileToolkit.CraftyStore.set('tree', tree);
+      this.compileToolkit.CraftyStore.emitChange();
       if(message.className == "show") {
         message.className = "hide";
         setTimeout(function() {
@@ -150,7 +150,7 @@ class Crafty {
     editor.session.setMode("ace/mode/pastel");
 
     /* re-start code-area keyup function : print console.log message when change codes in code-area */
-    $('.code-area').keyup(function() {
+    $('.code-area').keyup(() => {
       this.compileTest();
     });
   }

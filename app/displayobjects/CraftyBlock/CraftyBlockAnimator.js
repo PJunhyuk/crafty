@@ -61,7 +61,7 @@ class CraftyBlockAnimator extends EventEmitter {
     onDragMove(event) {
         let block = event.target;
         //console.log("DEBUG::: drag moving by \"" + block.blockInfo.name + "\"");
- 
+
          if (block.selected)
          {
             //  set isClick to false since block started to move
