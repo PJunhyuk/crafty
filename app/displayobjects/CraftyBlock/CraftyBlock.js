@@ -125,6 +125,7 @@ export default class CraftyBlock extends PIXI.Container {
         let parameterBlock = this.parameterBlocks[index];
         parameterBlock.visible = true;
         this.parameterBlock.update();
+        parameterBlock.update();
     }
 
     }
@@ -209,7 +210,8 @@ export default class CraftyBlock extends PIXI.Container {
         console.log(`DEBUG::: Update called by {${this.name}}`);
 
         if (this.parent instanceof CraftyBlock) {
-            this.parent.render(this.parent.getChildBlockIndex(this)+ (includeSelf ? 0 : 1));
+            let index = (this.type == CraftyBlock.PARAMETER ? this.parent.getParameterBlockIndex(this) : this.parent.getChildBlockIndex(this));
+            this.parent.render(index + (includeSelf ? 0 : 1));
             this.parent.update();
         }
     }
