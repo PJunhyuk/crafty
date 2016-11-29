@@ -4,6 +4,8 @@ import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import Node from '../../pastel/node.js';
 import Token from '../../pastel/token.js';
 import CraftyStore from '../../stores/CraftyStore.js';
+import CraftyBlockAnimator from './CraftyBlockAnimator.js';
+import crafty from './../../crafty/crafty.js';
 
 /**
  * CraftyBlock Manager Class
@@ -13,15 +15,77 @@ import CraftyStore from '../../stores/CraftyStore.js';
  * @exports CraftyBlockManager
  */
 export default class CraftyBlockManager {
-    constructor(stage, sidebar) {
+    constructor(stage) {
         this.stage = stage;
-        this.sidebar = sidebar;
         console.log("DEBUG::: Created CraftyBlockManager!");
         this.blocks = [];
 
         this.loadTree();
 
+        /*
+        let blockOne = new CraftyBlock.functionWithName("if");
+        blockOne.render();
+        this.addToStage(blockOne);
+        let blockTwo = new CraftyBlock.functionWithName("+");
+        blockTwo.render();
+        let blockThree = new CraftyBlock.functionWithName("=");
+        blockThree.render();
+        console.log("adding blockTwo")
+        blockOne.addChildBlock(blockTwo, 2);
+        console.log("adding blockThree")
+        blockTwo.addChildBlock(blockThree,0);
+
+        this.addToStage(blockTwo);
+        blockOne.addChildBlock(blockThree, 1);
+        blockOne.addChildBlock(blockThree, 2);
+        blockOne.addChildBlock(blockThree, 0);
+
+        blockOne.print();
+        console.log(this.stage.children);
+        */
+
         CraftyStore.addChangeListener(this.loadTree.bind(this));
+
+        CraftyBlockAnimator.on('movingready', this.prepareBlockDrag.bind(this));
+        CraftyBlockAnimator.on('movingstart', this.startBlockDrag.bind(this));
+        CraftyBlockAnimator.on('movingend', this.endBlockDrag.bind(this));
+    }
+
+    prepareBlockDrag(block) {
+        //  if block is in sidebar, create copy
+        if (this.stage.sidebar.children.includes(block)) {
+            let blockCopy = block.clone();
+            this.stage.sidebar.addChildAt(blockCopy,1);
+            block.render();
+            block.createdFromSidebar = true;
+        } else {
+            block.createdFromSidebar = false;
+        }
+    }
+
+    startBlockDrag(event) {
+        let block = event.target;
+
+        //console.log(event.data.getLocalPosition(this.stage));
+        block.isClick = false;
+        this.addToStage(block);
+
+        //  TODO: Disable auto render for this case
+    }
+
+    endBlockDrag(event) {
+        console.log("DEBUG::: Block drag ended!");
+
+        let block = event.target;
+
+        if (block.createdFromSidebar) {
+            let relativeMousePosition = event.data.getLocalPosition(block.parent);
+            if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
+                this.removeBlock(block);
+            }
+        }
+
+        this.checkBlockInfoList();
     }
 
     /**
@@ -62,34 +126,27 @@ export default class CraftyBlockManager {
     }
 
     /**
+     * Removes a block out of existence
+     */
+    removeBlock(block) {
+        if (block.parent instanceof CraftyBlock) {
+            block.parent.removeChildBlock(block);
+        }
+        else if (this.stage.children.includes(block)) {
+            this.stage.removeChild(block);
+        }
+    }
+
+    /**
      * Add block to stage
      */
     addToStage(block) {
+        console.log(`DEBUG::: Adding {${block.name}} to stage`);
+        if (block.parent instanceof CraftyBlock) {
+            block.parent.removeChildBlock(block);
+        }
+
         this.stage.addChild(block);
-    }
-    
-    //  TODO
-    createBlock() {
-    }
-
-    //  TODO
-    attachBlock(parameterBlock, block) {
-    }
-
-    //  TODO
-    deleteBlock(block) {
-    }
-
-    //  TODO
-    replaceBlock(block, newBlock) {
-    }
-
-    //  TODO
-    uncurryBlock(block) {
-    }
-
-    //  TODO
-    curryBlock(block) {
     }
 
     //  TODO
@@ -138,7 +195,6 @@ export default class CraftyBlockManager {
                 childBlocks.forEach( (block,index) => {
                     functionBlock.addChildBlock(block,index);
                 });
-                //functionBlock.setChildBlocks(childBlocks);
 
                 return functionBlock;
             }
@@ -153,5 +209,61 @@ export default class CraftyBlockManager {
                 return new CraftyBlock(blockInfo);
             }
         }
+    }
+
+    /**
+     * DEPRECATED: use treefy
+     *
+     * Returns a string version of the selected block
+    */
+    stringify(block) {
+        //  quick return space + letiable name or space + {parameter name}
+        if (block.type == CraftyBlock.CONSTANT) {
+            return " " + block.name;
+        } else if (block.type == CraftyBlock.PARAMETER) {
+            return " {" + block.name + "}";
+        }
+
+        let word = "";
+
+        //  add starting parenthesis if the block is a function or in stage
+        if (this.stage == block.parent) {
+            word += "(";
+        } else if (block.type == CraftyBlock.FUNCTION) {
+            word += " (";
+        }
+
+        //  add block name
+        word += block.name;
+
+        //  add child blocks
+        for (let i=0;i<block.parameters.length;i++) {
+            if (block.childBlocks[i]) {
+                word += this.stringify(block.childBlocks[i]);
+            } else {
+                word += this.stringify(block.parameterBlocks[i]);
+            }
+        }
+
+        //  add closing parenthesis
+        word += ")";
+
+        return word;
+    }
+
+
+    checkBlockInfoList() {
+        var numberOfBlocks = this.stage.children.length - 2;
+
+        var i;
+        var blockInfoList = new Array("");
+
+        for (i = 1; i <= numberOfBlocks; i++) {
+            blockInfoList[i-1] = this.stringify(this.stage.getChildAt(i+1));
+        }
+
+        //  call canvasChanged function
+        crafty.canvasChanged(blockInfoList);
+        // getBlockInfoList(BlockInfoList);
     }
 }

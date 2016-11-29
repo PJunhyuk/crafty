@@ -31,21 +31,27 @@ export default class CraftyBlock extends PIXI.Container {
         return this.blockInfo.parameters;
     }
 
+    /**
+     * Convenient initializers for each block types
+     */
     static constantWithValue(value) {
         let blockInfo = new CraftyBlockSpec(value, CraftyBlock.CONSTANT);
         return new CraftyBlock(blockInfo);
     }
-
     static functionWithName(name) {
         let blockInfo = new CraftyBlockSpec.functionWithName(name);
         return new CraftyBlock(blockInfo);
     }
-
     static parameterWithName(name) {
         let blockInfo = new CraftyBlockSpec(name, CraftyBlock.PARAMETER);
         return new CraftyBlock(blockInfo);
     }
 
+    /**
+     * Initializer for CraftyBlock
+     *
+     * Creates block text, graphics, parameter blocks, and calls makeInteractive();
+     */
     initialize() {
         //  Create text and set style
         let text = new PIXI.Text(
@@ -79,68 +85,79 @@ export default class CraftyBlock extends PIXI.Container {
         });
 
         //  set interactivity of blocks
-        CraftyBlockAnimator.makeInteractive(this)
+        this.makeInteractive();
     }
 
-    // TODO
+    /**
+     * Returns a clone of current block
+     */
     clone() {
+        let blockCopy = new CraftyBlock(this.blockInfo);
+        blockCopy.position = this.position.clone();;
+
+        return blockCopy;
     }
 
     /**
-     * Returns the index position of a child CraftyBlock instance
+     * Makes the block interactive
      */
-    getChildBlockIndex(block) {
-        let index = this.childBlocks.indexOf(block);
-        if (index === -1) {
-            throw new Error('The supplied Block must be a child of the caller');
+    makeInteractive() {
+        const events = CraftyBlockAnimator;
+
+        this.interactive = true;
+        this.hitArea = this.getChildAt(0).getBounds().clone();
+        //console.log(`DEBUG:::interactivity enabled for {${this.name}}`);
+
+        //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
+        if (this.type != CraftyBlock.PARAMETER) {
+            this
+                .on('mousedown', events.onDragStart.bind(events))
+                .on('touchstart', events.onDragStart.bind(events))
+                .on('mousemove', events.onDragMove.bind(events))
+                .on('touchmove', events.onDragMove.bind(events))
+                .on('mouseup', events.onDragEnd.bind(events))
+                .on('mouseupoutside', events.onDragEnd.bind(events))
+                .on('touchend', events.onDragEnd.bind(events))
+                .on('touchendoutside', events.onDragEnd.bind(events));
+        } else {
+            this
+                .on('mousedown', events.onParameterStart.bind(events))
+                .on('touchstart', events.onParameterStart.bind(events))
+                .on('mouseup', events.onParameterEnd.bind(events))
+                .on('mouseupoutside', events.onParameterEnd.bind(events))
+                .on('touchend', events.onParameterEnd.bind(events))
+                .on('touchendoutside', events.onParameterEnd.bind(events))
+                .on('mousemove', events.onParameterMove.bind(events))
+                .on('touchmove', events.onParameterMove.bind(events));
         }
-
-        return index;
+        this
+            .on('clickonce', events.onClick)
     }
 
     /**
-     * Removes block from original parent and adds to this instance
+     * Returns true if position is inside block's hitArea
      */
-    addChildBlock(block, index) {
-        console.log(`DEBUG::: Adding {${block.name}} to {${this.name}} at index ${index}`);
-        if (block.parent instanceof CraftyBlock) {
-            block.parent.removeChildBlock(block);
-        }
-
-        this.addChild(block);
-        this.childBlocks[index] = block;
-
-        block.update(true);
-    }
-
-    /**
-     * Removes a child block from this instance
-     */
-    removeChildBlock(block) {
-        const index = this.getChildBlockIndex(block);
-
-        this.removeChild(block);
-        this.childBlocks[index] = null;
-
-        let parameterBlock = this.parameterBlocks[index];
-        parameterBlock.visible = true;
-        this.parameterBlock.update();
-        parameterBlock.update();
-    }
-
+    isHit(position) {
+        return this.hitArea.contains(position.x, position.y);
     }
 
     //** render: positions child/parameter blocks and draws lines
     render(childIndex = 0) {
-        console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
+        //console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
 
         const blockWidth = this.getChildAt(0).width;
         const blockHeight = this.getChildAt(0).height;
         let lineStartPosition = new PIXI.Point(blockWidth, blockHeight/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*this.parameterBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
         let childBlockPosition = new PIXI.Point(blockWidth + BLOCK_CONST.SPACING_H, 0);
 
+        //  recalculate starting height if render not starting from 0
         if (childIndex != 0) {
-            let previousHeight = this.childBlocks[childIndex-1].y + this.childBlocks[childIndex-1].height + BLOCK_CONST.SPACING_V;
+            let previousHeight = 0;
+            if (this.childBlocks[childIndex-1]) {
+                previousHeight = this.childBlocks[childIndex-1].y + this.childBlocks[childIndex-1].height + BLOCK_CONST.SPACING_V;
+            } else {
+                previousHeight = this.parameterBlocks[childIndex-1].y + this.parameterBlocks[childIndex-1].height + BLOCK_CONST.SPACING_V;
+            }
             childBlockPosition.y = previousHeight;
         }
 
@@ -207,7 +224,7 @@ export default class CraftyBlock extends PIXI.Container {
      * Re-renders blocks starting from the index of current block, and repeating for its parent
      */
     update(includeSelf = false) {
-        console.log(`DEBUG::: Update called by {${this.name}}`);
+        //console.log(`DEBUG::: Update called by {${this.name}}`);
 
         if (this.parent instanceof CraftyBlock) {
             let index = (this.type == CraftyBlock.PARAMETER ? this.parent.getParameterBlockIndex(this) : this.parent.getChildBlockIndex(this));
@@ -216,98 +233,101 @@ export default class CraftyBlock extends PIXI.Container {
         }
     }
 
+    /**
+     * DEPRECATED: use update() instead
+     * Alternative implementation of update function
+     */
     /*
-    //  replace parameterBlock location with block(this)
-    attachTo(parameterBlock) {
-        //console.log(`DEBUG::: Attached to {${parameterBlock.name}}`);
-        parameterBlock.visible = false;
-        parameterBlock.parent.addChild(this);
-        let index = parameterBlock.parent.parameterBlocks.indexOf(parameterBlock);
-        parameterBlock.parent.childBlocks[index] = this;
-        this.position = parameterBlock.position;
+    updateFrom(index) {
+        //console.log(`DEBUG::: Update called by {${this.name}} from index ${index}`);
 
-        this.update();
-    }
-
-    //  detach block(this) from parent block and restore parameter block
-    detachFromParentBlock() {
-        //console.log(`DEBUG::: Detached from {${this.parent.name}}`);
-
-        let index = this.parent.childBlocks.indexOf(this);
-        let parameterBlock = this.parent.parameterBlocks[index];
-        parameterBlock.visible = true;
-        this.parent.childBlocks[index] = null;
-
-        this.addToStage();
-        return parameterBlock;
-    }
-
-    addToStage() {
-        //  take out selected block to front (last child of stage)
-        //  shift postion to absolute position (in relation to stage)
-        let absolutePosition = this._getAbsolutePosition();
-        this._getStage().addChild(this);
-        this.position = absolutePosition;
-    }
-
-    //  get position of block(this) relative to stage
-    _getAbsolutePosition() {
-        let position = new PIXI.Point(this.position.x,this.position.y);
-        let parent = this.parent;
-        while (parent.id != "stage") {
-            position.x += parent.position.x;
-            position.y += parent.position.y;
-            parent = parent.parent;
+        this.render(index);
+        if (this.parent instanceof CraftyBlock) {
+            this.parent.updateFrom(this.parent.getChildBlockIndex(this) + 1);
         }
-        return position;
-    }
-
-    //  get stage(first non-block parent)
-    _getStage() {
-        let parent = this.parent;
-        while (parent.id != "stage") {
-            parent = parent.parent;
-        }
-        return parent;
     }
     */
 
-    //  returns a string version of the selected block
-    stringify() {
-        //  quick return space + letiable name or space + {parameter name}
-        if (this.type == CraftyBlock.CONSTANT) {
-            return " " + this.name;
-        } else if (this.type == CraftyBlock.PARAMETER) {
-            return " {" + this.name + "}";
+    /**
+     * Returns the index position of a child CraftyBlock instance
+     */
+    getChildBlockIndex(block) {
+        let index = this.childBlocks.indexOf(block);
+        if (index === -1) {
+            throw new Error('The supplied Block must be a child of the caller');
         }
 
-        let word = "";
-
-        //  add starting parenthesis if the block is a function or in stage
-        if (this._getStage() == this.parent) {
-            word += "(";
-        } else if (this.type == CraftyBlock.FUNCTION) {
-            word += " (";
-        }
-
-        //  add block name
-        word += this.name;
-
-        //  add child blocks
-        for (let i=0;i<this.parameters.length;i++) {
-            if (this.childBlocks[i]) {
-                word += this.childBlocks[i].stringify();
-            } else {
-                word += this.parameterBlocks[i].stringify();
-            }
-        }
-
-        //  add closing parenthesis
-        word += ")";
-
-        return word;
+        return index;
     }
 
+    /**
+     * Returns the index position of a child parameterBlock instance
+     */
+    getParameterBlockIndex(block) {
+        let index = this.parameterBlocks.indexOf(block);
+        if (index === -1) {
+            throw new Error('The supplied Block must be a child of the caller');
+        }
+
+        return index;
+    }
+
+    /**
+     * Removes block from original parent and adds to this instance
+     */
+    addChildBlock(block, index) {
+        console.log(`DEBUG::: Adding {${block.name}} to {${this.name}} at index ${index}`);
+
+        //  remove block from its parent
+        if (block.parent instanceof CraftyBlock) {
+            block.parent.removeChildBlock(block);
+        }
+
+        this.addChild(block);
+        this.childBlocks[index] = block;
+
+        //  update augmented block
+        block.update(true);
+    }
+
+    /**
+     * Removes a child block from this instance
+     */
+    removeChildBlock(block) {
+        console.log(`DEBUG::: Removing {${block.name}} from {${this.name}}`);
+        const index = this.getChildBlockIndex(block);
+
+        this.removeChild(block);
+        this.childBlocks[index] = null;
+
+        //  set parameterBlock visible to true and update taken out block
+        let parameterBlock = this.parameterBlocks[index];
+        parameterBlock.visible = true;
+        parameterBlock.update();
+    }
+
+    /** 
+     * Attach block to parameterBlock location
+     *
+     * @convenience of addChildBlock
+     */
+    attachTo(parameterBlock) {
+        let parent = parameterBlock.parent;
+        let index = parent.getParameterBlockIndex(parameterBlock);
+        parent.addChildBlock(this,index);
+    }
+
+    //  TODO
+    fold() {
+    }
+
+    //  TODO
+    unfold() {
+    }
+
+    /**
+     * Prints block structure onto console
+     */
     print(indent = "*") {
         console.log(indent, this.name);
         this.parameterBlocks.forEach( (block,index) => {

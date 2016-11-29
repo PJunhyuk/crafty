@@ -21,6 +21,7 @@ export default class Sidebar extends PIXI.Container {
         this.id = "sidebar";
         console.log("DEBUG::: loading library...");
         let bg = new SidebarBackground();
+        this.bg = bg;
         this.addChild(bg);
         let blockInfos = [];
         let height = BLOCK_LIBRARY_MARGIN.top;
@@ -46,5 +47,9 @@ export default class Sidebar extends PIXI.Container {
         }
 
         console.log("DEBUG::: library loaded!!");
+    }
+
+    containsPosition(position) {
+        return this.bg.getBounds().contains(position.x,position.y);
     }
 }

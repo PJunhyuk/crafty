@@ -1,106 +1,79 @@
 import PIXI from 'pixi.js';
+import EventEmitter from 'events';
 import CraftyBlock from './CraftyBlock.js';
 import CraftyBlockSpec from './CraftyBlockSpec.js';
 import crafty from './../../crafty/crafty.js';
 
 var stage;
 
-class CraftyBlockAnimator {
-    constructor() {
-        console.log(`DEBUG:::Created CraftyBlockAnimator`);
+/**
+ * CraftyBlock Animator Class
+ *
+ * Handles user events on crafty blocks
+ * Emits required block edit
+ *
+ * @exports new CraftyBlockAnimator instance
+ * @extends EventEmitter
+ */
+class CraftyBlockAnimator extends EventEmitter {
+    constructor(...args) {
+        super(...args);
+
         this.isHoldingBlock = false;
         this.targetBlock = null;
+        console.log("DEBUG::: CraftyBlockAnimator initialized!");
     }
 
-    makeInteractive(block) {
-        block.interactive = true;
-        block.hitArea = block.getChildAt(0).getBounds().clone();
-        console.log(`DEBUG:::interactivity enabled for {${block.blockInfo.name}}`);
-
-        //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
-        if (block.blockInfo.type != CraftyBlock.PARAMETER) {
-            block
-                .on('mousedown', this.onDragStart)
-                .on('touchstart', this.onDragStart)
-                .on('mouseup', this.onDragEnd)
-                .on('mouseupoutside', this.onDragEnd)
-                .on('touchend', this.onDragEnd)
-                .on('touchendoutside', this.onDragEnd)
-                .on('mousemove', this.onDragMove)
-                .on('touchmove', this.onDragMove);
-        } else {
-            block
-                .on('mousedown', this.onParameterStart)
-                .on('touchstart', this.onParameterStart)
-                .on('mouseup', this.onParameterEnd)
-                .on('mouseupoutside', this.onParameterEnd)
-                .on('touchend', this.onParameterEnd)
-                .on('touchendoutside', this.onParameterEnd)
-                .on('mousemove', this.onParameterMove)
-                .on('touchmove', this.onParameterMove);
-        }
-        block
-            .on('clickonce', this.onClick)
-    }
-
-    onClick() {
+    onClick(event) {
         console.log("Clicked!");
-        crafty.showSetting(this);
+        let block = event.target;
+
+        if (block.isClick) {
+            crafty.showSetting(this);
+        }
     }
 
     onDragStart(event) {
+        let block = event.target;
 
-        stage = this._getStage();
+        let relativeMousePosition = event.data.getLocalPosition(block);
+        if (block.isHit(relativeMousePosition)) {
+            //console.log("DEBUG::: drag started by \"" + block.blockInfo.name + "\"");
 
-        let relativeMousePosition = event.data.getLocalPosition(this);
-        if (this.hitArea.contains(relativeMousePosition.x, relativeMousePosition.y)) {
-            //console.log("DEBUG::: drag started by \"" + this.blockInfo.name + "\"");
-
-            //  if parent is sidebar, create copy
-            if (this.parent.id == "sidebar") {
-                let blockCopy = new CraftyBlock(this.blockInfo);
-                this.sidebarRect = this.parent.getChildAt(0).getBounds().clone();
-                blockCopy.position = this.position.clone();
-                this.parent.addChildAt(blockCopy,1);
-                this.renderFrom(0);
-            }
+            //  emit start of drag move
+            this.emit('movingready', block);
 
             //  save original position and distance from original to mouse position
-            let mouseStartPosition = event.data.getLocalPosition(this.parent);
-            this.diff = new PIXI.Point(mouseStartPosition.x - this.position.x, mouseStartPosition.y - this.position.y);
-            this.originalPosition = new PIXI.Point(this.position.x,this.position.y);
+            let mouseStartPosition = event.data.getLocalPosition(block.parent);
+            block.diff = new PIXI.Point(mouseStartPosition.x - block.position.x, mouseStartPosition.y - block.position.y);
+            block.originalPosition = new PIXI.Point(block.position.x,block.position.y);
 
-            this.alpha = 0.6;
-            this.selected = true;
-            CraftyBlockAnimator.isHoldingBlock = true;
+            block.alpha = 0.6;
+            block.selected = true;
+            this.isHoldingBlock = true;
             //  set toggle that becomes true the moment when drag starts
-            this.isClick = true;
+            block.isClick = true;
 
             $('.delete_btn').remove();
         }
     }
 
     onDragMove(event) {
-        //console.log("DEBUG::: drag moving by \"" + this.blockInfo.name + "\"");
-
-        if (this.selected)
-        {
-            //  move block to mouse position
-            let newPosition = event.data.getLocalPosition(this.parent);
-            this.position.x = newPosition.x - this.diff.x;
-            this.position.y = newPosition.y - this.diff.y;
-
+        let block = event.target;
+        //console.log("DEBUG::: drag moving by \"" + block.blockInfo.name + "\"");
+ 
+         if (block.selected)
+         {
             //  set isClick to false since block started to move
-            if (this.isClick) {
-                this.isClick = false;
-
-                //  if block has parent block, detach from parent block and set originalBlock for later update()
-                if (this.parent.hasOwnProperty('blockInfo')) {
-                    this.originalBlock = this.detachFromParentBlock();
-                } else {
-                    this.originalBlock = null;
-                }
+            if (block.isClick) {
+                block.isClick = false;
+                this.emit('movingstart', event);
             }
+
+            //  move block to mouse position
+            let newPosition = event.data.getLocalPosition(block.parent);
+            block.position.x = newPosition.x - block.diff.x;
+            block.position.y = newPosition.y - block.diff.y;
         }
     }
 
@@ -108,92 +81,70 @@ class CraftyBlockAnimator {
      * Called when click/drag of a block is ended
      */
     onDragEnd(event) {
-        if (this.selected) {
-            //  if parent is sidebar, either add new Block to stage or remove depending on mouse location
-            if (this.parent.id == "sidebar") {
-                let relativeMousePosition = event.data.getLocalPosition(this.parent);
-                if (this.sidebarRect.contains(relativeMousePosition.x, relativeMousePosition.y)) {
-                    this.parent.removeChild(this);
-                } else {
-                    this.addToStage();
-                }
-            }
+        let block = event.target;
 
-            if (this.isClick) {
-                this.emit('clickonce');
+        if (block.selected) {
+            //  if parent is sidebar, either add new Block to stage or remove depending on mouse location
+            this.emit('movingend', event);
+            if (block.isClick) {
+                block.emit('clickonce', event);
             } else {
-                //console.log("DEBUG::: drag ended by \"" + this.blockInfo.name + "\"");
+                console.log("DEBUG::: drag ended by \"" + block.blockInfo.name + "\"");
 
                 //  if there is parameter block below, attach
-                if (CraftyBlockAnimator.targetBlock) {
-                    this.attachTo(CraftyBlockAnimator.targetBlock);
-                    CraftyBlockAnimator.targetBlock = null;
+                if (this.targetBlock) {
+                    block.attachTo(this.targetBlock);
+                    this.targetBlock = null;
                 }
-
-                //  render update the taken out block
-                if (this.originalBlock) {
-                    this.originalBlock.update();
-                }
-
-                checkBlockInfoList();
             }
 
-            this.alpha = 1;
-            this.selected = false;
-            CraftyBlockAnimator.isHoldingBlock = false;
+            block.alpha = 1;
+            block.selected = false;
+            this.isHoldingBlock = false;
         }
     }
 
     onParameterStart(event) {
-        this.clicked = true;
+        let block = event.target;
+
+        block.clicked = true;
     }
 
     // "mousemove" event handler for parameter blocks
     onParameterMove(event) {
-        //  if mouse position is inside hit area, then set stage.target to this
-        if (CraftyBlockAnimator.isHoldingBlock) {
-            let relativeMousePosition = event.data.getLocalPosition(this);
-            if (this.hitArea.contains(relativeMousePosition.x, relativeMousePosition.y)) {
-                //console.log(`DEBUG::: parameter moving by {${this.blockInfo.name}}`);
+        let block = event.target;
 
-                this.getChildAt(0).tint = 0xDDDDDD;
-                CraftyBlockAnimator.targetBlock = this;
+        //  if mouse position is inside hit area, then set stage.target to this
+        if (this.isHoldingBlock) {
+            let relativeMousePosition = event.data.getLocalPosition(block);
+            if (block.isHit(relativeMousePosition)) {
+                //console.log(`DEBUG::: parameter moving by {${block.blockInfo.name}}`);
+
+                block.getChildAt(0).tint = 0xDDDDDD;
+                this.targetBlock = block;
             } else {
-                if (this == CraftyBlockAnimator.targetBlock) {
-                    CraftyBlockAnimator.targetBlock = null;
-                    this.getChildAt(0).tint = 0xFFFFFF;
+                if (block == this.targetBlock) {
+                    this.targetBlock = null;
+                    block.getChildAt(0).tint = 0xFFFFFF;
                 }
             }
         }
     }
 
     onParameterEnd(event) {
-        if (this.clicked) {
-            let constantName = prompt("Type in your constant!");
-            if (constantName) {
-                let constantBlockInfo = new CraftyBlockSpec(constantName, CraftyBlock.CONSTANT);
-                let constantBlock = new CraftyBlock(constantBlockInfo);
-                constantBlock.attachTo(this);
+        let parameterBlock = event.target;
+
+        if (parameterBlock.clicked) {
+            let value = prompt("Type in your constant!");
+
+            if (value) {
+                let constantBlock = CraftyBlock.constantWithValue(value);
+                constantBlock.attachTo(parameterBlock);
             }
-            this.clicked = false;
-            checkBlockInfoList();
+
+            block.clicked = false;
         }
     }
-}
-
-function checkBlockInfoList() {
-  var numberOfBlocks = stage.children.length - 2;
-
-  var i;
-  var BlockInfoList = new Array("");
-
-  for (i = 1; i <= numberOfBlocks; i++) {
-    BlockInfoList[i-1] = stage.getChildAt(i+1).stringify();
-  }
-
-  //  call canvasChanged function
-  crafty.canvasChanged(BlockInfoList);
-  // getBlockInfoList(BlockInfoList);
 }
 
 export default new CraftyBlockAnimator();
