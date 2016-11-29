@@ -1,6 +1,7 @@
 import PIXI from 'pixi.js';
 import CraftyBlock from './CraftyBlock.js';
 import CraftyBlockSpec from './CraftyBlockSpec.js';
+import crafty from './../../crafty/crafty.js';
 
 var stage;
 
@@ -44,7 +45,7 @@ class CraftyBlockAnimator {
 
     onClick() {
         console.log("Clicked!");
-        showSetting(this);
+        crafty.showSetting(this);
     }
 
     onDragStart(event) {
@@ -191,7 +192,7 @@ function checkBlockInfoList() {
   }
 
   //  call canvasChanged function
-  canvasChanged(BlockInfoList);
+  crafty.canvasChanged(BlockInfoList);
   // getBlockInfoList(BlockInfoList);
 }
 

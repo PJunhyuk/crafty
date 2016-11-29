@@ -11,6 +11,7 @@ import {config} from '../package.json';
 import Renderer from './Renderer/Renderer';
 import App from './displayobjects/App/App';
 
+import Crafty from './crafty/crafty.js';
 import PastelEvaluator from "./pastel/evaluator.js";
 import PastelError from "./pastel/error.js";
 import Parser from './pastel/parser.js';
@@ -22,10 +23,12 @@ import CraftyStore from './stores/CraftyStore.js';
 const renderer = new Renderer(config.stageWidth, config.stageHeight,{backgroundColor: 0xCCCCCC, antialias:true});
 const app = new App(config.stageWidth, config.stageHeight);
 
-compileToolkit.evaluator = new PastelEvaluator();
-compileToolkit.parser = new Parser();
-compileToolkit.CraftyStore = CraftyStore;
-compileToolkit.isError = function(result) {
+Crafty.render();
+
+Crafty.compileToolkit.evaluator = new PastelEvaluator();
+Crafty.compileToolkit.parser = new Parser();
+Crafty.compileToolkit.CraftyStore = CraftyStore;
+Crafty.compileToolkit.isError = function(result) {
 	return result instanceof PastelError;
 }
 
