@@ -1,10 +1,9 @@
-//import CraftyBlockAnimator from './CraftyBlockAnimator.js';
-import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
-import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import Node from '../../pastel/node.js';
 import Token from '../../pastel/token.js';
-import CraftyStore from '../../stores/CraftyStore.js';
+import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
+import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import CraftyBlockAnimator from './CraftyBlockAnimator.js';
+import CraftyStore from '../../stores/CraftyStore.js';
 import crafty from './../../crafty/crafty.js';
 
 /**
@@ -17,38 +16,17 @@ import crafty from './../../crafty/crafty.js';
 export default class CraftyBlockManager {
     constructor(stage) {
         this.stage = stage;
-        console.log("DEBUG::: Created CraftyBlockManager!");
         this.blocks = [];
 
-        this.loadTree();
-
-        /*
-        let blockOne = new CraftyBlock.functionWithName("if");
-        blockOne.render();
-        this.addToStage(blockOne);
-        let blockTwo = new CraftyBlock.functionWithName("+");
-        blockTwo.render();
-        let blockThree = new CraftyBlock.functionWithName("=");
-        blockThree.render();
-        console.log("adding blockTwo")
-        blockOne.addChildBlock(blockTwo, 2);
-        console.log("adding blockThree")
-        blockTwo.addChildBlock(blockThree,0);
-
-        this.addToStage(blockTwo);
-        blockOne.addChildBlock(blockThree, 1);
-        blockOne.addChildBlock(blockThree, 2);
-        blockOne.addChildBlock(blockThree, 0);
-
-        blockOne.print();
-        console.log(this.stage.children);
-        */
-
-        CraftyStore.addChangeListener(this.loadTree.bind(this));
-
+        //  Add Block Event Listeners
         CraftyBlockAnimator.on('movingready', this.prepareBlockDrag.bind(this));
         CraftyBlockAnimator.on('movingstart', this.startBlockDrag.bind(this));
         CraftyBlockAnimator.on('movingend', this.endBlockDrag.bind(this));
+
+        //  Load Saved Tree from CraftyStore
+        this.loadTree();
+
+        console.log("DEBUG::: Created CraftyBlockManager!");
     }
 
     prepareBlockDrag(block) {
@@ -96,7 +74,9 @@ export default class CraftyBlockManager {
         this.emptyStage();
 
         let savedTree = CraftyStore.get('tree');
-        let savedBlocks = this.blockify(savedTree, -1);
+
+        let savedBlocks = this.blockify(savedTree);
+
         const MARGIN_LEFT = 70;
         const MARGIN_TOP = 150;
         const SPACING = 15;
@@ -157,8 +137,15 @@ export default class CraftyBlockManager {
 
         if (blocks instanceof Array) {
             tree = new Node();
+            let childTrees = [];
+
             blocks.forEach( childBlock => { 
                 let childTree = this.treefy(childBlock)
+                childTrees[childBlock.order] = childTree;
+                //tree.addChild(childTree);
+            });
+
+            childTrees.forEach( childTree => {
                 tree.addChild(childTree);
             });
         }
@@ -187,11 +174,14 @@ export default class CraftyBlockManager {
      */
     blockify(node, index = 0) {
         //  for first try (whole stage), divide into groups and perform blockify on each subtree
-        if (index == -1) {
+        if (!node.parent) {
+            //  for each children(subtree), map its blockified version
+            //let blocks = node.children.map ( childNode => this.blockify(childNode) );
             let blocks = [];
-
-            node.children.forEach( (childNode) => {
-                blocks.push(this.blockify(childNode));
+            node.children.forEach( (childNode,index) => { 
+                let block = this.blockify(childNode);
+                block.order = index;
+                blocks.push(block);
             });
 
             return blocks;
