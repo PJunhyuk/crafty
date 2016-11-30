@@ -31,6 +31,27 @@ class Parser {
     }
 
     /**
+     * Convert 2-d tree to code
+     */
+    stringify(node) {
+        let string = "";
+        if (!node.getData()) {
+            let children = node.getChildren();
+            string += "(";
+
+            for (let i = 0; i < children.length; i++) {
+                string += (i != 0) ? " " : "";
+                string += this.stringify(children[i]);
+            }
+            string += ")";
+        } else {
+            string += node.getData().data;
+        }
+
+        return string;
+    }
+
+    /**
      * Convert 1-d token array to 2-d tree
      */
     treefy(tokenArray) {
