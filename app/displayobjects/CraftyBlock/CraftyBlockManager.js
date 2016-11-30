@@ -149,16 +149,34 @@ export default class CraftyBlockManager {
         this.stage.addChild(block);
     }
 
-    //  TODO
-    treefy(block) {
-        let tree = new Node();
-        for (let block of this.blocks) {
-            if (block.blockInfo.type == CraftyBlock.FUNCTION) {
+    /**
+     * Transform Crafty block into pastel's parsed tree
+     */
+    treefy(blocks) {
+        let tree;
+
+        if (blocks instanceof Array) {
+            tree = new Node();
+            blocks.forEach( childBlock => { 
+                let childTree = this.treefy(childBlock)
+                tree.addChild(childTree);
+            });
+        }
+        else {
+            let block = blocks;
+            let token = new Token(Token.ID, block.name);
+            if (block.type == CraftyBlock.FUNCTION) {
+                tree = new Node();
+                let subtree = new Node(token);
+
+                tree.addChild(subtree);
+
+                block.childBlocks.forEach( childBlock => {
+                    tree.addChild(this.treefy(childBlock));
+                });
+            } else {
+                tree = new Node(token);
             }
-            let subtree = new Node();
-
-
-            tree.addChild(subtree);
         }
 
         return tree;
