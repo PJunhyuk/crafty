@@ -35,8 +35,6 @@ export default class App extends PIXI.Container {
         let sidebar = new Sidebar();
 
         this.sidebar = sidebar;
-        stage.addChild(sidebar);
-        sidebar.visible = false;
 
         //  Initialize CraftyBlockManager
         let manager = new CraftyBlockManager(stage);
@@ -64,6 +62,7 @@ export default class App extends PIXI.Container {
                 open_palette_btn.val('+');
             } else {
                 sidebar.visible = true;
+                stage.addChild(sidebar);
                 open_palette_btn.val('-');
             }
         });
