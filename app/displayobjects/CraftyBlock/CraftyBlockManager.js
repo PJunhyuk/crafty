@@ -2,9 +2,9 @@ import Node from '../../pastel/node.js';
 import Token from '../../pastel/token.js';
 import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
 import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
-import CraftyBlockAnimator from './CraftyBlockAnimator.js';
 import CraftyStore from '../../stores/CraftyStore.js';
 import crafty from './../../crafty/crafty.js';
+import CraftyBlockEvents from './CraftyBlockEvents.js';
 
 /**
  * CraftyBlock Manager Class
@@ -19,9 +19,18 @@ export default class CraftyBlockManager {
         this.blocks = [];
 
         //  Add Block Event Listeners
-        CraftyBlockAnimator.on('movingready', this.prepareBlockDrag.bind(this));
-        CraftyBlockAnimator.on('movingstart', this.startBlockDrag.bind(this));
-        CraftyBlockAnimator.on('movingend', this.endBlockDrag.bind(this));
+        CraftyBlockEvents.on('movingready', this.prepareBlockDrag.bind(this));
+        CraftyBlockEvents.on('movingstart', this.startBlockDrag.bind(this));
+        CraftyBlockEvents.on('movingend', this.endBlockDrag.bind(this));
+        CraftyBlockEvents.on('createdonstage', (block) => {
+            if (!this.rootBlocks.includes(block)) {
+                this.rootBlocks.push(block);
+                console.log(block);
+
+                console.log("Block added to Stage! rootBlock.length = " + this.rootBlocks.length);
+                this.checkBlockInfoList();
+            }
+        });
 
         //  Load Saved Tree from CraftyStore
         this.loadTree();

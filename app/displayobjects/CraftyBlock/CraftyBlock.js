@@ -130,8 +130,6 @@ export default class CraftyBlock extends PIXI.Container {
                 .on('mousemove', events.onParameterMove.bind(events))
                 .on('touchmove', events.onParameterMove.bind(events));
         }
-        this
-            .on('clickonce', events.onClick)
     }
 
     /**
