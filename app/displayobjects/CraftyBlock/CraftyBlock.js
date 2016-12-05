@@ -30,6 +30,14 @@ export default class CraftyBlock extends PIXI.Container {
     get parameters() {
         return this.blockInfo.parameters;
     }
+    get absolutePosition() {
+        let position = this.position.clone();
+        if (this.parent instanceof CraftyBlock) {
+            position.x += this.parent.absolutePosition.x;
+            position.y += this.parent.absolutePosition.y;
+        }
+        return position;
+    }
 
     /**
      * Convenient initializers for each block types
