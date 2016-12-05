@@ -7,13 +7,6 @@ import EventEmitter from 'events';
  *
  * @exports new CraftyBlockEvents instance
  */
-class CraftyBlockAnimator {
-    constructor() {
-        this.isHoldingBlock = false;
-        this.targetBlock = null;
-        console.log("DEBUG::: CraftyBlockAnimator initialized!");
-    }
-
 class CraftyBlockEvents extends EventEmitter {
     constructor(...args) {
         super(...args);
