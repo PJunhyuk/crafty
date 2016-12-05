@@ -40,7 +40,7 @@ export default class CraftyBlockMenu extends PIXI.Container {
 
     setPosition() {
         console.log(this.block);
-        this.position.x = this.block.position.x + this.block.hitArea.width/2 - this.width/2;
-        this.position.y = this.block.position.y - this.height - BLOCK_CONST.MENU_MARGIN;
+        this.position.x = this.block.absolutePosition.x + this.block.hitArea.width/2 - this.width/2;
+        this.position.y = this.block.absolutePosition.y - this.height - BLOCK_CONST.MENU_MARGIN;
     }
 }
