@@ -25,7 +25,6 @@ export default class App extends PIXI.Container {
 
         //  Sets the Crafty canvas stage
         var stage = this;
-        stage.id = "stage";
         stage.interactive = false;
 
         //  Add background to stage

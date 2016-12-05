@@ -18,7 +18,6 @@ const BLOCK_LIBRARY_MARGIN = {left: 30, top: 20, height: 10};
 export default class Sidebar extends PIXI.Container {
     constructor() {
         super();
-        this.id = "sidebar";
         console.log("DEBUG::: loading library...");
         let bg = new SidebarBackground();
         this.bg = bg;

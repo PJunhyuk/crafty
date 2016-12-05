@@ -5,7 +5,6 @@ import CraftyBlockEvents from './CraftyBlockEvents.js';
 export default class CraftyBlockMenu extends PIXI.Container {
     constructor() {
         super();
-        this.id = "menu";
         this.block = undefined;
 
         let blockGraphics = new PIXI.Graphics();
