@@ -34,6 +34,7 @@
     "eslint": "^2.4.0",
     "file-loader": "^0.8.4",
     "html-loader": "^0.4.3",
+    "jquery": "^2.2.4",
     "json-loader": "^0.5.3",
     "reactman": "^3.2.0",
     "rimraf": "^2.4.3",

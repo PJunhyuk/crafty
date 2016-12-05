@@ -2,10 +2,19 @@ import PastelEvaluator from "./../pastel/evaluator.js";
 import PastelError from "./../pastel/error.js";
 import Parser from './../pastel/parser.js';
 import CraftyStore from './../stores/CraftyStore.js';
+
+// import ace for syntax highlighting
 import ace from 'brace';
 
 import 'brace/theme/monokai';
 import '../editor/mode-pastel.js';
+
+// import jquery
+import $ from 'jquery';
+import jQuery from 'jquery';
+//// export for others scripts to use
+window.$ = $;
+window.jQuery = jQuery;
 
 class Crafty {
   constructor() {
