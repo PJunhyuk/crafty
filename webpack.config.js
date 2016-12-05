@@ -22,6 +22,7 @@ module.exports = {
     },
     module: {
         loaders: [
+          { test: /\.css$/, loader: "style-loader!css-loader?root=." },
           { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader", query:{presets:['es2015']}},
           { test: /\.html$/, exclude: /node_modules/, loader: "file-loader?name=[path][name].[ext]"},
           { test: /\.jpe?g$|\.svg$|\.png$/, exclude: /node_modules/, loader: "file-loader?name=[path][name].[ext]"},

@@ -16,6 +16,8 @@ import jQuery from 'jquery';
 window.$ = $;
 window.jQuery = jQuery;
 
+import "./crafty.css";
+
 class Crafty {
   constructor() {
     this.checkDeleteBtn;
