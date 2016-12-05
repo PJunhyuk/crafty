@@ -21,12 +21,10 @@ class Crafty {
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/pastel");
+    editor.on('change', () => this.compileTest() );
 
     $(document).ready(() => {
       /* print console.log message when change codes in code-area */
-      $('.code-area').keyup(() => {
-        this.compileTest();
-      });
       $('.define-function').click(function() {
         let FuncName = prompt("Type in your new functions name!");
         let FuncInputNumber = prompt("Number of input");
