@@ -17,7 +17,7 @@ import CraftyBlockEvents from './CraftyBlockEvents.js';
 export default class CraftyBlockManager {
     constructor(stage) {
         this.stage = stage;
-        this.blocks = [];
+        this.rootBlocks = [];
         this.menu = new CraftyBlockMenu();
 
         //  Add Block Event Listeners
@@ -95,7 +95,7 @@ export default class CraftyBlockManager {
 
         let savedTree = CraftyStore.get('tree');
 
-        let savedBlocks = this.blockify(savedTree);
+        this.rootBlocks = this.blockify(savedTree);
 
         const MARGIN_LEFT = 70;
         const MARGIN_TOP = 150;
@@ -103,7 +103,7 @@ export default class CraftyBlockManager {
         let blockPosition = MARGIN_TOP;
 
         //  Set position of blocks and add to stage
-        savedBlocks.forEach( block => { 
+        this.rootBlocks.forEach( block => { 
             block.position.x = MARGIN_LEFT;
             block.position.y = blockPosition;
             this.addToStage(block) 
@@ -118,10 +118,8 @@ export default class CraftyBlockManager {
      */
     emptyStage() {
         //  iterate in reverse order
-        for (let i=this.stage.children.length-1; i>=0;i--) {
-            if (this.stage.getChildAt(i) instanceof CraftyBlock) {
-                this.stage.removeChildAt(i);
-            }
+        for (let i=this.rootBlocks.length-1; i>=0;i--) {
+            this.removeBlock(this.rootBlocks[i]);
         }
     }
 
@@ -131,9 +129,12 @@ export default class CraftyBlockManager {
     removeBlock(block) {
         if (block.parent instanceof CraftyBlock) {
             block.parent.removeChildBlock(block);
-        }
-        else if (this.stage.children.includes(block)) {
-            this.stage.removeChild(block);
+        } else {
+            let index = this.rootBlocks.indexOf(block); 
+            if (index > -1) {
+                this.rootBlocks.splice(index);
+                this.stage.removeChild(block);
+            }
         }
     }
 
@@ -152,38 +153,28 @@ export default class CraftyBlockManager {
     /**
      * Transform Crafty block into pastel's parsed tree
      */
-    treefy(blocks) {
+    treefy(block) {
         let tree;
 
-        if (blocks instanceof Array) {
+        let blockName = (block.type == CraftyBlock.PARAMETER) ? "{" + block.name + "}" : block.name;
+        let token = new Token(Token.ID, blockName);
+
+        if (block.type == CraftyBlock.FUNCTION) {
             tree = new Node();
-            let childTrees = [];
+            let subtree = new Node(token);
 
-            blocks.forEach( childBlock => { 
-                let childTree = this.treefy(childBlock)
-                childTrees[childBlock.order] = childTree;
-                //tree.addChild(childTree);
-            });
+            tree.addChild(subtree);
 
-            childTrees.forEach( childTree => {
-                tree.addChild(childTree);
-            });
-        }
-        else {
-            let block = blocks;
-            let token = new Token(Token.ID, block.name);
-            if (block.type == CraftyBlock.FUNCTION) {
-                tree = new Node();
-                let subtree = new Node(token);
-
-                tree.addChild(subtree);
-
-                block.childBlocks.forEach( childBlock => {
+            block.parameterBlocks.forEach( (parameterBlock, index) => {
+                let childBlock = block.childBlocks[index];
+                if (childBlock) {
                     tree.addChild(this.treefy(childBlock));
-                });
-            } else {
-                tree = new Node(token);
-            }
+                } else {
+                    tree.addChild(this.treefy(parameterBlock));
+                }
+            });
+        } else {
+            tree = new Node(token);
         }
 
         return tree;
