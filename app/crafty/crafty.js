@@ -16,6 +16,7 @@ import jQuery from 'jquery';
 window.$ = $;
 window.jQuery = jQuery;
 
+//  import editor styles
 import "./crafty.css";
 
 class Crafty {
