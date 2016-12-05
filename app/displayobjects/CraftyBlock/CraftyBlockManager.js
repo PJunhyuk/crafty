@@ -4,6 +4,7 @@ import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
 import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import CraftyStore from '../../stores/CraftyStore.js';
 import crafty from './../../crafty/crafty.js';
+import CraftyBlockMenu from './CraftyBlockMenu.js';
 import CraftyBlockEvents from './CraftyBlockEvents.js';
 
 /**
@@ -17,6 +18,7 @@ export default class CraftyBlockManager {
     constructor(stage) {
         this.stage = stage;
         this.blocks = [];
+        this.menu = new CraftyBlockMenu();
 
         //  Add Block Event Listeners
         CraftyBlockEvents.on('movingready', this.prepareBlockDrag.bind(this));
@@ -30,6 +32,15 @@ export default class CraftyBlockManager {
                 console.log("Block added to Stage! rootBlock.length = " + this.rootBlocks.length);
                 this.checkBlockInfoList();
             }
+        });
+        CraftyBlockEvents.on('clickonce', (block) => {
+            console.log("Clicked!");
+            console.log(block);
+            this.menu.toggle(block);
+            this.stage.addChild(this.menu);
+        });
+        CraftyBlockEvents.on('deleteClicked', (block) => {
+            this.removeBlock(block);
         });
 
         //  Load Saved Tree from CraftyStore

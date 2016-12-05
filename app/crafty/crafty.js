@@ -94,52 +94,6 @@ class Crafty {
     }
   }
 
-
-  showSetting(clickedBlock) {
-    if(this.checkDeleteBtn == true) {
-
-      $('.delete_btn').remove();
-      this.checkDeleteBtn = false;
-
-    } else {
-      var delete_btn = $('<input class="delete_btn" type="button" value="-"/>');
-      delete_btn.css('width', 30);
-      delete_btn.css('height', 30);
-      delete_btn.css('position', 'absolute');
-      delete_btn.css('top', clickedBlock.y - 30);
-      delete_btn.css('left', clickedBlock.x - 30);
-      delete_btn.css('border', 'none');
-      delete_btn.css('background-color', '#F7CAC9');
-      delete_btn.css('border-radius', 25);
-      delete_btn.css('font-size', 24);
-      delete_btn.css('font-weight', 'bold');
-      delete_btn.css('color', '#333333');
-      delete_btn.css('border-radius', 25);
-      $("body").append(delete_btn);
-
-      this.checkDeleteBtn = true;
-
-      $('.delete_btn').click(() => {
-        this.checkDeleteBtn = false;
-        var stage = clickedBlock.parent;
-        clickedBlock.parent.removeChild(clickedBlock);
-        $('.delete_btn').remove();
-
-        var numberOfBlocks = stage.children.length - 2;
-
-        var i;
-        var BlockInfoList = new Array("");
-
-        for (i = 1; i <= numberOfBlocks; i++) {
-          BlockInfoList[i-1] = stage.getChildAt(i+1).stringify();
-        }
-
-        //  call canvasChanged function
-        this.canvasChanged(BlockInfoList);
-      });
-    }
-  }
-
   canvasChanged(BlockInfoList) {
     /* remove existing pre */
     $('.code-area').remove();
