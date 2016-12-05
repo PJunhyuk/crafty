@@ -2,6 +2,10 @@ import PastelEvaluator from "./../pastel/evaluator.js";
 import PastelError from "./../pastel/error.js";
 import Parser from './../pastel/parser.js';
 import CraftyStore from './../stores/CraftyStore.js';
+import ace from 'brace';
+
+import 'brace/theme/monokai';
+import '../editor/mode-pastel.js';
 
 class Crafty {
   constructor() {
