@@ -3,7 +3,6 @@ import Token from '../../pastel/token.js';
 import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
 import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import CraftyStore from '../../stores/CraftyStore.js';
-import crafty from './../../crafty/crafty.js';
 import CraftyBlockMenu from './CraftyBlockMenu.js';
 import CraftyBlockEvents from './CraftyBlockEvents.js';
 
