@@ -36,15 +36,21 @@ export default class CraftyBlockManager {
             this.rootBlocks.forEach( block => {
                 let tree = this.treefy(block);
                 rootTree.addChild(tree);
-                CraftyStore.set('tree', rootTree);
             });
+            CraftyStore.set('tree', rootTree);
+            CraftyStore.emitChange("canvasmanager");
         });
 
         //  Load Saved Tree from CraftyStore
         this.loadTree();
 
-        CraftyStore.addChangeListener(() => {
-            this.loadTree(); 
+        CraftyStore.addChangeListener((caller) => {
+            if (caller == "editor") {
+                this.loadTree(); 
+            }
+            else {
+                console.log(`DEBUG::: Ignoring change from ${caller}`);
+            }
         });
         console.log("DEBUG::: Created CraftyBlockManager!");
     }

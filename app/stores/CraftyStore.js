@@ -14,20 +14,24 @@ class CraftyStore extends EventEmitter {
         super(...args);
 
         this.data = {
-            tree: undefined,
+            tree: undefined
         };
     }
 
     get(key) {
+        console.log(`STORE::: Loading ${key}...`);
         return this.data[key];
     }
 
     set(key, value) {
+        console.log(`STORE::: Saving ${key}...`);
         return this.data[key] = value;
     }
 
-    emitChange() {
-        this.emit('modifytree', this.data);
+
+    emitChange(caller) {
+        console.log(`STORE::: Change emitted by ${caller}!`);
+        this.emit('modifytree', caller, this.data);
     }
 
     addChangeListener(callback) {
