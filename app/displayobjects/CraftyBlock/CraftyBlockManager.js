@@ -77,25 +77,31 @@ export default class CraftyBlockManager {
     onDragEnd(event) {
         let block = event.target;
         let newAddress = this.getAddress(block);
+        let validDrag = true;
 
         let isAddressEqual = (block.originalAddress.length == newAddress.length) && block.originalAddress.every( (element, index) => element === newAddress[index] );
 
         if (!isAddressEqual) {
-            CraftyBlockEvents.emit('canvaschange');
 
             if (block.originalAddress.length == 1 && newAddress.length != 1) {
                 this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
             }
 
             if (block.originalAddress[0] == -1) {
-                let relativeMousePosition = event.data.getLocalPosition(block.parent);
+                let relativeMousePosition = event.data.getLocalPosition(this.stage);
                 if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
+                    console.log("Mouse inside sidebar");
                     this.removeBlock(block);
+                    validDrag = false;
                 }
             }
-            if (newAddress[0] == -2) {
-                //  no need to addToStage since it is already done during moving
-                this.rootBlocks.push(block);
+            if (validDrag) {
+                if (newAddress[0] == -2) {
+                    //  no need to addToStage since it is already done during moving
+                    this.rootBlocks.push(block);
+                }
+
+                CraftyBlockEvents.emit('canvaschange');
             }
         }
 
@@ -150,8 +156,8 @@ export default class CraftyBlockManager {
             console.log(index);
             if (index > -1) {
                 this.rootBlocks.splice(index,1);
-                this.stage.removeChild(block);
             }
+            this.stage.removeChild(block);
         }
     }
 
@@ -303,6 +309,7 @@ export default class CraftyBlockManager {
                 if (stageIndex > -1) {
                     address.push(stageIndex);
                 } else {
+                    // -2 means is on stage temporarily
                     address.push(-2);
                     //throw new Error("No appropriate parent found!");
                 }
