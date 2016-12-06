@@ -1,7 +1,7 @@
 import PIXI from 'pixi.js';
 import RendererStore from '../../stores/RendererStore.js';
 
-const SIDEBAR_STYLE = {width:200, backgroundColor:0xEEEEEE, };
+const SIDEBAR_STYLE = {width:200, backgroundColor:0xDDDDDD, };
 
 export default class SidebarBackground extends PIXI.Graphics {
     constructor() {
