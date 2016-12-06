@@ -120,18 +120,17 @@ class CraftyBlockAnimator {
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
-                var input_value_box = document.getElementById("input-value-box");
+                let input_value_box = document.getElementById("input-value-box");
                 input_value_box.className = "show";
 
-                $('#input-value-submit').click(function() {
-                  let value = $('#input-value').val();
-                  console.log(value);
-                  if(input_value_box.className == "show") {
-                    input_value_box.className = "hide";
-                    setTimeout(function() {
-                      input_value_box.className = "";
-                    }, 500);
-                  }
+                $('#input-value-submit').click( () => {
+                  this.inputValueSubmitted();
+                });
+
+                $("#input-value").keyup(event => {
+                    if(event.keyCode == 13){
+                      this.inputValueSubmitted();
+                    }
                 });
 
                 //  Emit create new block prompt
@@ -146,6 +145,18 @@ class CraftyBlockAnimator {
             }
             block.clicked = false;
         }
+    }
+
+    inputValueSubmitted() {
+      let input_value_box = document.getElementById("input-value-box");
+      let value = $('#input-value').val();
+      console.log(value);
+      if(input_value_box.className == "show") {
+        input_value_box.className = "hide";
+        setTimeout(function() {
+          input_value_box.className = "";
+        }, 500);
+      }
     }
 }
 
