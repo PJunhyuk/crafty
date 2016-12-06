@@ -1,6 +1,4 @@
-import PastelEvaluator from "./../pastel/evaluator.js";
-import PastelError from "./../pastel/error.js";
-import Parser from './../pastel/parser.js';
+import Pastel from 'pastel-lang';
 import CraftyStore from './../stores/CraftyStore.js';
 
 // import ace for syntax highlighting
@@ -23,8 +21,8 @@ export default class CraftyCodeEditor {
         this.editor.on('change', () => {
             if (!this.loading) this.checkCode(); 
         });
-        this.evaluator = new PastelEvaluator();
-        this.parser = new Parser();
+        this.evaluator = new Pastel.Evaluator();
+        this.parser = new Pastel.Parser();
         this.messageBox = document.getElementById("compile-message");
 
         CraftyStore.addChangeListener((caller) => {
@@ -40,13 +38,13 @@ export default class CraftyCodeEditor {
     }
 
     isError(result) {
-        return result instanceof PastelError;
+        return result instanceof Pastel.Error;
     }
 
     checkCode() {
         let compilableText = this.editor.getValue();
         let result = this.evaluator.evaluateText(compilableText);
-        if (result instanceof PastelError) {
+        if (result instanceof Pastel.Error) {
             console.log("code-error");
             $('#compile-message').text(result.message);
             //this.messageBox.text(result.message);
@@ -68,7 +66,7 @@ export default class CraftyCodeEditor {
         console.log("compile!");
         let compilableText = this.editor.getValue();
         let result = this.evaluator.evaluateText(compilableText);
-        if (result instanceof PastelError) {
+        if (result instanceof Pastel.Error) {
             this.messageBox.text(result.message);
             this.messageBox.className = "show";
             alert("ERROR - check error message!");
