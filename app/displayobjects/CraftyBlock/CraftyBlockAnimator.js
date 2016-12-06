@@ -1,4 +1,5 @@
 import CraftyBlockEvents from './CraftyBlockEvents.js';
+import InputMenu from './../DOM/InputMenu.js';
 
 /**
  * CraftyBlock Animator Class
@@ -120,18 +121,9 @@ class CraftyBlockAnimator {
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
-                let input_value_box = document.getElementById("input-value-box");
-                input_value_box.className = "show";
+                InputMenu.create();
 
-                $('#input-value-submit').click( () => {
-                  this.inputValueSubmitted();
-                });
-
-                $("#input-value").keyup(event => {
-                    if(event.keyCode == 13){
-                      this.inputValueSubmitted();
-                    }
-                });
+                InputMenu.show();
 
                 //  Emit create new block prompt
                 /*
@@ -147,17 +139,6 @@ class CraftyBlockAnimator {
         }
     }
 
-    inputValueSubmitted() {
-      let input_value_box = document.getElementById("input-value-box");
-      let value = $('#input-value').val();
-      console.log(value);
-      if(input_value_box.className == "show") {
-        input_value_box.className = "hide";
-        setTimeout(function() {
-          input_value_box.className = "";
-        }, 500);
-      }
-    }
 }
 
 export default new CraftyBlockAnimator();
