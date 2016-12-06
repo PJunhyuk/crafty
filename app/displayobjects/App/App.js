@@ -3,7 +3,7 @@ import Background from '../Background/Background.js';
 import Sidebar from '../Sidebar/Sidebar.js';
 import CraftyBlockManager from '../CraftyBlock/CraftyBlockManager.js';
 
-import Parser from '../../pastel/parser.js';
+import Pastel from 'pastel-lang';
 import CraftyStore from '../../stores/CraftyStore.js';
 
 /**
@@ -19,7 +19,7 @@ export default class App extends PIXI.Container {
         super();
 
         //  Create a tree of simple pastel code, and store it in CraftyStore as placeholder
-        let parser = new Parser();
+        let parser = new Pastel.Parser();
         let tree = parser.analyze("(print (+ 1 1)) (if (= 3 4) (print 'correct!') (print 'incorrect!'))");
         CraftyStore.set('tree', tree);
 

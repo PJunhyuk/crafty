@@ -1,5 +1,4 @@
-import Node from '../../pastel/node.js';
-import Token from '../../pastel/token.js';
+import Pastel from 'pastel-lang';
 import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
 import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import CraftyStore from '../../stores/CraftyStore.js';
@@ -180,11 +179,11 @@ export default class CraftyBlockManager {
         let tree;
 
         let blockName = (block.type == CraftyBlock.PARAMETER) ? "{" + block.name + "}" : block.name;
-        let token = new Token(Token.ID, blockName);
+        let token = new Pastel.Token(Token.ID, blockName);
 
         if (block.type == CraftyBlock.FUNCTION) {
-            tree = new Node();
-            let subtree = new Node(token);
+            tree = new Pastel.Node();
+            let subtree = new Pastel.Node(token);
 
             tree.addChild(subtree);
 

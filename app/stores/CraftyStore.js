@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import Node from '../pastel/node.js';
+import Pastel from 'pastel-lang';
 
 /**
  * Crafty Store

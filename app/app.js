@@ -12,10 +12,9 @@ import Renderer from './Renderer/Renderer';
 import App from './displayobjects/App/App';
 
 import CraftyKit from './crafty/CraftyKit.js';
-import PastelEvaluator from "./pastel/evaluator.js";
-import PastelError from "./pastel/error.js";
-import Parser from './pastel/parser.js';
 import CraftyStore from './stores/CraftyStore.js';
+
+import Pastel from 'pastel-lang';
 
 //import AnimationStore from './stores/AnimationStore';
 //import TWEEN from 'tween.js';
