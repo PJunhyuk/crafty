@@ -19,6 +19,9 @@ window.jQuery = jQuery;
 //  import editor styles
 import "./crafty.css";
 
+// import jquery.snow
+import "../theme/jquery.snow.js";
+
 class Crafty {
   constructor() {
     this.checkDeleteBtn;
@@ -27,7 +30,10 @@ class Crafty {
   }
 
   render() {
-    console.log("hi");
+    // start snow!
+    $(document).ready( function(){
+        $.fn.snow();
+    });
 
     /* pastel syntax highlighting parts */
     var editor = ace.edit("editor");
