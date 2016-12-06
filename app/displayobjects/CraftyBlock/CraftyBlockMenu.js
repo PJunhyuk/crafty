@@ -21,7 +21,7 @@ export default class CraftyBlockMenu extends PIXI.Container {
         this.on('click', _ => { 
             let block = this.block;
             this.toggle();
-            CraftyBlockEvents.emit('deleteClicked', block);
+            CraftyBlockEvents.emit('clickdelete', block);
         });
     }
 
@@ -38,7 +38,6 @@ export default class CraftyBlockMenu extends PIXI.Container {
     }
 
     setPosition() {
-        console.log(this.block);
         this.position.x = this.block.absolutePosition.x + this.block.hitArea.width/2 - this.width/2;
         this.position.y = this.block.absolutePosition.y - this.height - BLOCK_CONST.MENU_MARGIN;
     }

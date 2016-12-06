@@ -21,69 +21,80 @@ export default class CraftyBlockManager {
         this.menu = new CraftyBlockMenu();
 
         //  Add Block Event Listeners
-        CraftyBlockEvents.on('movingready', this.prepareBlockDrag.bind(this));
-        CraftyBlockEvents.on('movingstart', this.startBlockDrag.bind(this));
-        CraftyBlockEvents.on('movingend', this.endBlockDrag.bind(this));
-        CraftyBlockEvents.on('createdonstage', (block) => {
-            if (!this.rootBlocks.includes(block)) {
-                this.rootBlocks.push(block);
-                console.log(block);
-
-                console.log("Block added to Stage! rootBlock.length = " + this.rootBlocks.length);
-                this.checkBlockInfoList();
-            }
-        });
-        CraftyBlockEvents.on('clickonce', (block) => {
-            console.log("Clicked!");
-            console.log(block);
+        CraftyBlockEvents.on('dragready', this.onDragReady.bind(this));
+        CraftyBlockEvents.on('dragstart', this.onDragStart.bind(this));
+        CraftyBlockEvents.on('dragend', this.onDragEnd.bind(this));
+        CraftyBlockEvents.on('clickblock', (block) => {
             this.menu.toggle(block);
             this.stage.addChild(this.menu);
         });
-        CraftyBlockEvents.on('deleteClicked', (block) => {
+        CraftyBlockEvents.on('clickdelete', (block) => {
             this.removeBlock(block);
+            CraftyBlockEvents.emit('canvaschange');
+        });
+        CraftyBlockEvents.on('canvaschange', _ => {
+            let rootTree = new Node();
+            this.rootBlocks.forEach( block => {
+                let tree = this.treefy(block);
+                rootTree.addChild(tree);
+                CraftyStore.set('tree', rootTree);
+            });
         });
 
         //  Load Saved Tree from CraftyStore
         this.loadTree();
 
+        CraftyStore.addChangeListener(() => {
+            this.loadTree(); 
+        });
         console.log("DEBUG::: Created CraftyBlockManager!");
     }
 
-    prepareBlockDrag(block) {
+    onDragReady(block) {
         //  if block is in sidebar, create copy
-        if (this.stage.sidebar.children.includes(block)) {
-            let blockCopy = block.clone();
-            this.stage.sidebar.addChildAt(blockCopy,1);
+        block.originalAddress = this.getAddress(block);
+
+        if (block.originalAddress == -1) {
+            this.stage.sidebar.addChildAt(block.clone(),1);
             block.render();
-            block.createdFromSidebar = true;
-        } else {
-            block.createdFromSidebar = false;
         }
     }
 
-    startBlockDrag(event) {
+    onDragStart(event) {
         let block = event.target;
 
-        //console.log(event.data.getLocalPosition(this.stage));
-        block.isClick = false;
+        //block.isClick = false;
         this.addToStage(block);
 
         //  TODO: Disable auto render for this case
     }
 
-    endBlockDrag(event) {
-        console.log("DEBUG::: Block drag ended!");
-
+    onDragEnd(event) {
         let block = event.target;
+        let newAddress = this.getAddress(block);
 
-        if (block.createdFromSidebar) {
-            let relativeMousePosition = event.data.getLocalPosition(block.parent);
-            if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
-                this.removeBlock(block);
+        let isAddressEqual = (block.originalAddress.length == newAddress.length) && block.originalAddress.every( (element, index) => element === newAddress[index] );
+
+        if (!isAddressEqual) {
+            CraftyBlockEvents.emit('canvaschange');
+
+            if (block.originalAddress.length == 1 && newAddress.length != 1) {
+                this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
+            }
+
+            if (block.originalAddress[0] == -1) {
+                let relativeMousePosition = event.data.getLocalPosition(block.parent);
+                if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
+                    this.removeBlock(block);
+                }
+            }
+            if (newAddress[0] == -2) {
+                //  no need to addToStage since it is already done during moving
+                this.rootBlocks.push(block);
             }
         }
 
-        this.checkBlockInfoList();
+        block.originalAddress = undefined;
     }
 
     /**
@@ -131,8 +142,9 @@ export default class CraftyBlockManager {
             block.parent.removeChildBlock(block);
         } else {
             let index = this.rootBlocks.indexOf(block); 
+            console.log(index);
             if (index > -1) {
-                this.rootBlocks.splice(index);
+                this.rootBlocks.splice(index,1);
                 this.stage.removeChild(block);
             }
         }
@@ -271,18 +283,27 @@ export default class CraftyBlockManager {
     }
 
 
-    checkBlockInfoList() {
-        var numberOfBlocks = this.stage.children.length - 2;
-
-        var i;
-        var blockInfoList = new Array("");
-
-        for (i = 1; i <= numberOfBlocks; i++) {
-            blockInfoList[i-1] = this.stringify(this.stage.getChildAt(i+1));
+    getAddress(block) {
+        let address = [];
+        if (block.parent instanceof CraftyBlock) {
+            address = this.getAddress(block.parent);
+            address.push(block.parent.getChildBlockIndex(block));
+        } else {
+            let sidebarIndex = this.stage.sidebar.children.indexOf(block);
+            if (sidebarIndex > -1) {
+                address.push(-1);
+            }
+            else {
+                let stageIndex = this.rootBlocks.indexOf(block);
+                if (stageIndex > -1) {
+                    address.push(stageIndex);
+                } else {
+                    address.push(-2);
+                    //throw new Error("No appropriate parent found!");
+                }
+            }
         }
 
-        //  call canvasChanged function
-        crafty.canvasChanged(blockInfoList);
-        // getBlockInfoList(BlockInfoList);
+        return address;
     }
 }

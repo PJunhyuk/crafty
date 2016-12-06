@@ -119,14 +119,14 @@ export default class CraftyBlock extends PIXI.Container {
         //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
         if (this.type != CraftyBlock.PARAMETER) {
             this
-                .on('mousedown', events.onDragStart.bind(events))
-                .on('touchstart', events.onDragStart.bind(events))
-                .on('mousemove', events.onDragMove.bind(events))
-                .on('touchmove', events.onDragMove.bind(events))
-                .on('mouseup', events.onDragEnd.bind(events))
-                .on('mouseupoutside', events.onDragEnd.bind(events))
-                .on('touchend', events.onDragEnd.bind(events))
-                .on('touchendoutside', events.onDragEnd.bind(events));
+                .on('mousedown', events.onMouseDown.bind(events))
+                .on('touchstart', events.onMouseDown.bind(events))
+                .on('mousemove', events.onMouseMove.bind(events))
+                .on('touchmove', events.onMouseMove.bind(events))
+                .on('mouseup', events.onMouseUp.bind(events))
+                .on('mouseupoutside', events.onMouseUp.bind(events))
+                .on('touchend', events.onMouseUp.bind(events))
+                .on('touchendoutside', events.onMouseUp.bind(events));
         } else {
             this
                 .on('mousedown', events.onParameterStart.bind(events))

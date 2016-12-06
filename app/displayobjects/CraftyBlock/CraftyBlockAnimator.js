@@ -15,7 +15,7 @@ class CraftyBlockAnimator {
         console.log("DEBUG::: CraftyBlockAnimator initialized!");
     }
 
-    onDragStart(event) {
+    onMouseDown(event) {
         let block = event.target;
 
         let relativeMousePosition = event.data.getLocalPosition(block);
@@ -23,7 +23,7 @@ class CraftyBlockAnimator {
             //console.log("DEBUG::: drag started by \"" + block.blockInfo.name + "\"");
 
             //  emit start of drag move
-            CraftyBlockEvents.emit('movingready', block);
+            CraftyBlockEvents.emit('dragready', block);
 
             //  save original position and distance from original to mouse position
             let mouseStartPosition = event.data.getLocalPosition(block.parent);
@@ -32,7 +32,6 @@ class CraftyBlockAnimator {
             block.diff.y -= block.position.y;
             block.originalPosition = block.position.clone();
 
-            block.alpha = 0.6;
             block.selected = true;
             this.isHoldingBlock = true;
             //  set toggle that becomes true the moment when drag starts
@@ -40,7 +39,7 @@ class CraftyBlockAnimator {
         }
     }
 
-    onDragMove(event) {
+    onMouseMove(event) {
         let block = event.target;
         //console.log("DEBUG::: drag moving by \"" + block.blockInfo.name + "\"");
 
@@ -48,8 +47,9 @@ class CraftyBlockAnimator {
          {
             //  set isClick to false since block started to move
             if (block.isClick) {
+                block.alpha = 0.6;
                 block.isClick = false;
-                CraftyBlockEvents.emit('movingstart', event);
+                CraftyBlockEvents.emit('dragstart', event);
             }
 
             //  move block to mouse position
@@ -62,25 +62,23 @@ class CraftyBlockAnimator {
     /**
      * Called when click/drag of a block is ended
      */
-    onDragEnd(event) {
+    onMouseUp(event) {
         let block = event.target;
 
         if (block.selected) {
             //  if parent is sidebar, either add new Block to stage or remove depending on mouse location
-            CraftyBlockEvents.emit('movingend', event);
             if (block.isClick) {
-                CraftyBlockEvents.emit('clickonce', block);
+                CraftyBlockEvents.emit('clickblock', block);
             } else {
-                console.log("DEBUG::: drag ended by \"" + block.blockInfo.name + "\"");
+                //console.log("DEBUG::: drag ended by \"" + block.blockInfo.name + "\"");
 
                 //  if there is parameter block below, attach
                 if (this.targetBlock) {
-                    CraftyBlockEvents.emit('attached', block);
                     block.attachTo(this.targetBlock);
                     this.targetBlock = null;
-                } else {
-                    CraftyBlockEvents.emit('createdonstage', block);
                 }
+
+                CraftyBlockEvents.emit('dragend', event);
             }
 
             block.alpha = 1;
