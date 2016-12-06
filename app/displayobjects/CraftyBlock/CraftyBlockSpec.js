@@ -15,6 +15,10 @@ export default class CraftyBlockSpec {
             return functionInfo.name === name; 
         });
 
+        if (!info) {
+            throw new Error("Not able to find function with name: " + name);
+        }
+
         return new CraftyBlockSpec(info.name, CraftyBlock.FUNCTION, info.parameters, "", info.docstring);
     }
 }
