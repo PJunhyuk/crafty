@@ -32,7 +32,13 @@ class Crafty {
   render() {
     // start snow!
     $(document).ready( function(){
-        $.fn.snow();
+      $.fn.snow({ minSize: 5, maxSize: 50, newOn: 500, flakeColor: '#FFFFFF' });
+      /***
+      minSize - min size of snowflake, 10 by default
+      maxSize - max size of snowflake, 20 by default
+      newOn - frequency in ms of appearing of new snowflake, 500 by default
+      flakeColor - color of snowflake, #FFFFFF by default
+      ***/
     });
 
     /* pastel syntax highlighting parts */
