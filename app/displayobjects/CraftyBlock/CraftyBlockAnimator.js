@@ -120,6 +120,20 @@ class CraftyBlockAnimator {
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
+                var input_value_box = document.getElementById("input-value-box");
+                input_value_box.className = "show";
+
+                $('#input-value-submit').click(function() {
+                  let value = $('#input-value').val();
+                  console.log(value);
+                  if(input_value_box.className == "show") {
+                    input_value_box.className = "hide";
+                    setTimeout(function() {
+                      input_value_box.className = "";
+                    }, 500);
+                  }
+                });
+
                 //  Emit create new block prompt
                 /*
                 let value = prompt("Type in your constant!");
