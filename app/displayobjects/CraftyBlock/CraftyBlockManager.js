@@ -31,7 +31,7 @@ export default class CraftyBlockManager {
             CraftyBlockEvents.emit('canvaschange');
         });
         CraftyBlockEvents.on('canvaschange', _ => {
-            let rootTree = new Node();
+            let rootTree = new Pastel.Node();
             this.rootBlocks.forEach( block => {
                 let tree = this.treefy(block);
                 rootTree.addChild(tree);
@@ -179,7 +179,7 @@ export default class CraftyBlockManager {
         let tree;
 
         let blockName = (block.type == CraftyBlock.PARAMETER) ? "{" + block.name + "}" : block.name;
-        let token = new Pastel.Token(Token.ID, blockName);
+        let token = new Pastel.Token(Pastel.Token.ID, blockName);
 
         if (block.type == CraftyBlock.FUNCTION) {
             tree = new Pastel.Node();
@@ -196,7 +196,7 @@ export default class CraftyBlockManager {
                 }
             });
         } else {
-            tree = new Node(token);
+            tree = new Pastel.Node(token);
         }
 
         return tree;
