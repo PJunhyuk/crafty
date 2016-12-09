@@ -121,24 +121,11 @@ class CraftyBlockAnimator {
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
-                InputMenu.create();
-
-                InputMenu.show();
-
-                //  Emit create new block prompt
-                /*
-                let value = prompt("Type in your constant!");
-
-                if (value) {
-                    let constantBlock = CraftyBlock.constantWithValue(value);
-                    constantBlock.attachTo(block);
-                }
-                */
+                InputMenu.create(block);
             }
             block.clicked = false;
         }
     }
-
 }
 
 export default new CraftyBlockAnimator();

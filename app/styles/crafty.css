@@ -100,7 +100,7 @@ input:focus {
 
 /* style of input-value */
 
-#input-value-box {
+.input-value-box {
   visibility: hidden;
   position: absolute;
   width: 300px;
@@ -109,11 +109,10 @@ input:focus {
   margin-left: -150px;
   top: 50%;
   margin-top: -100px;
-  opacity: 0.8;
   background-color: red;
 }
 
-#input-value-box p {
+.input-value-box p {
   padding-top: 20px;
   width: 300px;
   text-align: center;
@@ -125,14 +124,14 @@ input:focus {
   color: white;
 }
 
-#input-value-box.show {
+.input-value-box.show {
   visibility: visible;
   /*-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
   -webkit-animation: fadein 0.5s;
   animation: fadein 0.5s;
 }
 
-#input-value-box.hide {
+.input-value-box.hide {
   visibility: visible;
   -webkit-animation: fadeout 0.5s;
   animation: fadeout 0.5s;
