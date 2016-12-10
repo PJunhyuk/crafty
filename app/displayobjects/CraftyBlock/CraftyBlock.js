@@ -11,6 +11,7 @@ export default class CraftyBlock extends PIXI.Container {
         this.blockInfo = blockInfo;
         this.childBlocks = [];
         this.lines = [];
+        this.folded = false;
 
         this.initialize();
 
@@ -36,6 +37,26 @@ export default class CraftyBlock extends PIXI.Container {
             position.y += this.parent.absolutePosition.y;
         }
         return position;
+    }
+
+    /**
+     * Remove all children except main block and text
+     */
+    purge() {
+        this.removeChildren(2);
+    }
+
+    /**
+     * Redraw and re-add all child blocks
+     */
+    redraw() {
+        this.childBlocks.forEach( blocks => blocks.forEach( block => {
+            this.addChild(block);
+            block.redraw();
+        }));
+
+        console.log(`Redrawing {${this.name}}...`);
+        this.render();
     }
 
     /**
@@ -162,7 +183,10 @@ export default class CraftyBlock extends PIXI.Container {
         //  remove existing lines from block
         this.lines.splice(childIndex).forEach(line => this.removeChild(line));
 
-        this.childBlocks.slice(childIndex).forEach( (blocks,index) => {
+        let drawingBlocks = this.folded ? this.inputBlocks : this.childBlocks.slice(childIndex);
+
+        // this.childBlocks.slice(childIndex).forEach( (blocks,index) => {
+        drawingBlocks.forEach( (blocks,index) => {
             //  set line end position to middle of next block to draw
             let lineEndPosition = new PIXI.Point(childBlockPosition.x, childBlockPosition.y + this.hitArea.height/2);
 
@@ -213,6 +237,26 @@ export default class CraftyBlock extends PIXI.Container {
                 endPosition.y);
             return curve;
         }
+    }
+
+    getLeafBlocks() {
+        let leafBlocks = [];
+
+        this.childBlocks.forEach( blocks => {
+            if (blocks[0].type == CraftyBlock.FUNCTION) {
+                leafBlocks.push(...blocks[0].getLeafBlocks());
+            } else {
+                leafBlocks.push(blocks);
+                /*
+                leafBlocks.push( blocks.map( block => {
+                    let newBlock = block.clone();
+                    return newBlock;
+                }));
+                */
+            }
+        });
+
+        return leafBlocks;
     }
 
     /**
@@ -297,10 +341,19 @@ export default class CraftyBlock extends PIXI.Container {
 
     //  TODO
     fold() {
+        this.folded = true;
+        this.purge();
+        this.inputBlocks = this.getLeafBlocks();
+        this.inputBlocks.forEach( blocks => blocks.forEach( block => this.addChild(block) ) );
+        this.render();
     }
 
     //  TODO
     unfold() {
+        this.folded = false;
+        this.purge();
+        this.redraw();
+        this.inputBlocks = null;
     }
 
     /**
