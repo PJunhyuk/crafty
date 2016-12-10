@@ -11,18 +11,16 @@ import InputMenu from './../DOM/InputMenu.js';
  */
 class CraftyBlockAnimator {
     constructor() {
-        this.isHoldingBlock = false;
+        this.dragging = false;
         this.targetBlock = null;
-        console.log("DEBUG::: CraftyBlockAnimator initialized!");
     }
 
     onMouseDown(event) {
         let block = event.target;
 
+        //  trigger when the mouse is clicked inside the block
         let relativeMousePosition = event.data.getLocalPosition(block);
         if (block.isHit(relativeMousePosition)) {
-            //console.log("DEBUG::: drag started by \"" + block.blockInfo.name + "\"");
-
             //  emit start of drag move
             CraftyBlockEvents.emit('dragready', block);
 
@@ -33,23 +31,23 @@ class CraftyBlockAnimator {
             block.diff.y -= block.position.y;
             block.originalPosition = block.position.clone();
 
-            block.selected = true;
-            this.isHoldingBlock = true;
-            //  set toggle that becomes true the moment when drag starts
-            block.isClick = true;
+            block.selected = true; // boolean used for narrowing event listening socpe
+            block.isClick = true; // boolean for identifying whether user action is click or drag
         }
     }
 
+    /**
+     * mousemove event callback for general blocks
+     */
     onMouseMove(event) {
         let block = event.target;
-        //console.log("DEBUG::: drag moving by \"" + block.blockInfo.name + "\"");
 
          if (block.selected)
          {
             //  set isClick to false since block started to move
             if (block.isClick) {
-                block.alpha = 0.6;
                 block.isClick = false;
+                this.dragging = true;
                 CraftyBlockEvents.emit('dragstart', event);
             }
 
@@ -61,66 +59,71 @@ class CraftyBlockAnimator {
     }
 
     /**
-     * Called when click/drag of a block is ended
+     * mouseup event callback for general blocks
      */
     onMouseUp(event) {
         let block = event.target;
 
         if (block.selected) {
-            //  if parent is sidebar, either add new Block to stage or remove depending on mouse location
+            //  emit events according to type (click vs drag)
             if (block.isClick) {
                 CraftyBlockEvents.emit('clickblock', block);
             } else {
-                //console.log("DEBUG::: drag ended by \"" + block.blockInfo.name + "\"");
-
-                //  if there is parameter block below, attach
-                if (this.targetBlock) {
-                    block.attachTo(this.targetBlock);
-                    this.targetBlock = null;
-                }
-
+                //  emit dragend event with data about targetBlock
+                event.targetBlock = this.targetBlock;
                 CraftyBlockEvents.emit('dragend', event);
+                this.targetBlock = null;
             }
 
-            block.alpha = 1;
             block.selected = false;
-            this.isHoldingBlock = false;
+            this.dragging = false;
         }
     }
 
+    /**
+     * parameterBlock mousedown event callback
+     */
     onParameterStart(event) {
         let block = event.target;
 
         block.clicked = true;
     }
 
-    // "mousemove" event handler for parameter blocks
+    /**
+     * parameterBlock mousemove event callback
+     */
     onParameterMove(event) {
         let block = event.target;
 
-        //  if mouse position is inside hit area, then set stage.target to this
-        if (this.isHoldingBlock) {
+        //  trigger only while a block is being dragged
+        if (this.dragging) {
+            //  if mouse is over parameter block, keep a reference for potential attaching
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
-                //console.log(`DEBUG::: parameter moving by {${block.blockInfo.name}}`);
-
+                //  change tint on hover
                 block.getChildAt(0).tint = 0xDDDDDD;
                 this.targetBlock = block;
             } else {
+                //  reset target block when no longer hovering over parameter block
                 if (block == this.targetBlock) {
                     this.targetBlock = null;
-                    block.getChildAt(0).tint = 0xFFFFFF;
                 }
+                //  reset tint
+                block.getChildAt(0).tint = 0xFFFFFF;
             }
         }
     }
 
+    /**
+     * parameterBlock mouseup event callback
+     */
     onParameterEnd(event) {
         let block = event.target;
 
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
+                // load input menu when parameter block is clicked
                 InputMenu.create(block);
             }
             block.clicked = false;

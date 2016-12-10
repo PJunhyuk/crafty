@@ -19,17 +19,21 @@ export default class CraftyBlockManager {
         this.menu = new CraftyBlockMenu();
 
         //  Add Block Event Listeners
-        CraftyBlockEvents.on('dragready', this.onDragReady.bind(this));
-        CraftyBlockEvents.on('dragstart', this.onDragStart.bind(this));
-        CraftyBlockEvents.on('dragend', this.onDragEnd.bind(this));
-        CraftyBlockEvents.on('clickblock', (block) => {
-            this.menu.toggle(block);
-            this.stage.addChild(this.menu);
+        this.addBlockEventListeners();
+
+        //  Load Saved Tree from CraftyStore
+        this.loadTree();
+
+        //  Add CraftyStore Listener for changes from editor
+        CraftyStore.addChangeListener(caller => {
+            if (caller == "editor") {
+                this.loadTree(); 
+            } else {
+                console.log(`DEBUG::: Ignoring change from ${caller}`);
+            }
         });
-        CraftyBlockEvents.on('clickdelete', (block) => {
-            this.removeBlock(block);
-            CraftyBlockEvents.emit('canvaschange');
-        });
+
+        //  React to block events that results in canvas change
         CraftyBlockEvents.on('canvaschange', _ => {
             let rootTree = new Pastel.Node();
             this.rootBlocks.forEach( block => {
@@ -40,82 +44,97 @@ export default class CraftyBlockManager {
             CraftyStore.emitChange("canvasmanager");
         });
 
-        //  Load Saved Tree from CraftyStore
-        this.loadTree();
 
-        CraftyStore.addChangeListener((caller) => {
-            if (caller == "editor") {
-                this.loadTree(); 
+        console.log("DEBUG::: Initialized CraftyBlockManager!");
+    }
+
+    addBlockEventListeners() {
+        CraftyBlockEvents.on('dragready', onDragReady.bind(this));
+        CraftyBlockEvents.on('dragstart', onDragStart.bind(this));
+        CraftyBlockEvents.on('dragend', onDragEnd.bind(this));
+        CraftyBlockEvents.on('clickblock', block => {
+            if (block.folded) {
+                block.unfold();
+            } else {
+                block.fold();
             }
-            else {
-                console.log(`DEBUG::: Ignoring change from ${caller}`);
-            }
+            //this.menu.toggle(block);
+            //this.stage.addChild(this.menu);
         });
-        console.log("DEBUG::: Created CraftyBlockManager!");
-    }
+        CraftyBlockEvents.on('clickdelete', block => {
+            this.removeBlock(block);
+            CraftyBlockEvents.emit('canvaschange');
+        });
 
-    onDragReady(block) {
-        //  if block is in sidebar, create copy
-        block.originalAddress = this.getAddress(block);
+        function onDragReady(block) {
+            //  if block is in sidebar, create copy
+            block.originalAddress = this.getAddress(block);
 
-        if (block.originalAddress == -1) {
-            this.stage.sidebar.addChildAt(block.clone(),1);
-            block.render();
-        }
-    }
-
-    onDragStart(event) {
-        let block = event.target;
-
-        //block.isClick = false;
-        this.addToStage(block);
-
-        //  TODO: Disable auto render for this case
-    }
-
-    onDragEnd(event) {
-        //  called after block is placed according to corresponding mouse location
-        let block = event.target;
-        let newAddress = this.getAddress(block);
-        let validDrag = true;
-
-        let isAddressEqual = (block.originalAddress.length == newAddress.length) && block.originalAddress.every( (element, index) => element === newAddress[index] );
-
-        //  only interested in when block address changed
-        if (!isAddressEqual) {
-
-            //  when block is no longer a root block
-            if (block.originalAddress.length == 1 && newAddress.length != 1) {
-                //  remove block from rootBlocks
-                this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
-            }
-
-            //  if the block is sidebar created
-            if (block.originalAddress[0] == -1) {
-                //  check mouse location is inside sidebar
-                let relativeMousePosition = event.data.getLocalPosition(this.stage);
-                if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
-                    //  remove block out of existence
-                    console.log("Mouse inside sidebar");
-                    this.removeBlock(block);
-                    validDrag = false;
-                }
-            }
-            //  if the block is valid, i.e. not removed from sidebar
-            if (validDrag) {
-                //  if the block is on stage
-                if (newAddress[0] == -2) {
-                    //  add to rootBlocks
-                    this.rootBlocks.push(block);
-                    //  no need to addToStage since it is already done during moving
-                }
-
-                //  emit canvas changed
-                CraftyBlockEvents.emit('canvaschange');
+            if (block.originalAddress == -1) {
+                this.stage.sidebar.addChildAt(block.clone(),1);
+                block.render();
             }
         }
 
-        block.originalAddress = undefined;
+        function onDragStart(event) {
+            let block = event.target;
+
+            //block.isClick = false;
+            this.addToStage(block);
+
+            //  TODO: Disable auto render for this case
+        }
+
+        function onDragEnd(event) {
+            //  called after block is placed according to corresponding mouse location
+            let block = event.target;
+            let targetBlock = event.targetBlock;
+            let newAddress = this.getAddress(block);
+            let validDrag = true;
+
+            if(targetBlock) {
+                console.log("Attaching block to target...");
+                block.attachTo(targetBlock);
+            }
+
+            let isAddressEqual = (block.originalAddress.length == newAddress.length) && block.originalAddress.every( (element, index) => element === newAddress[index] );
+
+            //  only interested in when block address changed
+            if (!isAddressEqual) {
+
+                //  when block is no longer a root block
+                if (block.originalAddress.length == 1 && newAddress.length != 1) {
+                    //  remove block from rootBlocks
+                    this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
+                }
+
+                //  if the block is sidebar created
+                if (block.originalAddress[0] == -1) {
+                    //  check mouse location is inside sidebar
+                    let relativeMousePosition = event.data.getLocalPosition(this.stage);
+                    if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
+                        //  remove block out of existence
+                        console.log("Mouse inside sidebar");
+                        this.removeBlock(block);
+                        validDrag = false;
+                    }
+                }
+                //  if the block is valid, i.e. not removed from sidebar
+                if (validDrag) {
+                    //  if the block is on stage
+                    if (newAddress[0] == -2) {
+                        //  add to rootBlocks
+                        this.rootBlocks.push(block);
+                        //  no need to addToStage since it is already done during moving
+                    }
+
+                    //  emit canvas changed
+                    CraftyBlockEvents.emit('canvaschange');
+                }
+            }
+
+            block.originalAddress = undefined;
+        }
     }
 
     /**
@@ -163,7 +182,6 @@ export default class CraftyBlockManager {
             block.parent.removeChildBlock(block);
         } else {
             let index = this.rootBlocks.indexOf(block); 
-            console.log(index);
             if (index > -1) {
                 this.rootBlocks.splice(index,1);
             }
@@ -262,7 +280,7 @@ export default class CraftyBlockManager {
      * DEPRECATED: use treefy
      *
      * Returns a string version of the selected block
-    */
+     */
     stringify(block) {
         //  quick return space + letiable name or space + {parameter name}
         if (block.type == CraftyBlock.CONSTANT) {
@@ -294,7 +312,6 @@ export default class CraftyBlockManager {
         return word;
     }
 
-
     getAddress(block) {
         let address = [];
         if (block.parent instanceof CraftyBlock) {
@@ -312,7 +329,6 @@ export default class CraftyBlockManager {
                 } else {
                     // -2 means is on stage temporarily
                     address.push(-2);
-                    //throw new Error("No appropriate parent found!");
                 }
             }
         }
