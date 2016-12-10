@@ -120,7 +120,14 @@ export default class CraftyBlock extends PIXI.Container {
      * Returns a clone of current block
      */
     clone() {
+        console.log(`Cloning {${this.name}}...`);
         let blockCopy = new CraftyBlock(this.blockInfo);
+        this.childBlocks.forEach( (blocks,index) => {
+            if (blocks.length != 1) {
+                blocks[0].print();
+                blockCopy.addChildBlock(blocks[0].clone(),index);
+            }
+        });
         blockCopy.position = this.position.clone();;
 
         return blockCopy;
