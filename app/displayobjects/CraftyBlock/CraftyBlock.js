@@ -346,7 +346,6 @@ export default class CraftyBlock extends PIXI.Container {
         parent.addChildBlock(this,index);
     }
 
-    //  TODO
     fold() {
         this.folded = true;
         this.purge();
@@ -355,7 +354,6 @@ export default class CraftyBlock extends PIXI.Container {
         this.render();
     }
 
-    //  TODO
     unfold() {
         this.folded = false;
         this.purge();
