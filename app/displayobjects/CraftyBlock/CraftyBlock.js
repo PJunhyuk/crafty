@@ -133,7 +133,7 @@ export default class CraftyBlock extends PIXI.Container {
             }
         });
         blockCopy.position = this.position.clone();;
-        blockCopy.folded = block.folded;
+        blockCopy.folded = this.folded;
 
         return blockCopy;
     }
