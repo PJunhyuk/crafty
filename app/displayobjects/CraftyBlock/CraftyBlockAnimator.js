@@ -48,7 +48,7 @@ class CraftyBlockAnimator {
             if (block.isClick) {
                 block.isClick = false;
                 this.dragging = true;
-                CraftyBlockEvents.emit('dragstart', event);
+                CraftyBlockEvents.emit('dragstart', block);
             }
 
             //  move block to mouse position

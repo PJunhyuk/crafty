@@ -76,10 +76,8 @@ export default class CraftyBlockManager {
             }
         }
 
-        function onDragStart(event) {
-            let block = event.target;
+        function onDragStart(block) {
 
-            //block.isClick = false;
             if (block.parent instanceof CraftyBlock) {
                 block.parent.removeChildBlock(block);
             }
