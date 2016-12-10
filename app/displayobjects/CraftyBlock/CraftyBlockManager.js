@@ -80,8 +80,11 @@ export default class CraftyBlockManager {
             let block = event.target;
 
             //block.isClick = false;
-            this.addToStage(block);
+            if (block.parent instanceof CraftyBlock) {
+                block.parent.removeChildBlock(block);
+            }
 
+            this.stage.addChild(block);
             //  TODO: Disable auto render for this case
         }
 
@@ -157,7 +160,7 @@ export default class CraftyBlockManager {
         this.rootBlocks.forEach( block => { 
             block.position.x = MARGIN_LEFT;
             block.position.y = blockPosition;
-            this.addToStage(block) 
+            this.stage.addChild(block);
             blockPosition += block.height + SPACING;
         });
 
@@ -187,18 +190,6 @@ export default class CraftyBlockManager {
             }
             this.stage.removeChild(block);
         }
-    }
-
-    /**
-     * Add block to stage
-     */
-    addToStage(block) {
-        console.log(`DEBUG::: Adding {${block.name}} to stage`);
-        if (block.parent instanceof CraftyBlock) {
-            block.parent.removeChildBlock(block);
-        }
-
-        this.stage.addChild(block);
     }
 
     /**
@@ -276,42 +267,6 @@ export default class CraftyBlockManager {
         }
     }
 
-    /**
-     * DEPRECATED: use treefy
-     *
-     * Returns a string version of the selected block
-     */
-    stringify(block) {
-        //  quick return space + letiable name or space + {parameter name}
-        if (block.type == CraftyBlock.CONSTANT) {
-            return " " + block.name;
-        } else if (block.type == CraftyBlock.PARAMETER) {
-            return " {" + block.name + "}";
-        }
-
-        let word = "";
-
-        //  add starting parenthesis if the block is a function or in stage
-        if (this.stage == block.parent) {
-            word += "(";
-        } else if (block.type == CraftyBlock.FUNCTION) {
-            word += " (";
-        }
-
-        //  add block name
-        word += block.name;
-
-        //  add child blocks
-        this.childBlocks.forEach( blocks => {
-            word += this.stringify(blocks[0]);
-        });
-
-        //  add closing parenthesis
-        word += ")";
-
-        return word;
-    }
-
     getAddress(block) {
         let address = [];
         if (block.parent instanceof CraftyBlock) {
@@ -334,5 +289,18 @@ export default class CraftyBlockManager {
         }
 
         return address;
+    }
+
+    getBlockAt(address) {
+        if (address[0] < 0) {
+            throw new Error("Invalid address!!");
+        }
+
+        let targetBlock = this.rootBlocks[address.shift()];
+        while (address.length > 0) {
+            targetBlock = targetBlock.childBlocks[address.shift()][0];
+        }
+
+        return targetBlock;
     }
 }
