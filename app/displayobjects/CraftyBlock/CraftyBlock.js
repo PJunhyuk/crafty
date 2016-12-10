@@ -10,7 +10,6 @@ export default class CraftyBlock extends PIXI.Container {
         this.id = "block";
         this.blockInfo = blockInfo;
         this.childBlocks = [];
-        this.parameterBlocks = [];
         this.lines = [];
 
         this.initialize();
@@ -86,10 +85,10 @@ export default class CraftyBlock extends PIXI.Container {
 
         //  Add parameter block to this(block) and make it invisible
         this.parameters.forEach((name) => {
-            const newBlock = CraftyBlock.parameterWithName(name);
-            this.addChild(newBlock);
-            this.parameterBlocks.push(newBlock);
-            newBlock.visible = false;
+            const parameterBlock = CraftyBlock.parameterWithName(name);
+            this.addChild(parameterBlock);
+            this.childBlocks.push([parameterBlock]);
+            parameterBlock.visible = false;
         });
 
         //  set interactivity of blocks
@@ -149,54 +148,46 @@ export default class CraftyBlock extends PIXI.Container {
 
     //** render: positions child/parameter blocks and draws lines
     render(childIndex = 0) {
-        //console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
+        // console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
 
         let lineStartPosition = new PIXI.Point(this.hitArea.width, this.hitArea.height/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*this.childBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
         let childBlockPosition = new PIXI.Point(this.hitArea.height + BLOCK_CONST.SPACING_H, 0);
 
         //  recalculate starting height if render not starting from 0
         if (childIndex != 0) {
-            let previousHeight = 0;
-            if (this.childBlocks[childIndex-1]) {
-                previousHeight = this.childBlocks[childIndex-1].y + this.childBlocks[childIndex-1].height + BLOCK_CONST.SPACING_V;
-            } else {
-                previousHeight = this.parameterBlocks[childIndex-1].y + this.parameterBlocks[childIndex-1].height + BLOCK_CONST.SPACING_V;
-            }
-            childBlockPosition.y = previousHeight;
+            let activeChildBlock = this.childBlocks[childIndex-1][0];
+            childBlockPosition.y = activeChildBlock.y + activeChildBlock.height + BLOCK_CONST.SPACING_V;
         }
 
         //  remove existing lines from block
-        this.lines.slice(childIndex).forEach(line => this.removeChild(line));
+        this.lines.splice(childIndex).forEach(line => this.removeChild(line));
 
-        //  for each parameter/branch, draw line and place block
-        for (let i=childIndex;i < this.parameterBlocks.length; i++) {
-            //  set line end position and draw line
+        this.childBlocks.slice(childIndex).forEach( (blocks,index) => {
+            //  set line end position to middle of next block to draw
             let lineEndPosition = new PIXI.Point(childBlockPosition.x, childBlockPosition.y + this.hitArea.height/2);
-            if (i==0) { // for case 0, make line straight
+
+            // for case 0, make line straight
+            if (childIndex==0 && index == 0) {
                 lineEndPosition.y = lineStartPosition.y;
             }
+
+            //  draw curve, add to child, and push into lines array
             let curve = drawBezierCurve(lineStartPosition,lineEndPosition);
             this.addChild(curve);
-            this.lines[i] = curve;
+            this.lines.push(curve);
 
-            //  parameter block: set position
-            this.parameterBlocks[i].visible = true;
-            this.parameterBlocks[i].position = childBlockPosition.clone();
-            let lastChildHeight = this.parameterBlocks[i].height;
-
-            //  child block: set position, make corresponding parameterBlock invisible
-            if (this.childBlocks[i]) {
-                //console.log(`DEBUG::: childBlock {${this.childBlocks[i].name}} is being added`);
-                this.childBlocks[i].visible = true;
-                this.childBlocks[i].position = childBlockPosition.clone();
-                lastChildHeight = this.childBlocks[i].height;
-                this.parameterBlocks[i].visible = false;
-            }
+            //  set position of child/parameter blocks and make visible to false
+            blocks.forEach( block => {
+                block.position = childBlockPosition.clone();
+                block.visible = false;
+            });
+            //  only show top block as visible
+            blocks[0].visible = true;
 
             //  increment height of lineStartPositon and childBlockPosition
             lineStartPosition.y += LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING;
-            childBlockPosition.y += BLOCK_CONST.SPACING_V + lastChildHeight;
-        }
+            childBlockPosition.y += BLOCK_CONST.SPACING_V + blocks[0].height;
+        });
 
         function drawBezierCurve(startPosition,endPosition) {
             let curve = new PIXI.Graphics().lineStyle(LINE_CONST.STROKE_WIDTH,LINE_CONST.COLOR);
@@ -231,7 +222,7 @@ export default class CraftyBlock extends PIXI.Container {
         //console.log(`DEBUG::: Update called by {${this.name}}`);
 
         if (this.parent instanceof CraftyBlock) {
-            let index = (this.type == CraftyBlock.PARAMETER ? this.parent.getParameterBlockIndex(this) : this.parent.getChildBlockIndex(this));
+            let index = this.parent.getChildBlockIndex(this);
             this.parent.render(index + (includeSelf ? 0 : 1));
             this.parent.update();
         }
@@ -253,27 +244,10 @@ export default class CraftyBlock extends PIXI.Container {
     */
 
     /**
-     * Returns the index position of a child CraftyBlock instance
+     * Returns the index position of a child CraftyBlock instance (works with both parameter and child blocks);
      */
     getChildBlockIndex(block) {
-        let index = this.childBlocks.indexOf(block);
-        if (index === -1) {
-            throw new Error('The supplied Block must be a child of the caller');
-        }
-
-        return index;
-    }
-
-    /**
-     * Returns the index position of a child parameterBlock instance
-     */
-    getParameterBlockIndex(block) {
-        let index = this.parameterBlocks.indexOf(block);
-        if (index === -1) {
-            throw new Error('The supplied Block must be a child of the caller');
-        }
-
-        return index;
+        return this.childBlocks.findIndex( blocks => blocks.includes(block) );
     }
 
     /**
@@ -288,7 +262,7 @@ export default class CraftyBlock extends PIXI.Container {
         }
 
         this.addChild(block);
-        this.childBlocks[index] = block;
+        this.childBlocks[index].unshift(block);
 
         //  update augmented block
         block.update(true);
@@ -302,10 +276,10 @@ export default class CraftyBlock extends PIXI.Container {
         const index = this.getChildBlockIndex(block);
 
         this.removeChild(block);
-        this.childBlocks[index] = null;
+        this.childBlocks[index].shift();
 
         //  set parameterBlock visible to true and update taken out block
-        let parameterBlock = this.parameterBlocks[index];
+        let parameterBlock = this.childBlocks[index][0];
         parameterBlock.visible = true;
         parameterBlock.update();
     }
@@ -317,7 +291,7 @@ export default class CraftyBlock extends PIXI.Container {
      */
     attachTo(parameterBlock) {
         let parent = parameterBlock.parent;
-        let index = parent.getParameterBlockIndex(parameterBlock);
+        let index = parent.getChildBlockIndex(parameterBlock);
         parent.addChildBlock(this,index);
     }
 
@@ -332,14 +306,21 @@ export default class CraftyBlock extends PIXI.Container {
     /**
      * Prints block structure onto console
      */
-    print(indent = "*") {
-        console.log(indent, this.name);
-        this.parameterBlocks.forEach( (block,index) => {
-            if (this.childBlocks[index]) {
-                this.childBlocks[index].print(indent + "**");
+    print(indent = "") {
+        let prefix = "";
+        let childIndent = "  ";
+        if (this.parent instanceof CraftyBlock) {
+            if (this.parent.getChildBlockIndex(this) == this.parent.childBlocks.length -1) {
+                prefix += "└─";
+                childIndent = "  ";
             } else {
-                block.print(indent + "**");
+                prefix += "├─";
+                childIndent = "| ";
             }
+        }
+        console.log(indent + prefix + this.name);
+        this.childBlocks.forEach( (blocks,index) => { 
+            blocks[0].print(childIndent);
         });
     }
 }

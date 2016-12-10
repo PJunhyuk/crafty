@@ -111,7 +111,6 @@ export default class CraftyBlockManager {
                 }
 
                 //  emit canvas changed
-                console.log(block.getLeafBlocks());
                 CraftyBlockEvents.emit('canvaschange');
             }
         }
@@ -199,13 +198,8 @@ export default class CraftyBlockManager {
 
             tree.addChild(subtree);
 
-            block.parameterBlocks.forEach( (parameterBlock, index) => {
-                let childBlock = block.childBlocks[index];
-                if (childBlock) {
-                    tree.addChild(this.treefy(childBlock));
-                } else {
-                    tree.addChild(this.treefy(parameterBlock));
-                }
+            block.childBlocks.forEach( blocks => {
+                tree.addChild(this.treefy(blocks[0]));
             });
         } else {
             tree = new Pastel.Node(token);
@@ -290,13 +284,9 @@ export default class CraftyBlockManager {
         word += block.name;
 
         //  add child blocks
-        for (let i=0;i<block.parameters.length;i++) {
-            if (block.childBlocks[i]) {
-                word += this.stringify(block.childBlocks[i]);
-            } else {
-                word += this.stringify(block.parameterBlocks[i]);
-            }
-        }
+        this.childBlocks.forEach( blocks => {
+            word += this.stringify(blocks[0]);
+        });
 
         //  add closing parenthesis
         word += ")";
