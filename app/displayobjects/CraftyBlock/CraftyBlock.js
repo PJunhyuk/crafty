@@ -151,10 +151,8 @@ export default class CraftyBlock extends PIXI.Container {
     render(childIndex = 0) {
         //console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
 
-        const blockWidth = this.getChildAt(0).width;
-        const blockHeight = this.getChildAt(0).height;
-        let lineStartPosition = new PIXI.Point(blockWidth, blockHeight/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*this.parameterBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
-        let childBlockPosition = new PIXI.Point(blockWidth + BLOCK_CONST.SPACING_H, 0);
+        let lineStartPosition = new PIXI.Point(this.hitArea.width, this.hitArea.height/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*this.childBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
+        let childBlockPosition = new PIXI.Point(this.hitArea.height + BLOCK_CONST.SPACING_H, 0);
 
         //  recalculate starting height if render not starting from 0
         if (childIndex != 0) {
@@ -173,7 +171,7 @@ export default class CraftyBlock extends PIXI.Container {
         //  for each parameter/branch, draw line and place block
         for (let i=childIndex;i < this.parameterBlocks.length; i++) {
             //  set line end position and draw line
-            let lineEndPosition = new PIXI.Point(childBlockPosition.x, childBlockPosition.y + blockHeight/2);
+            let lineEndPosition = new PIXI.Point(childBlockPosition.x, childBlockPosition.y + this.hitArea.height/2);
             if (i==0) { // for case 0, make line straight
                 lineEndPosition.y = lineStartPosition.y;
             }
