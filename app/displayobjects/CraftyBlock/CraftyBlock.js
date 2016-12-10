@@ -373,7 +373,7 @@ export default class CraftyBlock extends PIXI.Container {
         }
         console.log(indent + prefix + this.name);
         this.childBlocks.forEach( (blocks,index) => { 
-            blocks[0].print(childIndent);
+            blocks[0].print(indent + childIndent);
         });
     }
 }
