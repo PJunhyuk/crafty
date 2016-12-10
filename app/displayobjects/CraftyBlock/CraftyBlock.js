@@ -46,6 +46,10 @@ export default class CraftyBlock extends PIXI.Container {
         this.removeChildren(2);
     }
 
+    getChildBlocks() {
+        return this.folded ? this.inputBlocks : this.childBlocks;
+    }
+
     /**
      * Redraw and re-add all child blocks
      */
@@ -122,13 +126,14 @@ export default class CraftyBlock extends PIXI.Container {
     clone() {
         console.log(`Cloning {${this.name}}...`);
         let blockCopy = new CraftyBlock(this.blockInfo);
-        this.childBlocks.forEach( (blocks,index) => {
+        this.getChildBlocks().forEach( (blocks,index) => {
             if (blocks.length != 1) {
                 blocks[0].print();
                 blockCopy.addChildBlock(blocks[0].clone(),index);
             }
         });
         blockCopy.position = this.position.clone();;
+        blockCopy.folded = block.folded;
 
         return blockCopy;
     }
@@ -177,23 +182,23 @@ export default class CraftyBlock extends PIXI.Container {
     //** render: positions child/parameter blocks and draws lines
     render(childIndex = 0) {
         // console.log(`DEBUG::: Render {${this.name}} from index ${childIndex}`);
+        let drawingBlocks = this.getChildBlocks();
 
-        let lineStartPosition = new PIXI.Point(this.hitArea.width, this.hitArea.height/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*this.childBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
+        let lineStartPosition = new PIXI.Point(this.hitArea.width, this.hitArea.height/2 - (LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING)*drawingBlocks.length/2 + childIndex*(LINE_CONST.STROKE_WIDTH + LINE_CONST.SPACING));
         let childBlockPosition = new PIXI.Point(this.hitArea.height + BLOCK_CONST.SPACING_H, 0);
 
         //  recalculate starting height if render not starting from 0
         if (childIndex != 0) {
-            let activeChildBlock = this.childBlocks[childIndex-1][0];
+            let activeChildBlock = drawingBlocks[childIndex-1][0];
             childBlockPosition.y = activeChildBlock.y + activeChildBlock.height + BLOCK_CONST.SPACING_V;
         }
 
         //  remove existing lines from block
         this.lines.splice(childIndex).forEach(line => this.removeChild(line));
 
-        let drawingBlocks = this.folded ? this.inputBlocks : this.childBlocks.slice(childIndex);
 
-        // this.childBlocks.slice(childIndex).forEach( (blocks,index) => {
-        drawingBlocks.forEach( (blocks,index) => {
+        //  draw line and position corresponding blocks
+        drawingBlocks.slice(childIndex).forEach( (blocks,index) => {
             //  set line end position to middle of next block to draw
             let lineEndPosition = new PIXI.Point(childBlockPosition.x, childBlockPosition.y + this.hitArea.height/2);
 
@@ -254,12 +259,6 @@ export default class CraftyBlock extends PIXI.Container {
                 leafBlocks.push(...blocks[0].getLeafBlocks());
             } else {
                 leafBlocks.push(blocks);
-                /*
-                leafBlocks.push( blocks.map( block => {
-                    let newBlock = block.clone();
-                    return newBlock;
-                }));
-                */
             }
         });
 
@@ -298,7 +297,7 @@ export default class CraftyBlock extends PIXI.Container {
      * Returns the index position of a child CraftyBlock instance (works with both parameter and child blocks);
      */
     getChildBlockIndex(block) {
-        return this.childBlocks.findIndex( blocks => blocks.includes(block) );
+        return this.getChildBlocks().findIndex( blocks => blocks.includes(block) );
     }
 
     /**
@@ -313,10 +312,23 @@ export default class CraftyBlock extends PIXI.Container {
         }
 
         this.addChild(block);
-        this.childBlocks[index].unshift(block);
+        this.getChildBlocks()[index].unshift(block);
 
         //  update augmented block
         block.update(true);
+    }
+
+    attachTo(targetBlock) {
+        if (this.parent instanceof CraftyBlock) {
+            this.parent.removeChildBlock(this);
+        }
+        let targetParent = targetBlock.parent;
+
+        targetParent.addChild(this);
+        let index = targetParent.getChildBlockIndex(targetBlock);
+        targetParent.getChildBlocks()[index].unshift(this);
+
+        this.update(true);
     }
 
     /**
@@ -324,36 +336,40 @@ export default class CraftyBlock extends PIXI.Container {
      */
     removeChildBlock(block) {
         console.log(`DEBUG::: Removing {${block.name}} from {${this.name}}`);
-        const index = this.getChildBlockIndex(block);
 
         this.removeChild(block);
-        this.childBlocks[index].shift();
+
+        let index = this.getChildBlockIndex(block);
+        this.getChildBlocks()[index].shift();
+        let parameterBlock = this.getChildBlocks()[index][0];
 
         //  set parameterBlock visible to true and update taken out block
-        let parameterBlock = this.childBlocks[index][0];
         parameterBlock.visible = true;
         parameterBlock.update();
     }
 
-    /** 
-     * Attach block to parameterBlock location
-     *
-     * @convenience of addChildBlock
-     */
-    attachTo(parameterBlock) {
-        let parent = parameterBlock.parent;
-        let index = parent.getChildBlockIndex(parameterBlock);
-        parent.addChildBlock(this,index);
+
+    // TODO
+    deattach() {
     }
 
+    /**
+     * Fold block
+     */
     fold() {
         this.folded = true;
         this.purge();
         this.inputBlocks = this.getLeafBlocks();
         this.inputBlocks.forEach( blocks => blocks.forEach( block => this.addChild(block) ) );
         this.render();
+        // console.log(this.children);
+        // console.log(this.inputBlocks);
+        // console.log(this.childBlocks);
     }
 
+    /**
+     * Unfold block
+     */
     unfold() {
         this.folded = false;
         this.purge();
@@ -368,7 +384,7 @@ export default class CraftyBlock extends PIXI.Container {
         let prefix = "";
         let childIndent = "  ";
         if (this.parent instanceof CraftyBlock) {
-            if (this.parent.getChildBlockIndex(this) == this.parent.childBlocks.length -1) {
+            if (this.parent.getChildBlockIndex(this) == this.parent.getChildBlocks().length -1) {
                 prefix += "└─";
                 childIndent = "  ";
             } else {
@@ -377,7 +393,7 @@ export default class CraftyBlock extends PIXI.Container {
             }
         }
         console.log(indent + prefix + this.name);
-        this.childBlocks.forEach( (blocks,index) => { 
+        this.getChildBlocks().forEach( (blocks,index) => { 
             blocks[0].print(indent + childIndent);
         });
     }
