@@ -13,7 +13,7 @@ class CraftyBlockEvents extends EventEmitter {
     }
 
     emit(eventName, ...args) {
-        console.log(`DEBUG: ${eventName} occured!`);
+        console.log(`EVENT: ${eventName} occured!`);
         super.emit(eventName, ...args);
     }
 }
