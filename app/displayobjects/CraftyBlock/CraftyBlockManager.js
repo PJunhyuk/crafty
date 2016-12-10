@@ -74,32 +74,44 @@ export default class CraftyBlockManager {
     }
 
     onDragEnd(event) {
+        //  called after block is placed according to corresponding mouse location
         let block = event.target;
         let newAddress = this.getAddress(block);
         let validDrag = true;
 
         let isAddressEqual = (block.originalAddress.length == newAddress.length) && block.originalAddress.every( (element, index) => element === newAddress[index] );
 
+        //  only interested in when block address changed
         if (!isAddressEqual) {
 
+            //  when block is no longer a root block
             if (block.originalAddress.length == 1 && newAddress.length != 1) {
+                //  remove block from rootBlocks
                 this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
             }
 
+            //  if the block is sidebar created
             if (block.originalAddress[0] == -1) {
+                //  check mouse location is inside sidebar
                 let relativeMousePosition = event.data.getLocalPosition(this.stage);
                 if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
+                    //  remove block out of existence
                     console.log("Mouse inside sidebar");
                     this.removeBlock(block);
                     validDrag = false;
                 }
             }
+            //  if the block is valid, i.e. not removed from sidebar
             if (validDrag) {
+                //  if the block is on stage
                 if (newAddress[0] == -2) {
-                    //  no need to addToStage since it is already done during moving
+                    //  add to rootBlocks
                     this.rootBlocks.push(block);
+                    //  no need to addToStage since it is already done during moving
                 }
 
+                //  emit canvas changed
+                console.log(block.getLeafBlocks());
                 CraftyBlockEvents.emit('canvaschange');
             }
         }
