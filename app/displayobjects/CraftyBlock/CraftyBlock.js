@@ -116,6 +116,8 @@ export default class CraftyBlock extends PIXI.Container {
             parameterBlock.visible = false;
         });
 
+        this.hitArea = blockGraphics.getBounds().clone();
+
         //  set interactivity of blocks
         this.makeInteractive();
     }
@@ -145,7 +147,6 @@ export default class CraftyBlock extends PIXI.Container {
         const events = CraftyBlockAnimator;
 
         this.interactive = true;
-        this.hitArea = this.getChildAt(0).getBounds().clone();
         //console.log(`DEBUG:::interactivity enabled for {${this.name}}`);
 
         //  enable drag and drop for non-parameter blocks, enable mouse over check for parameter blocks
@@ -354,17 +355,62 @@ export default class CraftyBlock extends PIXI.Container {
     }
 
     /**
+     *
+     */
+    applyName(name) {
+        //  Create new PIXI text and set position
+        let text = new PIXI.Text(
+            name,
+            BLOCK_CONST.TEXT_STYLE
+        );
+        text.position.set(BLOCK_CONST.PADDING_H,BLOCK_CONST.PADDING_V);
+
+        //  Remove existing text
+        this.removeChildAt(1);
+
+        //  Add text to block
+        this.addChildAt(text,1);
+    }
+
+    applyMainBlock(color) {
+        //  Create new PIXI Graphics and set color, position
+        let blockGraphics = new PIXI.Graphics();
+        if (this.type == CraftyBlock.PARAMETER) { // if block is parameter, apply different style
+            blockGraphics.beginFill(color, BLOCK_CONST.OPACITY);
+
+        } else if (this.type == CraftyBlock.CONSTANT) {
+            blockGraphics.beginFill(color, BLOCK_CONST.OPACITY);
+        } else {
+            if (this.folded) {
+                blockGraphics.beginFill(color, BLOCK_CONST.OPACITY);
+            } else {
+                blockGraphics.beginFill(color, BLOCK_CONST.OPACITY);
+            }
+        }
+        blockGraphics.drawRoundedRect(0,0,this.getChildAt(1).width + 2 * BLOCK_CONST.PADDING_H, this.getChildAt(1).height + 2 * BLOCK_CONST.PADDING_V, BLOCK_CONST.CORNER_RADIUS);
+        blockGraphics.endFill();
+
+        this.hitArea = blockGraphics.getBounds().clone();
+
+        //  Remove existing graphics
+        this.removeChildAt(0);
+
+        //  Add graphics to block
+        this.addChildAt(blockGraphics,0);
+    }
+
+    /**
      * Fold block
      */
     fold() {
+        // assert (this.type == CraftyBlock.FUNCTION, "Attempt to fold on non-function block");
         this.folded = true;
         this.purge();
+        this.applyName("...");
+        this.applyMainBlock(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR);
         this.inputBlocks = this.getLeafBlocks();
         this.inputBlocks.forEach( blocks => blocks.forEach( block => this.addChild(block) ) );
         this.render();
-        // console.log(this.children);
-        // console.log(this.inputBlocks);
-        // console.log(this.childBlocks);
     }
 
     /**
@@ -373,6 +419,8 @@ export default class CraftyBlock extends PIXI.Container {
     unfold() {
         this.folded = false;
         this.purge();
+        this.applyName(this.name);
+        this.applyMainBlock(BLOCK_CONST.TYPE_FUNCTION_COLOR);
         this.redraw();
         this.inputBlocks = null;
     }
