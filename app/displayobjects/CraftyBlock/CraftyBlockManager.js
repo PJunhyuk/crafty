@@ -92,18 +92,19 @@ export default class CraftyBlockManager {
             //  called after block is placed according to corresponding mouse location
             let block = event.target;
             let targetBlock = event.targetBlock;
-            let newAddress = this.getAddress(block);
             let validDrag = true;
 
+            //  if block has targetBlock(parameter block that is being hovered over), attach
             if(targetBlock) {
                 console.log("Attaching block to target...");
                 block.attachTo(targetBlock);
             }
 
-            let isAddressEqual = (block.originalAddress.length == newAddress.length) && block.originalAddress.every( (element, index) => element === newAddress[index] );
+            //  Get new block address
+            let newAddress = this.getAddress(block);
 
             //  only interested in when block address changed
-            if (!isAddressEqual) {
+            if (!this.isAddressEqual(block.originalAddress,newAddress)) {
 
                 //  when block is no longer a root block
                 if (block.originalAddress.length == 1 && newAddress.length != 1) {
@@ -289,6 +290,10 @@ export default class CraftyBlockManager {
         }
 
         return address;
+    }
+
+    isAddressEqual(address1, address2) {
+        return (address1.length == address2.length) && address1.every( (element, index) => element === address2[index] );
     }
 
     getBlockAt(address) {
