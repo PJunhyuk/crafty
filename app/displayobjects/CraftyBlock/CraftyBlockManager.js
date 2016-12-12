@@ -53,6 +53,14 @@ export default class CraftyBlockManager {
         CraftyBlockEvents.on('dragstart', onDragStart.bind(this));
         CraftyBlockEvents.on('dragend', onDragEnd.bind(this));
         CraftyBlockEvents.on('clickblock', block => {
+            if(block.isFoldable()) {
+              this.menu.foldable = true;
+              this.menu.render();
+            } else {
+              this.menu.foldable = false;
+              this.menu.render();
+            }
+            console.log(this.menu.foldable);
             this.menu.toggle(block);
             this.stage.addChild(this.menu);
         });
