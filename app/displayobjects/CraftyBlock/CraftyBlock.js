@@ -54,7 +54,7 @@ export default class CraftyBlock extends PIXI.Container {
      * Redraw and re-add all child blocks
      */
     redraw() {
-        this.childBlocks.forEach( blocks => blocks.forEach( block => {
+        this.getChildBlocks().forEach( blocks => blocks.forEach( block => {
             this.addChild(block);
             block.redraw();
         }));
