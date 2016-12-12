@@ -13,6 +13,8 @@ import "../styles/crafty.css";
 // import jquery.snow
 import "../theme/jquery.snow.js";
 
+import InputMenu from "./../displayobjects/DOM/InputMenu.js";
+
 export default class CraftyKit {
   constructor() {
       this.craftyEditor = new CraftyCodeEditor();
@@ -20,8 +22,6 @@ export default class CraftyKit {
   }
 
   render() {
-    console.log("hi");
-
     $(document).ready(() => {
     // start snow!
       $.fn.snow({ minSize: 5, maxSize: 50, newOn: 500, flakeColor: '#FFFFFF' });
@@ -43,7 +43,18 @@ export default class CraftyKit {
       $('.live-preview').click(() => {
         this.craftyEditor.compile();
       });
-    });
 
+      $('body').click(event => {
+        if ($('.input-value-box').css('display') == 'block') {
+          if (!$('.input-value-box').has(event.target).length) {
+            if (InputMenu.removeVariable == 1) {
+              InputMenu.remove();
+            } else {
+              InputMenu.removeVariable = InputMenu.removeVariable + 1;
+            }
+          };
+        };
+      });
+    });
   }
 }
