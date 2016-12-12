@@ -7,7 +7,7 @@ import CraftyBlockEvents from './CraftyBlockEvents.js';
 
 /**
  * CraftyBlock Manager Class
- * 
+ *
  * Manages existing and new blocks, and their positions
  *
  * @exports CraftyBlockManager
@@ -27,7 +27,7 @@ export default class CraftyBlockManager {
         //  Add CraftyStore Listener for changes from editor
         CraftyStore.addChangeListener(caller => {
             if (caller == "editor") {
-                this.loadTree(); 
+                this.loadTree();
             } else {
                 console.log(`DEBUG::: Ignoring change from ${caller}`);
             }
@@ -53,13 +53,15 @@ export default class CraftyBlockManager {
         CraftyBlockEvents.on('dragstart', onDragStart.bind(this));
         CraftyBlockEvents.on('dragend', onDragEnd.bind(this));
         CraftyBlockEvents.on('clickblock', block => {
-            if (block.folded) {
-                block.unfold();
-            } else {
-                block.fold();
-            }
-            //this.menu.toggle(block);
-            //this.stage.addChild(this.menu);
+            this.menu.toggle(block);
+            this.stage.addChild(this.menu);
+        });
+        CraftyBlockEvents.on('clickfold', block => {
+          if (block.folded) {
+              block.unfold();
+          } else {
+              block.fold();
+          }
         });
         CraftyBlockEvents.on('clickdelete', block => {
             this.removeBlock(block);
@@ -155,7 +157,7 @@ export default class CraftyBlockManager {
         let blockPosition = MARGIN_TOP;
 
         //  Set position of blocks and add to stage
-        this.rootBlocks.forEach( block => { 
+        this.rootBlocks.forEach( block => {
             block.position.x = MARGIN_LEFT;
             block.position.y = blockPosition;
             this.stage.addChild(block);
@@ -182,7 +184,7 @@ export default class CraftyBlockManager {
         if (block.parent instanceof CraftyBlock) {
             block.parent.removeChildBlock(block);
         } else {
-            let index = this.rootBlocks.indexOf(block); 
+            let index = this.rootBlocks.indexOf(block);
             if (index > -1) {
                 this.rootBlocks.splice(index,1);
             }
@@ -224,7 +226,7 @@ export default class CraftyBlockManager {
             //  for each children(subtree), map its blockified version
             //let blocks = node.children.map ( childNode => this.blockify(childNode) );
             let blocks = [];
-            node.children.forEach( (childNode,index) => { 
+            node.children.forEach( (childNode,index) => {
                 let block = this.blockify(childNode);
                 block.order = index;
                 blocks.push(block);

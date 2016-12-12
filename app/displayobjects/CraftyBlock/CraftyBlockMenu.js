@@ -7,21 +7,39 @@ export default class CraftyBlockMenu extends PIXI.Container {
         super();
         this.block = undefined;
 
-        let blockGraphics = new PIXI.Graphics();
-        blockGraphics.beginFill(BLOCK_CONST.MENU_COLOR, 1);
-        blockGraphics.drawRoundedRect(0,0,BLOCK_CONST.MENU_WIDTH,BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
-        blockGraphics.endFill();
-        let text = new PIXI.Text( "DELETE", BLOCK_CONST.MENU_TEXT_STYLE);
-        text.position.x = blockGraphics.width/2 - text.width/2;
-        text.position.y = blockGraphics.height/2 - text.height/2;
-        this.addChild(blockGraphics);
-        this.addChild(text);
+        let blockGraphicsDelete = new PIXI.Graphics();
+        blockGraphicsDelete.beginFill(BLOCK_CONST.MENU_COLOR_DELETE, 1);
+        blockGraphicsDelete.drawRoundedRect(0,0,BLOCK_CONST.MENU_WIDTH,BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
+        blockGraphicsDelete.endFill();
+        let textDelete = new PIXI.Text( "-", BLOCK_CONST.MENU_TEXT_STYLE);
+        textDelete.position.x = blockGraphicsDelete.width/2 - textDelete.width/2;
+        textDelete.position.y = blockGraphicsDelete.height/2 - textDelete.height/2;
 
-        this.interactive = true;
-        this.on('click', _ => { 
+        let blockGraphicsFold = new PIXI.Graphics();
+        blockGraphicsFold.beginFill(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR, 1);
+        blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN,0,BLOCK_CONST.MENU_WIDTH,BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
+        blockGraphicsFold.endFill();
+        let textFold = new PIXI.Text( "...", BLOCK_CONST.MENU_TEXT_STYLE);
+        textFold.position.x = blockGraphicsFold.width/2 - textFold.width/2 + BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN;
+        textFold.position.y = blockGraphicsFold.height/2 - textFold.height/2;
+
+        this.addChild(blockGraphicsDelete);
+        this.addChild(textDelete);
+        this.addChild(blockGraphicsFold);
+        this.addChild(textFold);
+
+        blockGraphicsDelete.interactive = true;
+        blockGraphicsDelete.on('click', _ => {
             let block = this.block;
             this.toggle();
             CraftyBlockEvents.emit('clickdelete', block);
+        });
+
+        blockGraphicsFold.interactive = true;
+        blockGraphicsFold.on('click', _ => {
+            let block = this.block;
+            this.toggle();
+            CraftyBlockEvents.emit('clickfold', block);
         });
     }
 
@@ -29,7 +47,7 @@ export default class CraftyBlockMenu extends PIXI.Container {
         if (!block || block == this.block) {
             this.block = undefined;
             this.visible = false;
-        } 
+        }
         else {
             this.visible = true;
             this.block = block;

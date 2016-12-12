@@ -1,4 +1,4 @@
-/** 
+/**
  *  Block styles for CraftyBlock
  */
 
@@ -26,9 +26,9 @@ export const SPACING_V = 10;
 export const SPACING_H = 60;
 
 //  Menu styles
-export const MENU_COLOR = 0xD6432C;
-export const MENU_WIDTH = 90;
+export const MENU_COLOR_DELETE = 0xD6432C;
+export const MENU_WIDTH = 30;
 export const MENU_HEIGHT = 30;
-export const MENU_CORNER_RADIUS = 8;
+export const MENU_CORNER_RADIUS = 15;
 export const MENU_MARGIN = 5;
 export const MENU_TEXT_STYLE = {font: "14px Helvetica", fill: "white"};
