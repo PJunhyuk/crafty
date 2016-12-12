@@ -24,12 +24,8 @@ class CraftyBlockAnimator {
             //  emit start of drag move
             CraftyBlockEvents.emit('dragready', block);
 
-            //  save original position and distance from original to mouse position
-            let mouseStartPosition = event.data.getLocalPosition(block.parent);
-            block.diff = mouseStartPosition.clone();
-            block.diff.x -= block.position.x;
-            block.diff.y -= block.position.y;
-            block.originalPosition = block.position.clone();
+            //  store relative mouse position from block
+            block.diff = event.data.getLocalPosition(block).clone();
 
             block.selected = true; // boolean used for narrowing event listening socpe
             block.isClick = true; // boolean for identifying whether user action is click or drag
