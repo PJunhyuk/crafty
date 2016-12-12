@@ -53,15 +53,18 @@ export default class CraftyBlockManager {
         CraftyBlockEvents.on('dragstart', onDragStart.bind(this));
         CraftyBlockEvents.on('dragend', onDragEnd.bind(this));
         CraftyBlockEvents.on('clickblock', block => {
-            if(block.isFoldable()) {
-              this.menu.foldable = true;
-              this.menu.reRender();
-            } else {
-              this.menu.foldable = false;
-              this.menu.reRender();
+            //  show menu only when block is not from sidebar
+            if (block.originalAddress[0] != -1) {
+                if(block.isFoldable()) {
+                    this.menu.foldable = true;
+                    this.menu.reRender();
+                } else {
+                    this.menu.foldable = false;
+                    this.menu.reRender();
+                }
+                this.menu.toggle(block);
+                this.stage.addChild(this.menu);
             }
-            this.menu.toggle(block);
-            this.stage.addChild(this.menu);
         });
         CraftyBlockEvents.on('clickfold', block => {
           if (block.folded) {
@@ -76,16 +79,16 @@ export default class CraftyBlockManager {
         });
 
         function onDragReady(block) {
-            //  if block is in sidebar, create copy
+            //  store original address of block
             block.originalAddress = this.getAddress(block);
-
-            if (block.originalAddress == -1) {
-                this.stage.sidebar.addChildAt(block.clone(),1);
-                block.render();
-            }
         }
 
         function onDragStart(block) {
+            //  if block is from sidebar, create copy in sidebar and render
+            if (block.originalAddress[0] == -1) {
+                this.stage.sidebar.addChildAt(block.clone(),1);
+                block.render();
+            }
 
             if (block.parent instanceof CraftyBlock) {
                 block.parent.removeChildBlock(block);
