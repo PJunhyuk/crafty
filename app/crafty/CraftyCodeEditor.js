@@ -83,6 +83,8 @@ export default class CraftyCodeEditor {
             newText += this.parser.stringify(node);
             newText += "\n\n";
         });
+        newText = newText.slice(0,-2);
+
         this.editor.setValue(newText, 1);
         this.loading = false;
     }
