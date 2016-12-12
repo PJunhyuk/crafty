@@ -426,6 +426,14 @@ export default class CraftyBlock extends PIXI.Container {
     }
 
     /**
+     * Check if block has objects to fold
+     */
+    isFoldable() {
+        //  Returns true when the block is a function block, and it contains at least one function blocks
+        return this.type == CraftyBlock.FUNCTION && this.childBlocks.some( blocks => blocks[0].type == CraftyBlock.FUNCTION )
+    }
+
+    /**
      * Prints block structure onto console
      */
     print(indent = "") {
