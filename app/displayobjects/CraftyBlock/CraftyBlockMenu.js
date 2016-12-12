@@ -44,9 +44,7 @@ export default class CraftyBlockMenu extends PIXI.Container {
         });
     }
 
-    render() {
-        console.log("render");
-        console.log(this.foldable);
+    reRender() {
         if (!this.foldable) {
             if (this.children.length == 4) {
                 this.removeChildAt(3);

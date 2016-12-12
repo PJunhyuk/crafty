@@ -55,12 +55,11 @@ export default class CraftyBlockManager {
         CraftyBlockEvents.on('clickblock', block => {
             if(block.isFoldable()) {
               this.menu.foldable = true;
-              this.menu.render();
+              this.menu.reRender();
             } else {
               this.menu.foldable = false;
-              this.menu.render();
+              this.menu.reRender();
             }
-            console.log(this.menu.foldable);
             this.menu.toggle(block);
             this.stage.addChild(this.menu);
         });
