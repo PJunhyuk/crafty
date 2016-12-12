@@ -124,8 +124,8 @@ export default class CraftyBlockManager {
                 if (validDrag) {
                     //  if the block is on stage
                     if (newAddress[0] == -2) {
-                        //  add to rootBlocks
-                        this.rootBlocks.push(block);
+                        //  add to rootBlocks right after original root block position
+                        this.rootBlocks.splice(block.originalAddress[0]+1,0,block);
                         //  no need to addToStage since it is already done during moving
                     }
 
