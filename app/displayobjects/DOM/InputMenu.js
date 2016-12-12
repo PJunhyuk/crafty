@@ -21,7 +21,7 @@ class InputMenu {
         let input_value_box = $('.input-value-box');
         input_value_box.addClass('show');
 
-        document.getElementById("input-value").autofocus = true;
+        document.getElementById("input-value").focus();
 
         $('#input-value-submit').click(() => {
             this.inputValueSubmitted(block);
