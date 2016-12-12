@@ -17,6 +17,7 @@ import CraftyStore from '../../stores/CraftyStore.js';
 export default class App extends PIXI.Container {
     constructor(...args) {
         super();
+        console.log("Loading App....");
 
         //  Create a tree of simple pastel code, and store it in CraftyStore as placeholder
         let parser = new Pastel.Parser();
@@ -31,13 +32,20 @@ export default class App extends PIXI.Container {
         let bg = new Background();
         stage.addChild(bg);
 
+        //  Add inner canvas around stage
+        let canvas = new PIXI.Container(this.width,this.height);
+        stage.addChild(canvas);
+        bg.canvas = canvas;
+
         //  Add sidebar
         let sidebar = new Sidebar();
 
-        this.sidebar = sidebar;
+        //this.sidebar = sidebar;
+        canvas.sidebar = sidebar;
 
         //  Initialize CraftyBlockManager
-        let manager = new CraftyBlockManager(stage);
+        //let manager = new CraftyBlockManager(stage);
+        let manager = new CraftyBlockManager(canvas);
 
 
         //  Add open/close sidebar button

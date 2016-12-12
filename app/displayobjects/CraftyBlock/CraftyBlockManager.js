@@ -88,33 +88,47 @@ export default class CraftyBlockManager {
             if (block.originalAddress[0] == -1) {
                 this.stage.sidebar.addChildAt(block.clone(),1);
                 block.render();
-            }
+            } else {
 
-            if (block.parent instanceof CraftyBlock) {
-                block.parent.removeChildBlock(block);
-            }
+                if (block.parent instanceof CraftyBlock) {
+                    block.parent.removeChildBlock(block);
+                }
 
-            this.stage.addChild(block);
-            //  TODO: Disable auto render for this case
+                this.stage.addChild(block);
+                //  TODO: Disable auto render for this case
+            }
         }
 
+        /**
+         * Event handler for when block is placed
+         */
         function onDragEnd(event) {
-            //  called after block is placed according to corresponding mouse location
             let block = event.target;
-            let targetBlock = event.targetBlock;
-            let validDrag = true;
+
+            //  if block is created from sidebar
+            if (block.originalAddress[0] == -1) {
+                //  if drag ended location is inside sidebar, and delete block
+                let relativeMousePosition = event.data.getLocalPosition(this.stage.sidebar);
+                if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
+                    this.stage.sidebar.removeChild(block);
+                } else {
+                    this.stage.addChild(block);
+                    //  Apply possible stage offset due to panning
+                    block.position.x -= this.stage.position.x;
+                    block.position.y -= this.stage.position.y;
+                }
+            }
 
             //  if block has targetBlock(parameter block that is being hovered over), attach
-            if(targetBlock) {
-                console.log("Attaching block to target...");
-                block.attachTo(targetBlock);
+            if(event.targetBlock) {
+                block.attachTo(event.targetBlock);
             }
 
             //  Get new block address
             let newAddress = this.getAddress(block);
 
             //  only interested in when block address changed
-            if (!this.isAddressEqual(block.originalAddress,newAddress)) {
+            if (!this.isAddressEqual(block.originalAddress,newAddress) && newAddress[0] != -3) { // -3 is when block is deleted
 
                 //  when block is no longer a root block
                 if (block.originalAddress.length == 1 && newAddress.length != 1) {
@@ -122,34 +136,20 @@ export default class CraftyBlockManager {
                     this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
                 }
 
-                //  if the block is sidebar created
-                if (block.originalAddress[0] == -1) {
-                    //  check mouse location is inside sidebar
-                    let relativeMousePosition = event.data.getLocalPosition(this.stage);
-                    if (this.stage.sidebar.containsPosition(relativeMousePosition)) {
-                        //  remove block out of existence
-                        console.log("Mouse inside sidebar");
-                        this.removeBlock(block);
-                        validDrag = false;
+                //  if the block is on stage
+                if (newAddress[0] == -2) {
+                    //  add to rootBlocks right after original root block position
+                    if (block.originalAddress[0] == -1) {
+                        this.rootBlocks.push(block);
+                    } else {
+                        this.rootBlocks.splice(block.originalAddress[0]+1,0,block);
                     }
+                    //  no need to addToStage since it is already done during moving
                 }
-                //  if the block is valid, i.e. not removed from sidebar
-                if (validDrag) {
-                    //  if the block is on stage
-                    if (newAddress[0] == -2) {
-                        //  add to rootBlocks right after original root block position
-                        if (block.originalAddress[0] == -1) {
-                            this.rootBlocks.push(block);
-                        } else {
-                            this.rootBlocks.splice(block.originalAddress[0]+1,0,block);
-                        }
-                        //  no need to addToStage since it is already done during moving
-                    }
 
-                    //  emit canvas changed
-                    CraftyBlockEvents.emit('canvaschange');
-                }
+                CraftyBlockEvents.emit('canvaschange');
             }
+
 
             block.originalAddress = undefined;
         }
@@ -293,12 +293,19 @@ export default class CraftyBlockManager {
                 address.push(-1);
             }
             else {
-                let stageIndex = this.rootBlocks.indexOf(block);
-                if (stageIndex > -1) {
-                    address.push(stageIndex);
+                let rootBlocksIndex = this.rootBlocks.indexOf(block);
+                if (rootBlocksIndex > -1) {
+                    address.push(rootBlocksIndex);
                 } else {
-                    // -2 means is on stage temporarily
-                    address.push(-2);
+                    let stageIndex = this.stage.children.indexOf(block);
+                    if (stageIndex > -1) {
+                        // -2 means is on stage temporarily
+                        address.push(-2);
+                    }
+                    else {
+                        //  -3 means deleted
+                        address.push(-3);
+                    }
                 }
             }
         }
