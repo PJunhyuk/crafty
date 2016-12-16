@@ -17,16 +17,26 @@ export default class CraftyBlockMenu extends PIXI.Container {
         textDelete.position.x = blockGraphicsDelete.width / 2 - textDelete.width / 2;
         textDelete.position.y = blockGraphicsDelete.height / 2 - textDelete.height / 2;
 
+        let blockGraphicsModify = new PIXI.Graphics();
+        blockGraphicsModify.beginFill(BLOCK_CONST.TYPE_FUNCTION_MODIFY_COLOR, 1);
+        blockGraphicsModify.drawRoundedRect(BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
+        blockGraphicsModify.endFill();
+        let textModify = new PIXI.Text("/", BLOCK_CONST.MENU_TEXT_STYLE);
+        textModify.position.x = blockGraphicsModify.width / 2 - textModify.width / 2 + BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN;
+        textModify.position.y = blockGraphicsModify.height / 2 - textModify.height / 2;
+
         let blockGraphicsFold = new PIXI.Graphics();
         blockGraphicsFold.beginFill(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR, 1);
-        blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
+        blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
         blockGraphicsFold.endFill();
         let textFold = new PIXI.Text("...", BLOCK_CONST.MENU_TEXT_STYLE);
-        textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN;
+        textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2;
         textFold.position.y = blockGraphicsFold.height / 2 - textFold.height / 2;
 
         this.addChild(blockGraphicsDelete);
         this.addChild(textDelete);
+        this.addChild(blockGraphicsModify);
+        this.addChild(textModify);
         this.addChild(blockGraphicsFold);
         this.addChild(textFold);
 
@@ -35,6 +45,13 @@ export default class CraftyBlockMenu extends PIXI.Container {
             let block = this.block;
             this.toggle();
             CraftyBlockEvents.emit('clickdelete', block);
+        });
+
+        blockGraphicsModify.interactive = true;
+        blockGraphicsModify.on('click', _ => {
+            let block = this.block;
+            this.toggle();
+            CraftyBlockEvents.emit('clickmodify', block);
         });
 
         blockGraphicsFold.interactive = true;
@@ -47,18 +64,18 @@ export default class CraftyBlockMenu extends PIXI.Container {
 
     reRender() {
         if (!this.foldable) {
-            if (this.children.length == 4) {
-                this.removeChildAt(3);
-                this.removeChildAt(2);
+            if (this.children.length == 6) {
+                this.removeChildAt(5);
+                this.removeChildAt(4);
             }
         } else {
-            if (this.children.length == 2) {
+            if (this.children.length == 4) {
                 let blockGraphicsFold = new PIXI.Graphics();
                 blockGraphicsFold.beginFill(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR, 1);
-                blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
+                blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
                 blockGraphicsFold.endFill();
                 let textFold = new PIXI.Text("...", BLOCK_CONST.MENU_TEXT_STYLE);
-                textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN;
+                textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2;
                 textFold.position.y = blockGraphicsFold.height / 2 - textFold.height / 2;
 
                 this.addChild(blockGraphicsFold);
