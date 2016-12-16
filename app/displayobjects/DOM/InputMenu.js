@@ -6,6 +6,7 @@ window.$ = $;
 window.jQuery = jQuery;
 
 import CraftyBlock from './../CraftyBlock/CraftyBlock.js';
+import CraftyBlockEvents from './../CraftyBlock/CraftyBlockEvents.js';
 
 import CraftyKit from './../../crafty/CraftyKit.js';
 
@@ -51,6 +52,7 @@ class InputMenu {
         let input_value_box = $('.input-value-box');
         input_value_box.addClass('hide');
         this.removeVariable = 0;
+        CraftyBlockEvents.emit('canvaschange');
         setTimeout(() => {
             $('.input-value-box').remove();
         }, 500);
