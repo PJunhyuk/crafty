@@ -5,6 +5,8 @@ import CraftyStore from '../../stores/CraftyStore.js';
 import CraftyBlockMenu from './CraftyBlockMenu.js';
 import CraftyBlockEvents from './CraftyBlockEvents.js';
 
+import InputMenu from './../DOM/InputMenu.js';
+
 /**
  * CraftyBlock Manager Class
  *
@@ -81,6 +83,9 @@ export default class CraftyBlockManager {
         CraftyBlockEvents.on('clickdelete', block => {
             this.removeBlock(block);
             CraftyBlockEvents.emit('canvaschange');
+        });
+        CraftyBlockEvents.on('clickmodify', block => {
+            InputMenu.create(block);
         });
 
         function onDragReady(block) {
