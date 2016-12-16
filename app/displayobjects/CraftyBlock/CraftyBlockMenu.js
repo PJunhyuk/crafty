@@ -7,6 +7,7 @@ export default class CraftyBlockMenu extends PIXI.Container {
         super();
         this.block = undefined;
         this.foldable = undefined;
+        this.visible = false;
 
         let blockGraphicsDelete = new PIXI.Graphics();
         blockGraphicsDelete.beginFill(BLOCK_CONST.MENU_COLOR_DELETE, 1);
@@ -75,8 +76,8 @@ export default class CraftyBlockMenu extends PIXI.Container {
 
     toggle(block = undefined) {
         if (!block || block == this.block) {
-            this.block = undefined;
             this.visible = false;
+            this.block = undefined;
         } else {
             this.visible = true;
             this.block = block;

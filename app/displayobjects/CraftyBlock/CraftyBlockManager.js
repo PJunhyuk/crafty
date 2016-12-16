@@ -66,6 +66,11 @@ export default class CraftyBlockManager {
                 this.stage.addChild(this.menu);
             }
         });
+        CraftyBlockEvents.on('dragging', block => {
+            if (this.menu.visible) {
+                this.menu.setPosition();
+            }
+        });
         CraftyBlockEvents.on('clickfold', block => {
           if (block.folded) {
               block.unfold();

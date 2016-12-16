@@ -51,6 +51,8 @@ class CraftyBlockAnimator {
             let newPosition = event.data.getLocalPosition(block.parent);
             block.position.x = newPosition.x - block.diff.x;
             block.position.y = newPosition.y - block.diff.y;
+
+            CraftyBlockEvents.emit('dragging', block);
         }
     }
 
