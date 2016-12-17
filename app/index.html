@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
-  <title>Crafty Canvas</title>
-  <style>
-  </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Crafty Canvas</title>
+    <style>
+    </style>
 </head>
 <body>
-  <div class="code-area-container">
-    <pre class="code-area" id="editor">
+    <div class="code-area-container">
+        <pre class="code-area" id="editor">
 (+ 1 1)
 </pre>
-  </div>
-  <input class="live-preview buttons" type="button" value=">" />
-  <div id="compile-message">Compile Error - plz check codes</div>
-  <input class="define-function buttons" type="button" value="define" />
-
-  <script src="bundle.js"></script>
+    </div>
+    <input class="live-preview buttons" type="button" value=">" />
+    <div id="compile-message">Compile Error - plz check codes</div>
+    <div class="container">
+        <ul>
+            <li class="dropdown">
+                <a href="#" data-toggle="dropdown">Menu<i class="icon-arrow"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">define</a></li>
+                    <li><a href="#">clean canvas</a></li>
+                    <li><a href="#">save</a></li>
+                    <li><a href="#">save as</a></li>
+                    <li><a href="#">load</a></li>
+                    <li><a href="#">new</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <script src="bundle.js"></script>
 </body>
 </html>

@@ -14,10 +14,10 @@ class InputMenu {
     }
 
     create(block) {
-        $('<div id="input-value-box" class="modal"><div class="modal-content"><div class="modal-header"><span class="close">&times;</span><h3>Input value!</h3></div><div class="modal-body"><input id="input-value" type="text" /></div><div class="modal-footer"><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div></div></div>').appendTo("body");
+        $('<div id="input-value-box" class="modal"><div class="modal-content"><div class="modal-header"><span class="modal-close">&times;</span><h3>Input value!</h3></div><div class="modal-body"><input id="input-value" type="text" /></div><div class="modal-footer"><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div></div></div>').appendTo("body");
 
         let modal = document.getElementById('input-value-box');
-        let close_button = document.getElementsByClassName("close")[0];
+        let close_button = document.getElementsByClassName("modal-close")[0];
 
         modal.style.display = "block";
 

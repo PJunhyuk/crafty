@@ -61,7 +61,6 @@ input:focus {
 
 #compile-message.show {
   visibility: visible;
-  /*-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
   -webkit-animation: fadein 0.5s;
   animation: fadein 0.5s;
 }
@@ -89,17 +88,7 @@ input:focus {
   to { bottom: 0; opacity: 0; }
 }
 
-.define-function {
-  position: absolute;
-  top: 20px;
-  left: 65%;
-  width: 100px;
-  margin-left: -120px;
-  background-color: #F7CAC9;
-}
-
 /* style of modal and input-value */
-
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -140,7 +129,7 @@ input:focus {
 }
 
 /* The Close Button */
-.close {
+.modal-close {
     color: white;
     float: right;
     font-size: 28px;
@@ -148,8 +137,8 @@ input:focus {
     margin-right: 20px;
 }
 
-.close:hover,
-.close:focus {
+.modal-close:hover,
+.modal-close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
