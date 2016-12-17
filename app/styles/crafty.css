@@ -98,89 +98,13 @@ input:focus {
   background-color: #F7CAC9;
 }
 
-/* style of input-value */
+/* style of modal and input-value */
 
-.input-value-box {
-  visibility: hidden;
-  position: absolute;
-  width: 300px;
-  height: 210px;
-  left: 50%;
-  margin-left: -150px;
-  top: 50%;
-  margin-top: -100px;
-  background-color: red;
-}
-
-.input-value-box p {
-  padding-top: 20px;
-  width: 300px;
-  text-align: center;
-  font-size: 24px;
-  height: 30px;
-  background-color: green;
-  padding-bottom: 20px;
-  font-weight: bold;
-  color: white;
-}
-
-.input-value-box.show {
-  visibility: visible;
-  /*-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
-  -webkit-animation: fadein 0.5s;
-  animation: fadein 0.5s;
-}
-
-.input-value-box.hide {
-  visibility: visible;
-  -webkit-animation: fadeout 0.5s;
-  animation: fadeout 0.5s;
-}
-@-webkit-keyframes fadein {
-  from { bottom: 0; opacity: 0; }
-  to { bottom: 30px; opacity: 1; }
-}
-@keyframes fadein {
-  from { bottom: 0; opacity: 0; }
-  to { bottom: 30px; opacity: 1; }
-}
-@-webkit-keyframes fadeout {
-  from { bottom: 30px; opacity: 1; }
-  to { bottom: 0; opacity: 0; }
-}
-
-@keyframes fadeout {
-  from { bottom: 30px; opacity: 1; }
-  to { bottom: 0; opacity: 0; }
-}
-
-#input-value {
-  width: 200px;
-  margin-left: 50px;
-  margin-top: 20px;
-  height: 50px;
-  border: 3px solid white;
-  background: none;
-  font-size: 24px;
-  color: black;
-  text-indent: 12px;
-}
-
-#input-value-submit {
-  margin-top: 20px;
-  width: 300px;
-  border-radius: 0px;
-  background-color: green;
-  color: white;
-}
-
-
-/* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 200px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -190,14 +114,13 @@ input:focus {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content */
 .modal-content {
     position: relative;
     background-color: #fefefe;
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 30%;
+    width: 25%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
@@ -222,6 +145,7 @@ input:focus {
     float: right;
     font-size: 28px;
     font-weight: bold;
+    margin-right: 20px;
 }
 
 .close:hover,
@@ -232,15 +156,42 @@ input:focus {
 }
 
 .modal-header {
-    padding: 2px 16px;
+    padding: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
     background-color: #5cb85c;
     color: black;
+    font-size: 24px;
+    padding-left: 40px;
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {
+}
 
 .modal-footer {
-    padding: 2px 16px;
+    padding: 10px 10px;
     background-color: #5cb85c;
     black: white;
+}
+
+#input-value {
+  width: 200px;
+  margin-left: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 50px;
+  border: 3px solid white;
+  background: none;
+  font-size: 24px;
+  color: black;
+}
+
+#input-value-submit {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 0px;
+  background-color: green;
+  color: white;
 }

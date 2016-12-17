@@ -43,18 +43,6 @@ export default class CraftyKit {
       $('.live-preview').click(() => {
         this.craftyEditor.compile();
       });
-
-      $('body').click(event => {
-        if ($('.input-value-box').css('display') == 'block') {
-          if (!$('.input-value-box').has(event.target).length) {
-            if (InputMenu.removeVariable == 1) {
-              InputMenu.remove();
-            } else {
-              InputMenu.removeVariable = InputMenu.removeVariable + 1;
-            }
-          };
-        };
-      });
     });
   }
 }

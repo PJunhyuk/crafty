@@ -14,7 +14,7 @@ class InputMenu {
     }
 
     create(block) {
-        $('<div id="input-value-box" class="modal"><div class="modal-content"><div class="modal-header"><span class="close">&times;</span><p>Input value!</p></div><div class="modal-body"><input id="input-value" type="text" /></div><div class="modal-footer"><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div></div></div>').appendTo("body");
+        $('<div id="input-value-box" class="modal"><div class="modal-content"><div class="modal-header"><span class="close">&times;</span><h3>Input value!</h3></div><div class="modal-body"><input id="input-value" type="text" /></div><div class="modal-footer"><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div></div></div>').appendTo("body");
 
         let modal = document.getElementById('input-value-box');
         let close_button = document.getElementsByClassName("close")[0];
@@ -49,7 +49,7 @@ class InputMenu {
         if (value) {
             let constantBlock = CraftyBlock.constantWithValue(value);
             constantBlock.attachTo(block);
-            let modal = document.getElementById('myModal');
+            let modal = document.getElementById('input-value-box');
             modal.style.display = "none";
             CraftyBlockEvents.emit('canvaschange');
         }
