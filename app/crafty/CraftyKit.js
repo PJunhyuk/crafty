@@ -15,10 +15,11 @@ import "../styles/dropdown.css";
 
 // import jquery.snow
 import "../theme/snowfall.jquery.js";
+import Flake from "./../theme/flake.png";
 
 import InputMenu from "./../displayobjects/DOM/InputMenu.js";
 
-import Flake from "./../theme/flake.png";
+import CraftyBlockEvents from "./../displayobjects/CraftyBlock/CraftyBlockEvents.js";
 
 export default class CraftyKit {
     constructor() {
@@ -28,6 +29,7 @@ export default class CraftyKit {
 
     render() {
         $(document).ready(() => {
+            // snowing checkbox
             $('#checkbox-snowing').change(() => {
                 if($('#checkbox-snowing').is(':checked')) {
                     console.log("checked!");
@@ -37,6 +39,11 @@ export default class CraftyKit {
                     console.log("no-checked!");
                     $(document).snowfall('clear'); // How you clear
                 }
+            });
+
+            // clean canvas
+            $('#menu-clean-canvas').click(() => {
+                CraftyBlockEvents.emit('cleancanvas');
             });
 
             /* print console.log message when change codes in code-area */

@@ -87,6 +87,9 @@ export default class CraftyBlockManager {
         CraftyBlockEvents.on('clickmodify', block => {
             InputMenu.create(block);
         });
+        CraftyBlockEvents.on('cleancanvas', () => {
+            this.emptyStage();
+        });
 
         function onDragReady(block) {
             //  store original address of block
