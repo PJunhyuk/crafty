@@ -89,6 +89,7 @@ export default class CraftyBlockManager {
         });
         CraftyBlockEvents.on('cleancanvas', () => {
             this.emptyStage();
+            CraftyBlockEvents.emit('canvaschange');
         });
 
         function onDragReady(block) {
