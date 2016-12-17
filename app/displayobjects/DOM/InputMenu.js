@@ -7,20 +7,29 @@ window.jQuery = jQuery;
 
 import CraftyBlock from './../CraftyBlock/CraftyBlock.js';
 import CraftyBlockEvents from './../CraftyBlock/CraftyBlockEvents.js';
-
 import CraftyKit from './../../crafty/CraftyKit.js';
 
 class InputMenu {
     constructor() {
-        this.removeVariable = 0;
     }
 
-
     create(block) {
-        $('<div class="input-value-box"><p>Input value!</p><input id="input-value" type="text" /><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div>').appendTo("body");
+        $('<div id="input-value-box" class="modal"><div class="modal-content"><div class="modal-header"><span class="close">&times;</span><p>Input value!</p></div><div class="modal-body"><input id="input-value" type="text" /></div><div class="modal-footer"><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div></div></div>').appendTo("body");
 
-        let input_value_box = $('.input-value-box');
-        input_value_box.addClass('show');
+        let modal = document.getElementById('input-value-box');
+        let close_button = document.getElementsByClassName("close")[0];
+
+        modal.style.display = "block";
+
+        close_button.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
         document.getElementById("input-value").focus();
 
@@ -36,26 +45,19 @@ class InputMenu {
     }
 
     inputValueSubmitted(block) {
-        let input_value_box = $('.input-value-box');
         let value = $('#input-value').val();
-
         if (value) {
             let constantBlock = CraftyBlock.constantWithValue(value);
             constantBlock.attachTo(block);
-            if (input_value_box.hasClass('show')) {
-                this.remove();
-            }
+            let modal = document.getElementById('myModal');
+            modal.style.display = "none";
+            CraftyBlockEvents.emit('canvaschange');
         }
+        this.remove();
     }
 
     remove() {
-        let input_value_box = $('.input-value-box');
-        input_value_box.addClass('hide');
-        this.removeVariable = 0;
-        CraftyBlockEvents.emit('canvaschange');
-        setTimeout(() => {
-            $('.input-value-box').remove();
-        }, 500);
+        $('.modal').remove();
     }
 }
 
