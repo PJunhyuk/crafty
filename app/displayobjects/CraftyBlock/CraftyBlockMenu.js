@@ -8,7 +8,10 @@ export default class CraftyBlockMenu extends PIXI.Container {
         this.block = undefined;
         this.foldable = undefined;
         this.visible = false;
+        this.isConst = undefined;
+    }
 
+    render() {
         let blockGraphicsDelete = new PIXI.Graphics();
         blockGraphicsDelete.beginFill(BLOCK_CONST.MENU_COLOR_DELETE, 1);
         blockGraphicsDelete.drawRoundedRect(0, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
@@ -27,18 +30,11 @@ export default class CraftyBlockMenu extends PIXI.Container {
 
         let blockGraphicsFold = new PIXI.Graphics();
         blockGraphicsFold.beginFill(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR, 1);
-        blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
+        blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
         blockGraphicsFold.endFill();
         let textFold = new PIXI.Text("...", BLOCK_CONST.MENU_TEXT_STYLE);
-        textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2;
+        textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH + BLOCK_CONST.MENU_MARGIN;
         textFold.position.y = blockGraphicsFold.height / 2 - textFold.height / 2;
-
-        this.addChild(blockGraphicsDelete);
-        this.addChild(textDelete);
-        this.addChild(blockGraphicsModify);
-        this.addChild(textModify);
-        this.addChild(blockGraphicsFold);
-        this.addChild(textFold);
 
         blockGraphicsDelete.interactive = true;
         blockGraphicsDelete.on('click', _ => {
@@ -60,34 +56,19 @@ export default class CraftyBlockMenu extends PIXI.Container {
             this.toggle();
             CraftyBlockEvents.emit('clickfold', block);
         });
-    }
 
-    reRender() {
-        if (!this.foldable) {
-            if (this.children.length == 6) {
-                this.removeChildAt(5);
-                this.removeChildAt(4);
-            }
-        } else {
-            if (this.children.length == 4) {
-                let blockGraphicsFold = new PIXI.Graphics();
-                blockGraphicsFold.beginFill(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR, 1);
-                blockGraphicsFold.drawRoundedRect(BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2, 0, BLOCK_CONST.MENU_WIDTH, BLOCK_CONST.MENU_HEIGHT, BLOCK_CONST.MENU_CORNER_RADIUS);
-                blockGraphicsFold.endFill();
-                let textFold = new PIXI.Text("...", BLOCK_CONST.MENU_TEXT_STYLE);
-                textFold.position.x = blockGraphicsFold.width / 2 - textFold.width / 2 + BLOCK_CONST.MENU_WIDTH * 2 + BLOCK_CONST.MENU_MARGIN * 2;
-                textFold.position.y = blockGraphicsFold.height / 2 - textFold.height / 2;
 
-                this.addChild(blockGraphicsFold);
-                this.addChild(textFold);
+        this.removeChildren();
+        this.addChild(blockGraphicsDelete);
+        this.addChild(textDelete);
 
-                blockGraphicsFold.interactive = true;
-                blockGraphicsFold.on('click', _ => {
-                    let block = this.block;
-                    this.toggle();
-                    CraftyBlockEvents.emit('clickfold', block);
-                });
-            }
+        if(this.foldable) {
+            this.addChild(blockGraphicsFold);
+            this.addChild(textFold);
+        }
+        if(this.isConst) {
+            this.addChild(blockGraphicsModify);
+            this.addChild(textModify);
         }
     }
 

@@ -59,11 +59,15 @@ export default class CraftyBlockManager {
             if (block.originalAddress[0] != -1) {
                 if(block.isFoldable()) {
                     this.menu.foldable = true;
-                    this.menu.reRender();
                 } else {
                     this.menu.foldable = false;
-                    this.menu.reRender();
                 }
+                if(block.children.length == 2) {
+                    this.menu.isConst = true;
+                } else {
+                    this.menu.isConst = false;
+                }
+                this.menu.render();
                 this.menu.toggle(block);
                 this.stage.addChild(this.menu);
             }
