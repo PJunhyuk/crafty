@@ -41,6 +41,15 @@ export default class CraftyKit {
                 }
             });
 
+            // spaceTile checkbox
+            $('#checkbox-spacetile').change(() => {
+                if($('#checkbox-spacetile').is(':checked')) {
+                    CraftyBlockEvents.emit('setSpaceTile');
+                } else {
+                    CraftyBlockEvents.emit('setDefaultTile');
+                }
+            });
+
             // clean canvas
             $('#menu-clean-canvas').click(() => {
                 CraftyBlockEvents.emit('cleancanvas');
