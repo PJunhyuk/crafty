@@ -19,3 +19,7 @@ To build the project (for development): clone the project and remove the git rep
 Copyright (c) 2016 Minwoo Lee
 
 MIT (http://opensource.org/licenses/MIT)
+
+## Introducing video link
+
+https://youtu.be/5NUdw5i-3i8
