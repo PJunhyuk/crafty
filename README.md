@@ -4,6 +4,10 @@
 ## 간단한 소개
 `crafty` 는 프로그래밍을 처음 접하거나 함수형 언어에 익숙하지 않은 사람들이 코드가 아닌 블록을 이용하여 함수형 프로그래밍을 익힐 수 있게 해주는 `함수형 언어 비쥬얼 프로그래밍 툴`입니다.
 
+[![소개 ](https://img.youtube.com/vi/5NUdw5i-3i8/0.jpg)](https://www.youtube.com/watch?v=5NUdw5i-3i8)
+
+
+
 ##프로젝트 설명
 crafty는 프로그래밍 지식이 충분한 개발자들도 재미있게 사용할 수 있는 비쥬얼 프로그래밍 GUI 입니다. 초심자가 접근하기 가장 쉬운 함수형 언어의 형식이며, 비쥬얼 프로그래밍에 최적화된 프로그래밍 언어 pastel을 개발하여 사용합니다. 또한, 모든 플랫폼의 사용자가 쉽게 사용할 수 있도록 웹 기반의 서비스를 제공합니다.
 프로그래밍을 처음 접하는 학생들은 crafty에서 제공하는 비쥬얼 툴을 이용하여 프로그래밍의 기초가 되는 알고리즘을 학습할 수 있으며, 프로그래밍 지식이 충분한 개발자들은 pastel 언어를 활용하여 좀 더 세부적인 작업을 진행할 수 있습니다. 이렇게 수정된 모든 결과물은 실시간으로 확인할 수 있으며, crafty를 활용하여 수준 프로그램을 작성할 수 있기 때문에 사용자들의 흥미를 야기할 수 있을 것으로 기대됩니다.
@@ -83,5 +87,15 @@ drag & drop : crafty-canvas의 block들은 drag-and-drop 방식으로 이동, �
 
 error-message : crafty-editor에 코드를 작성하면 실시간으로 체크하여, 완성되지 않은 경우 error-message를 보여줍니다. error-message에서는 error가 발생한 간단한 이유를 알려줍니다.
 
+### 참조 오픈소스 
+[PixiJS](http://www.pixijs.com/)
+[Babel](https://babeljs.io/)
+[Webpack](https://webpack.github.io/)
+[NodeJS](https://nodejs.org/ko/)
+
+
 ### 라이센스
 이 프로젝트는 MIT 라이센스를 따릅니다
+
+
+
