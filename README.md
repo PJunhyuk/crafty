@@ -88,9 +88,13 @@ drag & drop : crafty-canvas의 block들은 drag-and-drop 방식으로 이동, �
 error-message : crafty-editor에 코드를 작성하면 실시간으로 체크하여, 완성되지 않은 경우 error-message를 보여줍니다. error-message에서는 error가 발생한 간단한 이유를 알려줍니다.
 
 ### 참조 오픈소스 
+
 [PixiJS](http://www.pixijs.com/)
+
 [Babel](https://babeljs.io/)
+
 [Webpack](https://webpack.github.io/)
+
 [NodeJS](https://nodejs.org/ko/)
 
 
