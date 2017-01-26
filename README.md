@@ -1,4 +1,4 @@
-#CRAFTY
+# CRAFTY
 
 
 ## 간단한 소개
@@ -8,15 +8,15 @@
 
 
 
-##프로젝트 설명
+## 프로젝트 설명
 crafty는 프로그래밍 지식이 충분한 개발자들도 재미있게 사용할 수 있는 비쥬얼 프로그래밍 GUI 입니다. 초심자가 접근하기 가장 쉬운 함수형 언어의 형식이며, 비쥬얼 프로그래밍에 최적화된 프로그래밍 언어 pastel을 개발하여 사용합니다. 또한, 모든 플랫폼의 사용자가 쉽게 사용할 수 있도록 웹 기반의 서비스를 제공합니다.
 프로그래밍을 처음 접하는 학생들은 crafty에서 제공하는 비쥬얼 툴을 이용하여 프로그래밍의 기초가 되는 알고리즘을 학습할 수 있으며, 프로그래밍 지식이 충분한 개발자들은 pastel 언어를 활용하여 좀 더 세부적인 작업을 진행할 수 있습니다. 이렇게 수정된 모든 결과물은 실시간으로 확인할 수 있으며, crafty를 활용하여 수준 프로그램을 작성할 수 있기 때문에 사용자들의 흥미를 야기할 수 있을 것으로 기대됩니다.
 초심자도 쉽게 활용할 수 있는 비쥬얼 프로그래밍 툴을 적용하였으며, 최적화된 프로그래밍 언어로 구현된 crafty가 학생들에게 프로그래밍에 대한 관심을 유발할 수 있는 소프트웨어 교육의 메소드로서 작용할 것이라 생각합니다.
 
 
-
 ## 프로젝트 구조
-###Pastel language
+
+### Pastel language
 crafty에 최적화 된 프로그래밍 언어인 pastel은 함수형 프로그래밍 언어입니다. 대표적인 함수형 프로그래밍 언어인 clojure를 참고하였으며, 크래프티 팀의 프로그래밍 언어 철학을 적용하여 독자적으로 개발되었습니다. pastel 코드를 실행할 수 있는 compiler, evaluator, lexer, parser, transpiler은 모두 javascript 기반으로 작성되어, 웹에서 컴파일을 진행할 수 있습니다.
 pastel-lang 이라는 npm 역시 자체 제작하여 제공하고 있습니다.
 
@@ -44,11 +44,11 @@ crafty-canvas 는 비쥬얼 프로그래밍을 가능케하는 드랙-앤-드랍
 crafty-canvas 의 해심 기능은 아래 파일로 나누어져 연동되어 작동합니다.
 
 
-###crafty-box
+### crafty-box
 crafty-box는 crafty-canvas의 내용들을 저장하고, 로드하고, 수정할 수 있는 crafty 통합 플랫폼입니다.
 
-
-## 사용 방법
+
+## 사용 방법
 
 
 
@@ -87,7 +87,13 @@ drag & drop : crafty-canvas의 block들은 drag-and-drop 방식으로 이동, �
 
 error-message : crafty-editor에 코드를 작성하면 실시간으로 체크하여, 완성되지 않은 경우 error-message를 보여줍니다. error-message에서는 error가 발생한 간단한 이유를 알려줍니다.
 
-### 참조 오픈소스 
+
+## 소개 동영상
+
+[![CRAFTY VIDEO](http://parkjunhyuk.com/crafty_logo.png)](https://youtu.be/5NUdw5i-3i8)
+[CRAFTY VIDEO](https://youtu.be/5NUdw5i-3i8)
+
+## 참조 오픈소스 
 
 [PixiJS](http://www.pixijs.com/)
 
@@ -98,7 +104,7 @@ error-message : crafty-editor에 코드를 작성하면 실시간으로 체크�
 [NodeJS](https://nodejs.org/ko/)
 
 
-### 라이센스
+## 라이센스
 이 프로젝트는 MIT 라이센스를 따릅니다
 
 
