@@ -4,8 +4,8 @@
 ## 간단한 소개
 `crafty` 는 프로그래밍을 처음 접하거나 함수형 언어에 익숙하지 않은 사람들이 코드가 아닌 블록을 이용하여 함수형 프로그래밍을 익힐 수 있게 해주는 `함수형 언어 비쥬얼 프로그래밍 툴`입니다.
 
+### 소개 동영상
 [![소개 ](https://img.youtube.com/vi/5NUdw5i-3i8/0.jpg)](https://www.youtube.com/watch?v=5NUdw5i-3i8)
-
 
 
 ## 프로젝트 설명
@@ -87,11 +87,6 @@ drag & drop : crafty-canvas의 block들은 drag-and-drop 방식으로 이동, �
 
 error-message : crafty-editor에 코드를 작성하면 실시간으로 체크하여, 완성되지 않은 경우 error-message를 보여줍니다. error-message에서는 error가 발생한 간단한 이유를 알려줍니다.
 
-
-## 소개 동영상
-
-[![CRAFTY VIDEO](http://parkjunhyuk.com/crafty_logo.png)](https://youtu.be/5NUdw5i-3i8)
-[CRAFTY VIDEO](https://youtu.be/5NUdw5i-3i8)
 
 ## 참조 오픈소스 
 
