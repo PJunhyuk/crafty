@@ -64,6 +64,8 @@ export default class App extends PIXI.Container {
         open_palette_btn.css('border-radius', 25);
         $("body").append(open_palette_btn);
 
+        sidebar.visible = false;
+
         $('.open-palette').click(function() {
             if(sidebar.visible) {
                 sidebar.visible = false;
