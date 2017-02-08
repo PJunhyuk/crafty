@@ -19,11 +19,37 @@ export default class Sidebar extends PIXI.Container {
     constructor() {
         super();
         console.log("DEBUG::: loading library...");
+        this.blockInfos = [];
+        this.maxY = BLOCK_LIBRARY_MARGIN.top;
+
+        //  Add background
         let bg = new SidebarBackground();
         this.bg = bg;
         this.addChild(bg);
+
+        //  Add library functions
+        this._addLibraryFunctions();
+
+        console.log("DEBUG::: library loaded!!");
+    }
+
+    containsPosition(position) {
+        return this.bg.getBounds().contains(position.x,position.y);
+    }
+
+    addFunction(blockInfo) {
+        this.blockInfos.push(blockInfo);
+        let block = new CraftyBlock(blockInfo);
+        block.position.set(BLOCK_LIBRARY_MARGIN.left, this.maxY);
+        this.addChild(block);
+        this.maxY += block.height + BLOCK_LIBRARY_MARGIN.height;
+    }
+
+    removeFunction(blockInfo) {
+    }
+
+    _addLibraryFunctions() {
         let blockInfos = [];
-        let height = BLOCK_LIBRARY_MARGIN.top;
 
         //  Create blockInfo of Standard library functions
         for (let functionInfo of PASTEL_FUNC_LIBRARY.STANDARD) {
@@ -39,16 +65,7 @@ export default class Sidebar extends PIXI.Container {
 
         //  Create and place Crafty blocks from blockInfos
         for (let blockInfo of blockInfos) {
-            let block = new CraftyBlock(blockInfo);
-            block.position.set(BLOCK_LIBRARY_MARGIN.left, height);
-            this.addChild(block);
-            height += block.height + BLOCK_LIBRARY_MARGIN.height;
+            this.addFunction(blockInfo);
         }
-
-        console.log("DEBUG::: library loaded!!");
-    }
-
-    containsPosition(position) {
-        return this.bg.getBounds().contains(position.x,position.y);
     }
 }
