@@ -49,6 +49,7 @@ export default class CraftyCodeEditor {
             $('#compile-message').text(result.message);
             //this.messageBox.text(result.message);
             this.messageBox.className = "show";
+            $('.live-preview-area').text('ERROR!');
         } else {
             let tree = this.parser.analyze(compilableText);
             CraftyStore.set('tree', tree);
@@ -59,6 +60,7 @@ export default class CraftyCodeEditor {
                     this.messageBox.className = "";
                 }, 500);
             }
+            this.compile();
         }
     }
 
@@ -67,11 +69,13 @@ export default class CraftyCodeEditor {
         let compilableText = this.editor.getValue();
         let result = this.evaluator.evaluateText(compilableText);
         if (result instanceof Pastel.Error) {
-            this.messageBox.text(result.message);
-            this.messageBox.className = "show";
-            alert("ERROR - check error message!");
+            // this.messageBox.text(result.message);
+            // this.messageBox.className = "show";
+            // alert("ERROR - check error message!");
         } else {
-            alert(result);
+            var total_result = '';
+            total_result += result;
+            $('.live-preview-area').text(total_result);
         }
     }
 
@@ -87,5 +91,7 @@ export default class CraftyCodeEditor {
 
         this.editor.setValue(newText, 1);
         this.loading = false;
+
+        this.compile();
     }
 }
