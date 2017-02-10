@@ -42,7 +42,7 @@ export default class CraftyBlock extends PIXI.Container {
     /**
      * Remove all children except main block and text
      */
-    purge() {
+    _purge() {
         this.removeChildren(2);
     }
 
@@ -52,31 +52,16 @@ export default class CraftyBlock extends PIXI.Container {
 
     /**
      * Redraw and re-add all child blocks
+     * Used when unfolding blocks
      */
-    redraw() {
+    _redraw() {
         this.getChildBlocks().forEach( blocks => blocks.forEach( block => {
             this.addChild(block);
-            block.redraw();
+            block._redraw();
         }));
 
         console.log(`Redrawing {${this.name}}...`);
         this.render();
-    }
-
-    /**
-     * Convenient initializers for each block types
-     */
-    static constantWithValue(value) {
-        let blockInfo = new CraftyBlockSpec(value, CraftyBlock.CONSTANT);
-        return new CraftyBlock(blockInfo);
-    }
-    static functionWithName(name) {
-        let blockInfo = new CraftyBlockSpec.functionWithName(name);
-        return new CraftyBlock(blockInfo);
-    }
-    static parameterWithName(name) {
-        let blockInfo = new CraftyBlockSpec(name, CraftyBlock.PARAMETER);
-        return new CraftyBlock(blockInfo);
     }
 
     /**
@@ -110,7 +95,8 @@ export default class CraftyBlock extends PIXI.Container {
 
         //  Add parameter block to this(block) and make it invisible
         this.parameters.forEach((name) => {
-            const parameterBlock = CraftyBlock.parameterWithName(name);
+            let blockInfo = new CraftyBlockSpec(name, CraftyBlock.PARAMETER);
+            const parameterBlock = new CraftyBlock(blockInfo);
             this.addChild(parameterBlock);
             this.childBlocks.push([parameterBlock]);
             parameterBlock.visible = false;
@@ -405,7 +391,7 @@ export default class CraftyBlock extends PIXI.Container {
     fold() {
         // assert (this.type == CraftyBlock.FUNCTION, "Attempt to fold on non-function block");
         this.folded = true;
-        this.purge();
+        this._purge();
         this.applyName("...");
         this.applyMainBlock(BLOCK_CONST.TYPE_FUNCTION_FOLDED_COLOR);
         this.inputBlocks = this.getLeafBlocks();
@@ -418,10 +404,10 @@ export default class CraftyBlock extends PIXI.Container {
      */
     unfold() {
         this.folded = false;
-        this.purge();
+        this._purge();
         this.applyName(this.name);
         this.applyMainBlock(BLOCK_CONST.TYPE_FUNCTION_COLOR);
-        this.redraw();
+        this._redraw();
         this.inputBlocks = null;
     }
 
