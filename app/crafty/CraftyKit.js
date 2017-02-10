@@ -63,9 +63,9 @@ export default class CraftyKit {
                 // makeNewFunc(FuncName, FuncInputNumber, FuncOutputNumber);
             });
 
-            $('.live-preview').click(() => {
-                this.craftyEditor.compile();
-            });
+            // $('.live-preview').click(() => {
+            //     this.craftyEditor.compile();
+            // });
 
             /* for dropdown menu */
             var dropdown = document.querySelectorAll('.dropdown');

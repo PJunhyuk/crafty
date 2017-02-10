@@ -21,15 +21,31 @@ html, body, canvas {
   /*padding: 5px;*/
   height: 100%;
 }
+
 .live-preview-area-container {
   position: absolute;
   right: 0px;
   width: 35%;
   top: 70%;
   height: 30%;
-  background-color: red;
+  background-color: #444444;
   color: white;
 }
+.live-preview-area-container h6 {
+  margin-left: 18px;
+  margin-top: 18px;
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+.live-preview-area-container pre {
+  padding-left: 9px;
+  margin-left: 9px;
+  padding-top: 12px;
+  height: 72%;
+  width: 96%;
+  background: #222222;
+}
+
 .live-preview {
   position: absolute;
   bottom: 20px;
