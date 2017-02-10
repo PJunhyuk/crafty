@@ -73,9 +73,7 @@ export default class CraftyCodeEditor {
             // this.messageBox.className = "show";
             // alert("ERROR - check error message!");
         } else {
-            var total_result = '';
-            total_result += result;
-            $('.live-preview-area').text(total_result);
+            $('.live-preview-area').text(result);
         }
     }
 
