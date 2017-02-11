@@ -39,6 +39,14 @@ export default class CraftyBlock extends PIXI.Container {
         return position;
     }
 
+    /**
+     * Convenience method for creating CraftyBlock.CONSTANT
+     */
+    static constantWithValue(value) {
+        let blockInfo = new CraftyBlockSpec(value, CraftyBlock.CONSTANT);
+        return new CraftyBlock(blockInfo);
+    }
+
     _getChildBlocks() {
         return this.folded ? this.inputBlocks : this.childBlocks;
     }
