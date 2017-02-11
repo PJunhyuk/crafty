@@ -29,6 +29,7 @@ export const TYPE_PARAMETER_COLOR = 0x7367C3;
 //  Block spacing
 export const SPACING_V = 10;
 export const SPACING_H = 60;
+export const DEFINE_BODY_INDENT = 30;
 
 //  Menu styles
 export const MENU_COLOR_DELETE = 0xD6432C;

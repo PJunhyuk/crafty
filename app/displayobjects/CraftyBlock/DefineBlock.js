@@ -66,32 +66,29 @@ export default class DefineBlock extends CraftyBlock {
         // Create and add placeholder block
         const placeholderBlockSpec = new CraftyBlockSpec("body",CraftyBlock.PLACEHOLDER);
         const placeholderBlock = new CraftyBlock(placeholderBlockSpec);
-        placeholderBlock.position.set(BLOCK_CONST.PADDING_H + BLOCK_CONST.DEFINE_EXTRA_PADDING, this.height + BLOCK_CONST.SPACING_V);
+        placeholderBlock.position.set(BLOCK_CONST.DEFINE_BODY_INDENT, this.height + BLOCK_CONST.SPACING_V);
         this.childBlocks.push([placeholderBlock]);
         this.addChild(placeholderBlock);
 
         // Draw line and add
         let line = new PIXI.Graphics().lineStyle(LINE_CONST.STROKE_WIDTH, LINE_CONST.COLOR);
-        line.moveTo(placeholderBlock.x + placeholderBlock.width/2, placeholderBlock.y - BLOCK_CONST.SPACING_V);
-        line.lineTo(placeholderBlock.x + placeholderBlock.width/2, placeholderBlock.y);
+        line.moveTo(BLOCK_CONST.PADDING_H, placeholderBlock.y - BLOCK_CONST.SPACING_V);
+        line.lineTo(BLOCK_CONST.PADDING_H, placeholderBlock.y - 5);
+        line.quadraticCurveTo(BLOCK_CONST.PADDING_H, placeholderBlock.y+placeholderBlock.height/2, placeholderBlock.x, placeholderBlock.y+placeholderBlock.height/2);
+        // line.lineTo(placeholderBlock.x + placeholderBlock.width/2, placeholderBlock.y);
         this.addChildAt(line,2);
     }
     /**
      * override CraftyBlock's render to fit define block's render
-     * not yet implemented for childIndex > 0
      */
     render(childIndex = 0) {
-        if (childIndex > 0) {
-            throw new Error("Rendering define blocks from childIndex > 0 not yet supported!");
-        }
-
         let drawingBlocks = this._getChildBlocks();
         console.log("Rendering define block from " + childIndex + "...");
         console.log(drawingBlocks);
 
         drawingBlocks.slice(childIndex).forEach( (blocks,index) => {
             blocks.forEach( block => {
-                block.position.set(BLOCK_CONST.PADDING_H + BLOCK_CONST.DEFINE_EXTRA_PADDING, this.getChildAt(0).height + BLOCK_CONST.SPACING_V);
+                block.position.set(BLOCK_CONST.DEFINE_BODY_INDENT, this.getChildAt(0).height + BLOCK_CONST.SPACING_V);
                 block.visible = false;
             });
 
