@@ -137,7 +137,7 @@ export default class CraftyBlockManager {
                 }
             }
 
-            //  if block has targetBlock(parameter block that is being hovered over), attach
+            //  if block has targetBlock(placeholder block that is being hovered over), attach
             if(event.targetBlock) {
                 block.attachTo(event.targetBlock);
             }
@@ -231,7 +231,7 @@ export default class CraftyBlockManager {
     treefy(block) {
         let tree;
 
-        let blockName = (block.type == CraftyBlock.PARAMETER) ? "{" + block.name + "}" : block.name;
+        let blockName = (block.type == CraftyBlock.PLACEHOLDER) ? "{" + block.name + "}" : block.name;
         let token = new Pastel.Token(Pastel.Token.ID, blockName);
 
         if (block.type == CraftyBlock.FUNCTION) {

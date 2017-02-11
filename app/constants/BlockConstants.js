@@ -20,7 +20,7 @@ export const TYPE_FUNCTION_COLOR = 0x2763C4;
 export const TYPE_FUNCTION_FOLDED_COLOR = 0xD8AD3C;
 export const TYPE_FUNCTION_MODIFY_COLOR = 0x35A553;
 export const TYPE_CONSTANT_COLOR = 0x35A553;
-export const TYPE_PARAMETER_COLOR = 0x6691D6;
+export const TYPE_PLACEHOLDER_COLOR = 0x6691D6;
 
 //  Block spacing
 export const SPACING_V = 10;

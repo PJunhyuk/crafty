@@ -79,30 +79,30 @@ class CraftyBlockAnimator {
     }
 
     /**
-     * parameterBlock mousedown event callback
+     * placeholderBlock mousedown event callback
      */
-    onParameterStart(event) {
+    onPlaceholderStart(event) {
         let block = event.target;
 
         block.clicked = true;
     }
 
     /**
-     * parameterBlock mousemove event callback
+     * placeholderBlock mousemove event callback
      */
-    onParameterMove(event) {
+    onPlaceholderMove(event) {
         let block = event.target;
 
         //  trigger only while a block is being dragged
         if (this.dragging) {
-            //  if mouse is over parameter block, keep a reference for potential attaching
+            //  if mouse is over placeholder block, keep a reference for potential attaching
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
                 //  change tint on hover
                 block.getChildAt(0).tint = 0xDDDDDD;
                 this.targetBlock = block;
             } else {
-                //  reset target block when no longer hovering over parameter block
+                //  reset target block when no longer hovering over placeholder block
                 if (block == this.targetBlock) {
                     this.targetBlock = null;
                 }
@@ -113,15 +113,15 @@ class CraftyBlockAnimator {
     }
 
     /**
-     * parameterBlock mouseup event callback
+     * placeholderBlock mouseup event callback
      */
-    onParameterEnd(event) {
+    onPlaceholderEnd(event) {
         let block = event.target;
 
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
-                // load input menu when parameter block is clicked
+                // load input menu when placeholder block is clicked
                 InputMenu.create(block);
             }
             block.clicked = false;
