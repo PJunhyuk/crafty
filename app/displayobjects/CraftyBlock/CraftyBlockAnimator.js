@@ -16,6 +16,9 @@ class CraftyBlockAnimator {
     }
 
     onMouseDown(event) {
+        //  Prevent outer containers(ex. define blocks) from also emitting events
+        event.stopPropagation();
+
         let block = event.target;
 
         //  trigger when the mouse is clicked inside the block

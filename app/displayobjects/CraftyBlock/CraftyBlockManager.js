@@ -107,8 +107,11 @@ export default class CraftyBlockManager {
                 this.stage.sidebar.addChildAt(block.clone(),1);
                 block.render();
             } else {
-
-                if (block.parent instanceof CraftyBlock) {
+                // create a copy of the block if block is a parameter block
+                if (block.type === CraftyBlock.PARAMETER) {
+                    block.parent.addChild(block.clone());
+                }
+                else if (block.parent instanceof CraftyBlock) {
                     block.parent.removeChildBlock(block);
                 }
 

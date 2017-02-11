@@ -66,12 +66,21 @@ export default class CraftyBlock extends PIXI.Container {
 
         //  Create block graphics and set style
         let blockGraphics = new PIXI.Graphics();
-        if (this.type == CraftyBlock.PLACEHOLDER) { // if block is placeholder, apply different style
-            blockGraphics.beginFill(BLOCK_CONST.TYPE_PLACEHOLDER_COLOR, BLOCK_CONST.OPACITY);
-        } else if (this.type == CraftyBlock.CONSTANT) {
-            blockGraphics.beginFill(BLOCK_CONST.TYPE_CONSTANT_COLOR, BLOCK_CONST.OPACITY);
-        } else {
-            blockGraphics.beginFill(BLOCK_CONST.TYPE_FUNCTION_COLOR, BLOCK_CONST.OPACITY);
+        switch(this.type) {
+            case CraftyBlock.PLACEHOLDER:
+                blockGraphics.beginFill(BLOCK_CONST.TYPE_PLACEHOLDER_COLOR, BLOCK_CONST.OPACITY);
+                break;
+            case CraftyBlock.FUNCTION:
+                blockGraphics.beginFill(BLOCK_CONST.TYPE_FUNCTION_COLOR, BLOCK_CONST.OPACITY);
+                break;
+            case CraftyBlock.CONSTANT:
+                blockGraphics.beginFill(BLOCK_CONST.TYPE_CONSTANT_COLOR, BLOCK_CONST.OPACITY);
+                break;
+            case CraftyBlock.PARAMETER:
+                blockGraphics.beginFill(BLOCK_CONST.TYPE_PARAMETER_COLOR, BLOCK_CONST.OPACITY);
+                break;
+            default:
+                throw new TypeError("Unknown CraftyBlock type!");
         }
         blockGraphics.drawRoundedRect(0,0,text.width + 2 * BLOCK_CONST.PADDING_H, text.height + 2 * BLOCK_CONST.PADDING_V, BLOCK_CONST.CORNER_RADIUS);
         blockGraphics.endFill();
@@ -443,4 +452,6 @@ export default class CraftyBlock extends PIXI.Container {
 let blockId = 0;
 CraftyBlock.FUNCTION    = blockId++;
 CraftyBlock.CONSTANT    = blockId++;
-CraftyBlock.PLACEHOLDER   = blockId++;
+CraftyBlock.PLACEHOLDER = blockId++;
+CraftyBlock.DEFINE      = blockId++;
+CraftyBlock.PARAMETER = blockId++;

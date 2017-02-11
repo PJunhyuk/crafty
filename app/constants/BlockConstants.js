@@ -9,6 +9,8 @@ export const CORNER_RADIUS = 12;
 //  Block text padding
 export const PADDING_V = 8;
 export const PADDING_H = 15;
+export const DEFINE_EXTRA_PADDING = 5;
+export const PARAMETER_PADDING = 7;
 
 //  Block text styles
 export const TEXT_STYLE = {font: "14px Helvetica", fill: "white"};
@@ -21,6 +23,8 @@ export const TYPE_FUNCTION_FOLDED_COLOR = 0xD8AD3C;
 export const TYPE_FUNCTION_MODIFY_COLOR = 0x35A553;
 export const TYPE_CONSTANT_COLOR = 0x35A553;
 export const TYPE_PLACEHOLDER_COLOR = 0x6691D6;
+export const TYPE_DEFINE_COLOR = 0x5548A9;
+export const TYPE_PARAMETER_COLOR = 0x7367C3;
 
 //  Block spacing
 export const SPACING_V = 10;
