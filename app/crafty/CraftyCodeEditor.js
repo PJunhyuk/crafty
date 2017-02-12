@@ -43,37 +43,48 @@ export default class CraftyCodeEditor {
 
     checkCode() {
         let compilableText = this.editor.getValue();
-        let result = this.evaluator.evaluateText(compilableText);
-        if (result instanceof Pastel.Error) {
-            console.log("code-error");
-            $('#compile-message').text(result.message);
-            //this.messageBox.text(result.message);
-            this.messageBox.className = "show";
-            $('.live-preview-area').text('ERROR!');
+        if (compilableText != '') {
+            let result = this.evaluator.evaluateText(compilableText);
+            if (result instanceof Pastel.Error) {
+                console.log("code-error");
+                $('#compile-message').text(result.message);
+                //this.messageBox.text(result.message);
+                this.messageBox.className = "show";
+                $('.live-preview-area').text('ERROR!');
+            } else {
+                let tree = this.parser.analyze(compilableText);
+                CraftyStore.set('tree', tree);
+                CraftyStore.emitChange("editor");
+                if(this.messageBox.className == "show") {
+                    this.messageBox.className = "hide";
+                    setTimeout(_ => {
+                        this.messageBox.className = "";
+                    }, 500);
+                }
+                this.compile();
+            }
         } else {
             let tree = this.parser.analyze(compilableText);
             CraftyStore.set('tree', tree);
             CraftyStore.emitChange("editor");
+            $('.live-preview-area').text('blank');
             if(this.messageBox.className == "show") {
                 this.messageBox.className = "hide";
                 setTimeout(_ => {
                     this.messageBox.className = "";
                 }, 500);
             }
-            this.compile();
         }
     }
 
     compile() {
         console.log("compile!");
         let compilableText = this.editor.getValue();
-        let result = this.evaluator.evaluateText(compilableText);
-        if (result instanceof Pastel.Error) {
-            // this.messageBox.text(result.message);
-            // this.messageBox.className = "show";
-            // alert("ERROR - check error message!");
+        if (compilableText != '') {
+            let result = this.evaluator.evaluateText(compilableText);
+                $('.live-preview-area').text(result);
         } else {
-            $('.live-preview-area').text(result);
+            $('.live-preview-area').text('blank');
         }
     }
 
