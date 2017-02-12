@@ -47,8 +47,7 @@ class InputMenu {
     inputValueSubmitted(block) {
         let value = $('#input-value').val();
         if (value) {
-            let constantBlock = CraftyBlock.constantWithValue(value);
-            constantBlock.attachTo(block);
+            block.renameConstant(value);
             let modal = document.getElementById('input-value-box');
             modal.style.display = "none";
             CraftyBlockEvents.emit('canvaschange');

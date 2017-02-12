@@ -446,6 +446,34 @@ export default class CraftyBlock extends PIXI.Container {
             blocks[0].print(indent + childIndent);
         });
     }
+    
+    /**
+     * Rename a constant block's name and redraw text and block
+     */
+    renameConstant(name) {
+        if (this.type !== CraftyBlock.CONSTANT) {
+            throw new TypeError("Renaming only supported with constant blocks!");a
+        }
+        this.blockInfo.name = name;
+
+        //  Create new PIXI.Text
+        let text = new PIXI.Text(
+            this.name,
+            BLOCK_CONST.TEXT_STYLE
+        );
+        text.position.set(BLOCK_CONST.PADDING_H,BLOCK_CONST.PADDING_V);
+
+        //  Create block graphics and set style(constant)
+        let blockGraphics = new PIXI.Graphics();
+        blockGraphics.beginFill(BLOCK_CONST.TYPE_CONSTANT_COLOR, BLOCK_CONST.OPACITY);
+        blockGraphics.drawRoundedRect(0,0,text.width + 2 * BLOCK_CONST.PADDING_H, text.height + 2 * BLOCK_CONST.PADDING_V, BLOCK_CONST.CORNER_RADIUS);
+        blockGraphics.endFill();
+
+        //  Swap old blocks with new ones
+        this.removeChildren(0,2);
+        this.addChildAt(blockGraphics,0);
+        this.addChildAt(text,1);
+    }
 }
 
 //  Define CraftyBlock types
