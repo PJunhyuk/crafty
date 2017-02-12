@@ -62,7 +62,41 @@ html, body, canvas {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 .compile-result-area {
-
+    position: absolute;
+    background-color: #fefefe;
+    /*margin: auto;*/
+    padding: 0;
+    border: 1px solid #888;
+    width: 50%;
+    left: 7.5%;
+    height: 50%;
+    top: 20%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetopresult;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetopresult;
+    animation-duration: 0.4s
+}
+.compile-result {
+  padding: 12px;
+}
+.compile-result-area h3 {
+  padding: 12px;
+  color: white;
+}
+.compile-result-area .modal-header {
+  background-color: rgba(0, 0, 255, 0.8);
+}
+@-webkit-keyframes animatetopresult {
+    from {top:-300px; opacity:0}
+    to {top:20%; opacity:1}
+}
+@keyframes animatetopresult {
+    from {top:-300px; opacity:0}
+    to {top:20%; opacity:1}
+}
+.compile-result-area span {
+  margin-top: 12px;
 }
 
 #compile-button {
