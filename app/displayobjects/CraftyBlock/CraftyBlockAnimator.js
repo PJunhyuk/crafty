@@ -1,5 +1,4 @@
 import CraftyBlockEvents from './CraftyBlockEvents.js';
-import InputMenu from './../DOM/InputMenu.js';
 
 /**
  * CraftyBlock Animator Class
@@ -124,8 +123,7 @@ class CraftyBlockAnimator {
         if (block.clicked) {
             let relativeMousePosition = event.data.getLocalPosition(block);
             if (block.isHit(relativeMousePosition)) {
-                // load input menu when placeholder block is clicked
-                InputMenu.create(block);
+                CraftyBlockEvents.emit('clickplaceholder', block);
             }
             block.clicked = false;
         }

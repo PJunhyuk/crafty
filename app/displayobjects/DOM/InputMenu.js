@@ -11,9 +11,23 @@ import CraftyKit from './../../crafty/CraftyKit.js';
 
 class InputMenu {
     constructor() {
+        this.block = undefined;
+        this.state = undefined;
     }
 
     create(block) {
+        this.block = block;
+        block.print();
+        this.state = InputMenu.CREATE;
+        this.show();
+    }
+    modify(block) {
+        this.block = block;
+        this.state = InputMenu.MODIFY;
+        this.show();
+    }
+
+    show() {
         $('<div id="input-value-box" class="modal"><div class="modal-content"><div class="modal-header"><span class="modal-close">&times;</span><h3>Input value!</h3></div><div class="modal-body"><input id="input-value" type="text" /></div><div class="modal-footer"><input id="input-value-submit" class="buttons" type="button" value="submit-value" /></div></div></div>').appendTo("body");
 
         let modal = document.getElementById('input-value-box');
@@ -34,20 +48,25 @@ class InputMenu {
         document.getElementById("input-value").focus();
 
         $('#input-value-submit').click(() => {
-            this.inputValueSubmitted(block);
+            this.inputValueSubmitted();
         });
 
         $("#input-value").keyup(event => {
             if (event.keyCode == 13) {
-                this.inputValueSubmitted(block);
+                this.inputValueSubmitted();
             }
         });
     }
 
-    inputValueSubmitted(block) {
+    inputValueSubmitted() {
         let value = $('#input-value').val();
         if (value) {
-            block.renameConstant(value);
+            if (this.state == InputMenu.CREATE) {
+                let constantBlock = CraftyBlock.constantWithValue(value);
+                constantBlock.attachTo(this.block);
+            } else if (this.state == InputMenu.MODIFY) {
+                this.block.renameConstant(value);
+            }
             let modal = document.getElementById('input-value-box');
             modal.style.display = "none";
             CraftyBlockEvents.emit('canvaschange');
@@ -60,4 +79,7 @@ class InputMenu {
     }
 }
 
+let menuId = 0;
+InputMenu.CREATE = menuId++;
+InputMenu.MODIFY = menuId++;
 export default new InputMenu();

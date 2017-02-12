@@ -89,8 +89,11 @@ export default class CraftyBlockManager {
             this.removeBlock(block);
             CraftyBlockEvents.emit('canvaschange');
         });
-        CraftyBlockEvents.on('clickmodify', block => {
+        CraftyBlockEvents.on('clickplaceholder', block => {
             InputMenu.create(block);
+        });
+        CraftyBlockEvents.on('clickmodify', block => {
+            InputMenu.modify(block);
         });
         CraftyBlockEvents.on('cleancanvas', () => {
             this.emptyStage();
