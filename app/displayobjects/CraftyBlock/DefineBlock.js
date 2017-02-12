@@ -2,6 +2,7 @@ import CraftyBlock from './CraftyBlock.js';
 import CraftyBlockSpec from './CraftyBlockSpec.js';
 import * as BLOCK_CONST from '../../constants/BlockConstants.js';
 import * as LINE_CONST from '../../constants/LineConstants.js';
+import CraftyBlockEvents from './CraftyBlockEvents.js';
 
 export default class DefineBlock extends CraftyBlock {
     constructor(blockInfo) {
@@ -54,6 +55,9 @@ export default class DefineBlock extends CraftyBlock {
 
         //  add body placeholder
         this._addBody();
+
+        //  Emit to create function block in sidebar
+        CraftyBlockEvents.emit('createfunc', this.blockInfo);
 
         //  set interactivity of blocks
         this._makeInteractive();

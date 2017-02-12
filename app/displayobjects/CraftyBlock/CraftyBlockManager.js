@@ -96,6 +96,10 @@ export default class CraftyBlockManager {
             this.emptyStage();
             CraftyBlockEvents.emit('canvaschange');
         });
+        CraftyBlockEvents.on('createfunc', blockSpec => {
+            let defineFunc = new CraftyBlockSpec(blockSpec.name,CraftyBlock.FUNCTION,blockSpec.parameters,blockSpec.library);
+            this.stage.sidebar.addFunction(defineFunc);
+        });
 
         function onDragReady(block) {
             //  store original address of block
