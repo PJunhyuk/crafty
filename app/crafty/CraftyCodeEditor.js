@@ -48,9 +48,10 @@ export default class CraftyCodeEditor {
             if (result instanceof Pastel.Error) {
                 console.log("code-error");
                 $('#compile-message').text(result.message);
-                //this.messageBox.text(result.message);
                 this.messageBox.className = "show";
                 $('.live-preview-area').text('ERROR!');
+                $('.live-preview-area').css('border', '6px solid red');
+            $('.live-preview-area').css('background-color', 'rgba(255, 0, 0, 0.5)');
             } else {
                 let tree = this.parser.analyze(compilableText);
                 CraftyStore.set('tree', tree);
@@ -68,6 +69,8 @@ export default class CraftyCodeEditor {
             CraftyStore.set('tree', tree);
             CraftyStore.emitChange("editor");
             $('.live-preview-area').text('blank');
+            $('.live-preview-area').css('border', '6px solid green');
+            $('.live-preview-area').css('background-color', 'rgba(0, 255, 0, 0.5)');
             if(this.messageBox.className == "show") {
                 this.messageBox.className = "hide";
                 setTimeout(_ => {
@@ -83,8 +86,12 @@ export default class CraftyCodeEditor {
         if (compilableText != '') {
             let result = this.evaluator.evaluateText(compilableText);
                 $('.live-preview-area').text(result);
+            $('.live-preview-area').css('border', '6px solid blue');
+            $('.live-preview-area').css('background-color', 'rgba(0, 0, 255, 0.5)');
         } else {
             $('.live-preview-area').text('blank');
+            $('.live-preview-area').css('border', '6px solid green');
+            $('.live-preview-area').css('background-color', 'rgba(0, 255, 0, 0.5)');
         }
     }
 
