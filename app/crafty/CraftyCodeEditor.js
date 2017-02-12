@@ -85,9 +85,10 @@ export default class CraftyCodeEditor {
         let compilableText = this.editor.getValue();
         if (compilableText != '') {
             let result = this.evaluator.evaluateText(compilableText);
-                $('.live-preview-area').text(result);
+            $('.live-preview-area').text(result);
             $('.live-preview-area').css('border', '6px solid blue');
             $('.live-preview-area').css('background-color', 'rgba(0, 0, 255, 0.5)');
+            $('.compile-result').text(result);
         } else {
             $('.live-preview-area').text('blank');
             $('.live-preview-area').css('border', '6px solid green');
