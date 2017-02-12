@@ -1,5 +1,6 @@
 import Pastel from 'pastel-lang';
 import CraftyBlock from '../CraftyBlock/CraftyBlock.js';
+import DefineBlock from '../CraftyBlock/DefineBlock.js';
 import CraftyBlockSpec from '../CraftyBlock/CraftyBlockSpec.js';
 import CraftyStore from '../../stores/CraftyStore.js';
 import CraftyBlockMenu from './CraftyBlockMenu.js';
@@ -299,21 +300,37 @@ export default class CraftyBlockManager {
             //console.log("DEBUG::: blockifying...");
             if (!node.getData()) {
                 let children = node.getChildren();
-                let functionBlock;
-                let childBlocks = [];
-                children.forEach( (childNode, idx) => {
-                    if (idx == 0) {
-                        functionBlock = this.blockify(childNode, idx);
-                    } else {
-                        childBlocks.push(this.blockify(childNode, idx));
-                    }
-                });
 
-                childBlocks.forEach( (block,index) => {
-                    functionBlock.addChildBlock(block,index);
-                });
+                if (children[0].getData().data == "define") {
+                    let defineParameters = [];
+                    children[2].children.forEach( (childNode) => {
+                        let blockInfo = new CraftyBlockSpec(childNode.getData().data,CraftyBlock.PARAMETER);
+                        defineParameters.push(childNode.getData().data);
+                    });
+                    let defineBlockSpec = new CraftyBlockSpec(children[1].getData().data, CraftyBlock.DEFINE, defineParameters);
+                    let defineBlock = new DefineBlock(defineBlockSpec);
 
-                return functionBlock;
+                    defineBlock.addChildBlock(this.blockify(children[3]),0);
+
+                    return defineBlock;
+                }
+                else {
+                    let functionBlock;
+                    let childBlocks = [];
+                    children.forEach( (childNode, idx) => {
+                        if (idx == 0) {
+                            functionBlock = this.blockify(childNode, idx);
+                        } else {
+                            childBlocks.push(this.blockify(childNode, idx));
+                        }
+                    });
+
+                    childBlocks.forEach( (block,index) => {
+                        functionBlock.addChildBlock(block,index);
+                    });
+
+                    return functionBlock;
+                }
             }
             else {
                 let blockInfo;
