@@ -107,8 +107,8 @@ export default class CraftyBlockManager {
                 this.stage.sidebar.addChildAt(block.clone(),1);
                 block.render();
             } else {
-                // create a copy of the block if block is a parameter block
-                if (block.type === CraftyBlock.PARAMETER) {
+                // create a copy of the block if block is a parameter block and is located in the parameter box
+                if (block.type === CraftyBlock.PARAMETER && block.originalAddress[block.originalAddress.length - 1] == -1) {
                     block.parent.addChild(block.clone());
                 }
                 else if (block.parent instanceof CraftyBlock) {
@@ -148,6 +148,11 @@ export default class CraftyBlockManager {
             //  Get new block address
             let newAddress = this.getAddress(block);
 
+            //  if parameter block is not in scope, delete block
+            if (block.type === CraftyBlock.PARAMETER && newAddress[0] !== block.originalAddress[0]) {
+                this.removeBlock(block);
+            }
+
             //  only interested in when block address changed
             if (!this.isAddressEqual(block.originalAddress,newAddress) && newAddress[0] != -3) { // -3 is when block is deleted
 
@@ -170,7 +175,6 @@ export default class CraftyBlockManager {
 
                 CraftyBlockEvents.emit('canvaschange');
             }
-
 
             block.originalAddress = undefined;
         }
