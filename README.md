@@ -7,6 +7,8 @@
 ### 소개 동영상
 [![소개 ](https://img.youtube.com/vi/5NUdw5i-3i8/0.jpg)](https://www.youtube.com/watch?v=5NUdw5i-3i8)
 
+### 데모
+<http://www.collabase.org/crafty>
 
 ## 프로젝트 설명
 crafty는 프로그래밍 지식이 충분한 개발자들도 재미있게 사용할 수 있는 비쥬얼 프로그래밍 GUI 입니다. 초심자가 접근하기 가장 쉬운 함수형 언어의 형식이며, 비쥬얼 프로그래밍에 최적화된 프로그래밍 언어 pastel을 개발하여 사용합니다. 또한, 모든 플랫폼의 사용자가 쉽게 사용할 수 있도록 웹 기반의 서비스를 제공합니다.
