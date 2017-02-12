@@ -78,11 +78,11 @@ export default class CraftyBlockManager {
             }
         });
         CraftyBlockEvents.on('clickfold', block => {
-          if (block.folded) {
-              block.unfold();
-          } else {
-              block.fold();
-          }
+            if (block.folded) {
+                block.unfold();
+            } else {
+                block.fold();
+            }
         });
         CraftyBlockEvents.on('clickdelete', block => {
             this.removeBlock(block);
@@ -151,29 +151,29 @@ export default class CraftyBlockManager {
             //  if parameter block is not in scope, delete block
             if (block.type === CraftyBlock.PARAMETER && newAddress[0] !== block.originalAddress[0]) {
                 this.removeBlock(block);
-            }
+            } else {
+                //  only interested in when block address changed
+                if (!this.isAddressEqual(block.originalAddress,newAddress) && newAddress[0] != -3) { // -3 is when block is deleted
 
-            //  only interested in when block address changed
-            if (!this.isAddressEqual(block.originalAddress,newAddress) && newAddress[0] != -3) { // -3 is when block is deleted
-
-                //  when block is no longer a root block
-                if (block.originalAddress.length == 1 && newAddress.length != 1) {
-                    //  remove block from rootBlocks
-                    this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
-                }
-
-                //  if the block is on stage
-                if (newAddress[0] == -2) {
-                    //  add to rootBlocks right after original root block position
-                    if (block.originalAddress[0] == -1) {
-                        this.rootBlocks.push(block);
-                    } else {
-                        this.rootBlocks.splice(block.originalAddress[0]+1,0,block);
+                    //  when block is no longer a root block
+                    if (block.originalAddress.length == 1 && newAddress.length != 1) {
+                        //  remove block from rootBlocks
+                        this.rootBlocks.splice(this.rootBlocks.indexOf(block),1);
                     }
-                    //  no need to addToStage since it is already done during moving
-                }
 
-                CraftyBlockEvents.emit('canvaschange');
+                    //  if the block is on stage
+                    if (newAddress[0] == -2) {
+                        //  add to rootBlocks right after original root block position
+                        if (block.originalAddress[0] == -1) {
+                            this.rootBlocks.push(block);
+                        } else {
+                            this.rootBlocks.splice(block.originalAddress[0]+1,0,block);
+                        }
+                        //  no need to addToStage since it is already done during moving
+                    }
+
+                    CraftyBlockEvents.emit('canvaschange');
+                }
             }
 
             block.originalAddress = undefined;
@@ -241,7 +241,7 @@ export default class CraftyBlockManager {
         let blockName = (block.type == CraftyBlock.PLACEHOLDER) ? "{" + block.name + "}" : block.name;
         let token = new Pastel.Token(Pastel.Token.ID, blockName);
 
-        if (block.type == CraftyBlock.FUNCTION) {
+        if (block.type == CraftyBlock.FUNCTION) {   // create a function node
             tree = new Pastel.Node();
             let subtree = new Pastel.Node(token);
 
@@ -250,7 +250,28 @@ export default class CraftyBlockManager {
             block.childBlocks.forEach( blocks => {
                 tree.addChild(this.treefy(blocks[0]));
             });
-        } else {
+        } else if (block.type == CraftyBlock.DEFINE) { //  create a define node
+            tree = new Pastel.Node();
+
+            //  add "define" and {function_name} node
+            let definetree = new Pastel.Node(new Pastel.Token(Pastel.Token.ID, "define"));
+            let subtree = new Pastel.Node(token);
+            tree.addChild(definetree);
+            tree.addChild(subtree);
+
+            //  Create and add parameter node
+            let parameterTree = new Pastel.Node();
+            block.parameters.forEach( parameter => {
+                let parameterToken = new Pastel.Token(Pastel.Token.ID, parameter);
+                parameterTree.addChild(new Pastel.Node(parameterToken));
+            });
+            tree.addChild(parameterTree);
+
+            //  Add body node
+            block.childBlocks.forEach( blocks => {
+                tree.addChild(this.treefy(blocks[0]));
+            });
+        } else { // create constant node
             tree = new Pastel.Node(token);
         }
 

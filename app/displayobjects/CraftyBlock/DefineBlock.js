@@ -83,8 +83,6 @@ export default class DefineBlock extends CraftyBlock {
      */
     render(childIndex = 0) {
         let drawingBlocks = this._getChildBlocks();
-        console.log("Rendering define block from " + childIndex + "...");
-        console.log(drawingBlocks);
 
         drawingBlocks.slice(childIndex).forEach( (blocks,index) => {
             blocks.forEach( block => {
